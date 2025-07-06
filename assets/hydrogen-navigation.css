@@ -1,0 +1,321 @@
+/**
+ * Hydrogen Navigation Styles
+ * Provides smooth transitions and loading states
+ */
+
+/* View Transition Styles */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: fade-out 0.2s ease-out;
+}
+
+::view-transition-new(root) {
+  animation: fade-in 0.2s ease-in;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Enhanced Loading Indicator */
+#instant-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  height: 4px;
+  background: rgba(var(--color-background), 0.1);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+#instant-loading.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loading-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, 
+    rgb(var(--color-button, 59, 130, 246)), 
+    rgb(var(--color-button, 59, 130, 246)) 30%,
+    rgba(var(--color-button, 59, 130, 246), 0.8) 70%,
+    rgb(var(--color-button, 59, 130, 246)));
+  background-size: 200% 100%;
+  position: relative;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.loading-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.4) 50%, 
+    transparent 100%);
+  animation: loading-shimmer 1.5s infinite;
+  transform: translateX(-100%);
+}
+
+.loading-bar.complete {
+  transition: width 0.1s ease, opacity 0.3s ease 0.1s;
+  opacity: 0;
+}
+
+@keyframes loading-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* Loading States */
+.loading-bar.fast {
+  animation-duration: 0.6s;
+}
+
+.loading-bar.normal {
+  animation-duration: 1.2s;
+}
+
+.loading-bar.slow {
+  animation-duration: 2s;
+}
+
+/* Premium Loading Styles */
+.loading-bar.style-gradient {
+  background: linear-gradient(45deg, 
+    #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+  background-size: 300% 100%;
+  animation: gradient-shift 2s ease infinite;
+}
+
+.loading-bar.style-neon {
+  background: linear-gradient(90deg, #00f5ff, #ff00ff, #00f5ff);
+  box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+  background-size: 200% 100%;
+}
+
+.loading-bar.style-minimal {
+  background: rgb(var(--color-foreground, 0, 0, 0));
+  opacity: 0.6;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Enhanced Page Loading State */
+.page-loading {
+  cursor: progress; /* More natural than 'wait' */
+}
+
+/* Only disable pointer events on specific elements during navigation */
+.page-loading a:not([href="#"]):not([data-allow-click]),
+.page-loading button:not([data-allow-click]),
+.page-loading [role="button"]:not([data-allow-click]) {
+  pointer-events: none !important;
+}
+
+/* Allow interactions with loading bar and essential elements */
+.page-loading #instant-loading,
+.page-loading [data-allow-click] {
+  pointer-events: auto !important;
+}
+
+/* Smooth cursor transition */
+body {
+  transition: cursor 0.1s ease;
+}
+
+/* Reduce cursor flicker by limiting duration */
+.page-loading-brief {
+  cursor: progress;
+}
+
+.page-loading-brief * {
+  pointer-events: none !important;
+}
+
+/* Instant Loading Hints */
+a[href]:not([data-no-instant]):hover {
+  transition: all 0.2s ease;
+}
+
+/* Preload Indicator (optional) */
+.preloading-hint {
+  position: relative;
+}
+
+.preloading-hint::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 4px;
+  background: rgba(var(--color-button), 0.6);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.preloading-hint.preloaded::after {
+  opacity: 1;
+}
+
+/* Smooth transitions for main content */
+#MainContent {
+  transition: opacity 0.15s ease-out;
+}
+
+/* Loading skeleton for product cards */
+.skeleton-loading {
+  background: linear-gradient(90deg, 
+    rgba(var(--color-foreground), 0.1) 25%, 
+    rgba(var(--color-foreground), 0.05) 50%, 
+    rgba(var(--color-foreground), 0.1) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-product-card {
+  min-height: 300px;
+  border-radius: var(--border-radius, 8px);
+}
+
+.skeleton-text {
+  height: 1.2em;
+  margin: 0.5em 0;
+  border-radius: 4px;
+}
+
+.skeleton-text--short {
+  width: 60%;
+}
+
+.skeleton-text--medium {
+  width: 80%;
+}
+
+/* Optimistic UI for cart updates */
+.cart-item--updating {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.cart-item--updating .quantity-input {
+  pointer-events: none;
+}
+
+/* Error states */
+.navigation-error {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  padding: 1rem;
+  border-radius: var(--border-radius, 8px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 10000;
+  max-width: 300px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.3s ease;
+}
+
+.navigation-error.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Performance hints */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+  
+  .loading-bar {
+    animation: loading-progress 0.8s ease-out forwards;
+  }
+  
+  #MainContent {
+    transition: none;
+  }
+  
+  .skeleton-loading,
+  .loading-bar {
+    animation-duration: 0.01ms;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .loading-bar {
+    background: linear-gradient(90deg, 
+      #60a5fa 0%, 
+      #3b82f6 50%, 
+      #60a5fa 100%);
+  }
+}
+
+/* Mobile optimizations */
+@media screen and (max-width: 749px) {
+  .loading-bar {
+    height: 2px;
+  }
+  
+  #instant-loading {
+    top: 0;
+  }
+  
+  .navigation-error {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  #instant-loading,
+  .navigation-error {
+    display: none !important;
+  }
+}

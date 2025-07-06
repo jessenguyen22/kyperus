@@ -8,6 +8,105 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Hydrogen Performance",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Hydrogen-like Performance Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_hydrogen_navigation",
+        "label": "Enable Hydrogen-like Navigation",
+        "info": "Enables instant page transitions and preloading for Hydrogen-like performance",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_service_worker",
+        "label": "Enable Service Worker Caching",
+        "info": "Advanced caching for faster page loads",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_prefetching",
+        "label": "Enable Link Prefetching",
+        "info": "Preload pages on hover for instant navigation",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "transition_speed",
+        "label": "Page Transition Speed",
+        "options": [
+          {
+            "value": "fast",
+            "label": "Fast (150ms)"
+          },
+          {
+            "value": "normal",
+            "label": "Normal (300ms)"
+          },
+          {
+            "value": "slow",
+            "label": "Slow (500ms)"
+          }
+        ],
+        "default": "fast"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_loading_indicator",
+        "label": "Show Loading Bar",
+        "info": "Display a loading bar during page transitions",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "loading_bar_style",
+        "label": "Loading Bar Style",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default (Theme Colors)"
+          },
+          {
+            "value": "gradient",
+            "label": "Rainbow Gradient"
+          },
+          {
+            "value": "neon",
+            "label": "Neon Glow"
+          },
+          {
+            "value": "minimal",
+            "label": "Minimal Black"
+          }
+        ],
+        "default": "default",
+        "info": "Choose loading bar visual style"
+      },
+      {
+        "type": "range",
+        "id": "loading_bar_height",
+        "min": 2,
+        "max": 8,
+        "step": 1,
+        "unit": "px",
+        "label": "Loading Bar Height",
+        "default": 4
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_loading_cursor",
+        "label": "Hide Loading Cursor",
+        "info": "Prevent cursor from changing to loading state during navigation",
+        "default": false
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.logo.name",
     "settings": [
       {

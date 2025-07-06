@@ -6,7 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="">
+    <meta name="view-transition" content="same-origin">
     <link rel="canonical" href="{{ canonical_url }}">
+    
+    <!-- Hydrogen Performance Optimizations -->
+    <link rel="dns-prefetch" href="//cdn.shopify.com">
+    <link rel="dns-prefetch" href="//fonts.shopifycdn.com">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
 
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
@@ -28,7 +34,12 @@
     {% endif %}
 
     {% render 'meta-tags' %}
+    {% render 'hydrogen-init' %}
 
+    <!-- Hydrogen Navigation System - Load Early -->
+    <script src="{{ 'performance-optimizer.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'hydrogen-navigation.js' | asset_url }}" defer="defer"></script>
+    
     <script src="{{ 'constants.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'pubsub.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
@@ -267,6 +278,7 @@
     {% endstyle %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'hydrogen-navigation.css' | asset_url | stylesheet_tag }}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 
 
