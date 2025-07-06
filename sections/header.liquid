@@ -112,8 +112,8 @@
   }
 
   {% if section.settings.transparent_header_homepage and template == 'index' %}
-  /* Transparent Header Styles for Homepage */
-  .header-wrapper {
+  /* Transparent Header Styles - Only for Homepage */
+  .header-wrapper.transparent-header {
     position: absolute;
     top: 0;
     left: 0;
@@ -123,38 +123,38 @@
     transition: all 0.3s ease;
   }
 
-  .header-wrapper.scrolled {
+  .header-wrapper.transparent-header.scrolled {
     background: rgb(var(--color-background)) !important;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   }
 
-  .header-wrapper:not(.scrolled) {
+  .header-wrapper.transparent-header:not(.scrolled) {
     --color-foreground: {{ section.settings.transparent_header_text_color | color_to_rgb | remove: 'rgb(' | remove: ')' }};
   }
 
-  .header-wrapper:not(.scrolled) .header__heading-link,
-  .header-wrapper:not(.scrolled) .header__menu-item,
-  .header-wrapper:not(.scrolled) .header__icon,
-  .header-wrapper:not(.scrolled) .list-menu__item,
-  .header-wrapper:not(.scrolled) .header__search-input {
+  .header-wrapper.transparent-header:not(.scrolled) .header__heading-link,
+  .header-wrapper.transparent-header:not(.scrolled) .header__menu-item,
+  .header-wrapper.transparent-header:not(.scrolled) .header__icon,
+  .header-wrapper.transparent-header:not(.scrolled) .list-menu__item,
+  .header-wrapper.transparent-header:not(.scrolled) .header__search-input {
     color: {{ section.settings.transparent_header_text_color }} !important;
   }
 
-  .header-wrapper:not(.scrolled) .icon {
+  .header-wrapper.transparent-header:not(.scrolled) .icon {
     color: {{ section.settings.transparent_header_text_color }};
   }
 
-  .header-wrapper:not(.scrolled) svg {
+  .header-wrapper.transparent-header:not(.scrolled) svg {
     fill: {{ section.settings.transparent_header_text_color }};
   }
 
-  /* Ensure first section has proper spacing */
-  .template-index .section-header + .shopify-section {
+  /* Ensure first section has proper spacing on homepage */
+  .section-header + .shopify-section {
     margin-top: 0;
   }
 
-  .template-index .section-header + .shopify-section .banner,
-  .template-index .section-header + .shopify-section .slideshow {
+  .section-header + .shopify-section .banner,
+  .section-header + .shopify-section .slideshow {
     padding-top: 0;
   }
   {% endif %}
@@ -162,44 +162,75 @@
 
 <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
 
-{% if section.settings.transparent_header_homepage and template == 'index' %}
+{% if section.settings.transparent_header_homepage %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  initTransparentHeader();
+});
+
+// Handle instant navigation
+document.addEventListener('page:loaded', function() {
+  setTimeout(initTransparentHeader, 100);
+});
+
+function initTransparentHeader() {
   const headerWrapper = document.querySelector('.header-wrapper');
   const scrollTrigger = {{ section.settings.transparent_header_scroll_trigger }};
   
   if (!headerWrapper) return;
   
-  function handleScroll() {
-    const scrollY = window.scrollY;
+  // Check if current page is homepage
+  const isHomepage = window.location.pathname === '/' || 
+                     window.location.pathname === '/index' || 
+                     window.location.pathname.endsWith('/');
+  
+  if (isHomepage) {
+    // Add transparent header class for homepage
+    headerWrapper.classList.add('transparent-header');
     
-    if (scrollY > scrollTrigger) {
-      headerWrapper.classList.add('scrolled');
-    } else {
-      headerWrapper.classList.remove('scrolled');
+    function handleScroll() {
+      const scrollY = window.scrollY;
+      
+      if (scrollY > scrollTrigger) {
+        headerWrapper.classList.add('scrolled');
+      } else {
+        headerWrapper.classList.remove('scrolled');
+      }
+    }
+    
+    // Handle initial state
+    handleScroll();
+    
+    // Remove existing scroll listener if any
+    if (window.transparentHeaderScrollHandler) {
+      window.removeEventListener('scroll', window.transparentHeaderScrollHandler);
+    }
+    
+    // Create throttled scroll handler
+    window.transparentHeaderScrollHandler = function() {
+      if (!window.transparentHeaderTicking) {
+        requestAnimationFrame(function() {
+          handleScroll();
+          window.transparentHeaderTicking = false;
+        });
+        window.transparentHeaderTicking = true;
+      }
+    };
+    
+    // Add scroll listener
+    window.addEventListener('scroll', window.transparentHeaderScrollHandler);
+    
+  } else {
+    // Remove transparent header for non-homepage
+    headerWrapper.classList.remove('transparent-header', 'scrolled');
+    
+    // Clean up scroll listener
+    if (window.transparentHeaderScrollHandler) {
+      window.removeEventListener('scroll', window.transparentHeaderScrollHandler);
+      window.transparentHeaderScrollHandler = null;
     }
   }
-  
-  // Handle initial state
-  handleScroll();
-  
-  // Listen for scroll events with throttling
-  let ticking = false;
-  window.addEventListener('scroll', function() {
-    if (!ticking) {
-      requestAnimationFrame(function() {
-        handleScroll();
-        ticking = false;
-      });
-      ticking = true;
-    }
-  });
-  
-  // Handle instant navigation reinitialization
-  document.addEventListener('page:loaded', function() {
-    setTimeout(handleScroll, 100);
-  });
-});
+}
 </script>
 {% endif %}
 
