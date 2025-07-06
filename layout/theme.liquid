@@ -279,6 +279,7 @@
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
     {{ 'hydrogen-navigation.css' | asset_url | stylesheet_tag }}
+    {{ 'gsap-custom.css' | asset_url | stylesheet_tag }}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 
 
@@ -418,5 +419,12 @@
       {% endif %}
 
     {%- endif -%}
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Custom GSAP Animations for XO Builder -->
+    <script src="{{ 'gsap-custom.js' | asset_url }}" defer="defer"></script>
   </body>
 </html>

@@ -1,0 +1,147 @@
+/**
+ * Custom CSS for GSAP Animations
+ * Supporting styles for XO Builder + GSAP integration
+ */
+
+/* Base styles for GSAP elements to prevent FOUC */
+.gsap-fade-in,
+.gsap-fade-up,
+.gsap-fade-down,
+.gsap-slide-left,
+.gsap-slide-right,
+.gsap-scale-in,
+.gsap-rotate-in,
+[data-gsap] {
+  /* Ensure elements are ready for animation */
+  will-change: transform, opacity;
+}
+
+/* Fallback for when GSAP is not loaded */
+.no-js .gsap-fade-in,
+.no-js .gsap-fade-up,
+.no-js .gsap-fade-down,
+.no-js .gsap-slide-left,
+.no-js .gsap-slide-right,
+.no-js .gsap-scale-in,
+.no-js .gsap-rotate-in,
+.no-js [data-gsap] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* XO Builder specific optimizations */
+.xb-section {
+  /* Optimize for animations */
+  contain: layout;
+}
+
+.gsap-stagger > * {
+  will-change: transform, opacity;
+}
+
+/* Smooth hover transitions for interactive elements */
+.gsap-scale-hover,
+[data-gsap="scale-hover"] {
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+/* Ensure proper z-index for animated elements */
+.gsap-fade-in,
+.gsap-fade-up,
+.gsap-fade-down {
+  position: relative;
+  z-index: 1;
+}
+
+/* Performance optimizations */
+.gsap-slide-left,
+.gsap-slide-right,
+.gsap-scale-in,
+.gsap-rotate-in {
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+/* Loading state for GSAP elements */
+.gsap-loading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Ready state for GSAP elements */
+.gsap-ready {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Utility classes for GSAP animations */
+.gsap-overflow-hidden {
+  overflow: hidden;
+}
+
+.gsap-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Responsive considerations */
+@media (prefers-reduced-motion: reduce) {
+  .gsap-fade-in,
+  .gsap-fade-up,
+  .gsap-fade-down,
+  .gsap-slide-left,
+  .gsap-slide-right,
+  .gsap-scale-in,
+  .gsap-rotate-in,
+  .gsap-scale-hover,
+  [data-gsap] {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Mobile optimizations */
+@media screen and (max-width: 768px) {
+  .gsap-stagger > * {
+    /* Reduce stagger delay on mobile */
+    animation-delay: 0.05s !important;
+  }
+}
+
+/* Debug styles (remove in production) */
+.gsap-debug {
+  outline: 2px dashed #ff6b6b;
+  position: relative;
+}
+
+.gsap-debug::before {
+  content: attr(class);
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: #ff6b6b;
+  color: white;
+  padding: 2px 8px;
+  font-size: 10px;
+  border-radius: 3px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* XO Builder integration helpers */
+.xo-animate-on-scroll {
+  /* Helper class for XO elements that should animate on scroll */
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.xo-animate-on-hover {
+  /* Helper class for XO elements with hover effects */
+  transition: all 0.3s ease;
+}
+
+.xo-animate-on-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
