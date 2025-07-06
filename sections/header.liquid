@@ -110,9 +110,98 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  {% if section.settings.transparent_header_homepage and template == 'index' %}
+  /* Transparent Header Styles for Homepage */
+  .header-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: transparent !important;
+    z-index: 10;
+    transition: all 0.3s ease;
+  }
+
+  .header-wrapper.scrolled {
+    background: rgb(var(--color-background)) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  .header-wrapper:not(.scrolled) {
+    --color-foreground: {{ section.settings.transparent_header_text_color | color_to_rgb | remove: 'rgb(' | remove: ')' }};
+  }
+
+  .header-wrapper:not(.scrolled) .header__heading-link,
+  .header-wrapper:not(.scrolled) .header__menu-item,
+  .header-wrapper:not(.scrolled) .header__icon,
+  .header-wrapper:not(.scrolled) .list-menu__item,
+  .header-wrapper:not(.scrolled) .header__search-input {
+    color: {{ section.settings.transparent_header_text_color }} !important;
+  }
+
+  .header-wrapper:not(.scrolled) .icon {
+    color: {{ section.settings.transparent_header_text_color }};
+  }
+
+  .header-wrapper:not(.scrolled) svg {
+    fill: {{ section.settings.transparent_header_text_color }};
+  }
+
+  /* Ensure first section has proper spacing */
+  .template-index .section-header + .shopify-section {
+    margin-top: 0;
+  }
+
+  .template-index .section-header + .shopify-section .banner,
+  .template-index .section-header + .shopify-section .slideshow {
+    padding-top: 0;
+  }
+  {% endif %}
 {%- endstyle -%}
 
 <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+
+{% if section.settings.transparent_header_homepage and template == 'index' %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const headerWrapper = document.querySelector('.header-wrapper');
+  const scrollTrigger = {{ section.settings.transparent_header_scroll_trigger }};
+  
+  if (!headerWrapper) return;
+  
+  function handleScroll() {
+    const scrollY = window.scrollY;
+    
+    if (scrollY > scrollTrigger) {
+      headerWrapper.classList.add('scrolled');
+    } else {
+      headerWrapper.classList.remove('scrolled');
+    }
+  }
+  
+  // Handle initial state
+  handleScroll();
+  
+  // Listen for scroll events with throttling
+  let ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        handleScroll();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+  
+  // Handle instant navigation reinitialization
+  document.addEventListener('page:loaded', function() {
+    setTimeout(handleScroll, 100);
+  });
+});
+</script>
+{% endif %}
 
 {%- liquid
   for block in section.blocks
@@ -799,6 +888,35 @@
       "id": "menu_color_scheme",
       "label": "t:sections.header.settings.menu_color_scheme.label",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Transparent Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_header_homepage",
+      "label": "Enable transparent header on homepage",
+      "info": "Makes header transparent on homepage for hero section overlay effect",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "transparent_header_text_color",
+      "label": "Transparent header text color",
+      "info": "Text color when header is transparent (usually white for dark hero images)",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "transparent_header_scroll_trigger",
+      "min": 50,
+      "max": 500,
+      "step": 50,
+      "unit": "px",
+      "label": "Scroll distance to show solid header",
+      "info": "Distance user scrolls before header becomes solid",
+      "default": 100
     },
     {
       "type": "header",
