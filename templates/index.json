@@ -14,6 +14,11 @@
       "name": "[XB]Hero Banner",
       "settings": {}
     },
+    "xb_1da259eb_N3NCMK": {
+      "type": "xb-1da259eb",
+      "name": "[XB]KPR-Video Section",
+      "settings": {}
+    },
     "featured_collection": {
       "type": "featured-collection",
       "settings": {
@@ -45,6 +50,7 @@
   },
   "order": [
     "xb_1da2512d_VJDzqQ",
+    "xb_1da259eb_N3NCMK",
     "featured_collection"
   ]
 }
