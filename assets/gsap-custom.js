@@ -1,350 +1,287 @@
 /**
- * Custom GSAP Animations for XO Builder Elements
- * This file is independent from XO Builder and won't be overridden
- * 
- * Naming Convention for XO Builder elements:
- * - Add custom classes like: gsap-fade-in, gsap-slide-up, etc.
- * - Use data attributes: data-gsap="animation-name"
- * - Target by XO classes: .xb-section, .xb-element, etc.
+ * KPR Video Scroll Animation System
+ * Converts React/GSAP logic to vanilla JavaScript for Shopify theme
+ * Compatible with XB Builder sections and theme architecture
  */
 
-// Wait for GSAP to load
-document.addEventListener('DOMContentLoaded', function() {
-  if (typeof gsap !== 'undefined') {
-    console.log('🎬 GSAP Custom Animations Loaded');
-    initGSAPAnimations();
-  } else {
-    console.warn('⚠️ GSAP not loaded - animations disabled');
-  }
-});
-
-// Reinitialize on instant navigation
-document.addEventListener('page:loaded', function() {
-  setTimeout(() => {
-    if (typeof gsap !== 'undefined') {
-      console.log('🔄 Reinitializing GSAP animations after navigation');
-      initGSAPAnimations();
-    }
-  }, 100);
-});
-
-/**
- * Main GSAP initialization function
- */
-function initGSAPAnimations() {
-  // Register ScrollTrigger if available
-  if (typeof ScrollTrigger !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-  }
-  
-  // Initialize all animation types
-  initFadeAnimations();
-  initSlideAnimations();
-  initScaleAnimations();
-  initRotateAnimations();
-  initStaggerAnimations();
-  initCustomAnimations();
-  
-  // Refresh ScrollTrigger after all animations
-  if (typeof ScrollTrigger !== 'undefined') {
-    ScrollTrigger.refresh();
-  }
-}
-
-/**
- * Fade Animations
- * Usage: Add class "gsap-fade-in" or data-gsap="fade-in"
- */
-function initFadeAnimations() {
-  // Fade In
-  gsap.set('.gsap-fade-in, [data-gsap="fade-in"]', { opacity: 0 });
-  gsap.to('.gsap-fade-in, [data-gsap="fade-in"]', {
-    opacity: 1,
-    duration: 1,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: '.gsap-fade-in, [data-gsap="fade-in"]',
-      start: 'top 85%',
-      toggleActions: 'play none none reverse'
-    }
-  });
-
-  // Fade In Up
-  gsap.set('.gsap-fade-up, [data-gsap="fade-up"]', { 
-    opacity: 0, 
-    y: 50 
-  });
-  gsap.to('.gsap-fade-up, [data-gsap="fade-up"]', {
-    opacity: 1,
-    y: 0,
-    duration: 1,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: '.gsap-fade-up, [data-gsap="fade-up"]',
-      start: 'top 85%',
-      toggleActions: 'play none none reverse'
-    }
-  });
-
-  // Fade In Down
-  gsap.set('.gsap-fade-down, [data-gsap="fade-down"]', { 
-    opacity: 0, 
-    y: -50 
-  });
-  gsap.to('.gsap-fade-down, [data-gsap="fade-down"]', {
-    opacity: 1,
-    y: 0,
-    duration: 1,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: '.gsap-fade-down, [data-gsap="fade-down"]',
-      start: 'top 85%',
-      toggleActions: 'play none none reverse'
-    }
-  });
-}
-
-/**
- * Slide Animations
- * Usage: Add class "gsap-slide-left" or data-gsap="slide-left"
- */
-function initSlideAnimations() {
-  // Slide from Left
-  gsap.set('.gsap-slide-left, [data-gsap="slide-left"]', { 
-    x: -100,
-    opacity: 0 
-  });
-  gsap.to('.gsap-slide-left, [data-gsap="slide-left"]', {
-    x: 0,
-    opacity: 1,
-    duration: 1,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: '.gsap-slide-left, [data-gsap="slide-left"]',
-      start: 'top 85%',
-      toggleActions: 'play none none reverse'
-    }
-  });
-
-  // Slide from Right
-  gsap.set('.gsap-slide-right, [data-gsap="slide-right"]', { 
-    x: 100,
-    opacity: 0 
-  });
-  gsap.to('.gsap-slide-right, [data-gsap="slide-right"]', {
-    x: 0,
-    opacity: 1,
-    duration: 1,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: '.gsap-slide-right, [data-gsap="slide-right"]',
-      start: 'top 85%',
-      toggleActions: 'play none none reverse'
-    }
-  });
-}
-
-/**
- * Scale Animations
- * Usage: Add class "gsap-scale-in" or data-gsap="scale-in"
- */
-function initScaleAnimations() {
-  // Scale In
-  gsap.set('.gsap-scale-in, [data-gsap="scale-in"]', { 
-    scale: 0.8,
-    opacity: 0 
-  });
-  gsap.to('.gsap-scale-in, [data-gsap="scale-in"]', {
-    scale: 1,
-    opacity: 1,
-    duration: 0.8,
-    ease: 'back.out(1.7)',
-    scrollTrigger: {
-      trigger: '.gsap-scale-in, [data-gsap="scale-in"]',
-      start: 'top 85%',
-      toggleActions: 'play none none reverse'
-    }
-  });
-
-  // Scale Up on Hover
-  const scaleHoverElements = document.querySelectorAll('.gsap-scale-hover, [data-gsap="scale-hover"]');
-  scaleHoverElements.forEach(element => {
-    element.addEventListener('mouseenter', () => {
-      gsap.to(element, { scale: 1.05, duration: 0.3, ease: 'power2.out' });
-    });
-    element.addEventListener('mouseleave', () => {
-      gsap.to(element, { scale: 1, duration: 0.3, ease: 'power2.out' });
-    });
-  });
-}
-
-/**
- * Rotate Animations
- * Usage: Add class "gsap-rotate-in" or data-gsap="rotate-in"
- */
-function initRotateAnimations() {
-  gsap.set('.gsap-rotate-in, [data-gsap="rotate-in"]', { 
-    rotation: -10,
-    opacity: 0 
-  });
-  gsap.to('.gsap-rotate-in, [data-gsap="rotate-in"]', {
-    rotation: 0,
-    opacity: 1,
-    duration: 1,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: '.gsap-rotate-in, [data-gsap="rotate-in"]',
-      start: 'top 85%',
-      toggleActions: 'play none none reverse'
-    }
-  });
-}
-
-/**
- * Stagger Animations
- * Usage: Add class "gsap-stagger" to parent, children will animate with delay
- */
-function initStaggerAnimations() {
-  const staggerContainers = document.querySelectorAll('.gsap-stagger, [data-gsap="stagger"]');
-  
-  staggerContainers.forEach(container => {
-    const children = container.children;
+class KPRVideoScroll {
+  constructor() {
+    this.videos = new Map();
+    this.timelines = new Map();
+    this.isInitialized = false;
     
-    gsap.set(children, { 
-      opacity: 0, 
-      y: 30 
+    // Configuration
+    this.config = {
+      selectors: {
+        wrapper: '.kpr-video-wrapper',
+        video: '.kpr-video-ani .xb-html-video__item',
+        heroSection: '.hero-section, .image-banner, .slideshow'
+      },
+      animation: {
+        initialOffset: '-50vh',
+        duration: 3,
+        ease: 'power1.inOut'
+      }
+    };
+    
+    this.init();
+  }
+
+  init() {
+    if (this.shouldEnable()) {
+      this.setupVideoScrollAnimations();
+      this.isInitialized = true;
+      console.log('🎬 KPR Video Scroll initialized');
+    }
+  }
+
+  shouldEnable() {
+    // Theme editor check
+    if (window.Shopify?.designMode) {
+      console.log('🎨 Theme Editor detected - Video scroll disabled');
+      return false;
+    }
+    
+    // GSAP availability check
+    if (typeof gsap === 'undefined') {
+      console.warn('⚠️ GSAP not loaded - Video scroll disabled');
+      return false;
+    }
+    
+    // ScrollTrigger availability check
+    if (typeof ScrollTrigger === 'undefined') {
+      console.warn('⚠️ ScrollTrigger not loaded - Video scroll disabled');
+      return false;
+    }
+    
+    return true;
+  }
+
+  setupVideoScrollAnimations() {
+    const videoWrappers = document.querySelectorAll(this.config.selectors.wrapper);
+    
+    if (videoWrappers.length === 0) {
+      console.log('📹 No video wrappers found with selector:', this.config.selectors.wrapper);
+      return;
+    }
+
+    videoWrappers.forEach((wrapper, index) => {
+      this.setupSingleVideoAnimation(wrapper, index);
+    });
+  }
+
+  setupSingleVideoAnimation(wrapper, index) {
+    const video = wrapper.querySelector(this.config.selectors.video);
+    
+    if (!video) {
+      console.warn('⚠️ Video element not found in wrapper:', wrapper);
+      return;
+    }
+
+    // Setup video properties
+    this.setupVideoProperties(video);
+    
+    // Create unique ID for this animation
+    const animationId = `kpr-video-${index}`;
+    this.videos.set(animationId, { wrapper, video });
+    
+    // Set initial state
+    gsap.set(wrapper, { 
+      marginTop: this.config.animation.initialOffset, 
+      opacity: 0 
     });
     
-    gsap.to(children, {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      ease: 'power2.out',
-      stagger: 0.1,
+    // Create timeline
+    const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: container,
-        start: 'top 85%',
-        toggleActions: 'play none none reverse'
-      }
-    });
-  });
-}
-
-/**
- * Custom Animations
- * Add your specific XO Builder animations here
- */
-function initCustomAnimations() {
-  // Example: Hero Section Animation
-  const heroSection = document.querySelector('.xb-hero, [data-gsap="hero"]');
-  if (heroSection) {
-    const heroTitle = heroSection.querySelector('h1, .hero-title');
-    const heroSubtitle = heroSection.querySelector('.hero-subtitle, .subtitle');
-    const heroButton = heroSection.querySelector('.btn, .button');
-    
-    if (heroTitle || heroSubtitle || heroButton) {
-      const tl = gsap.timeline();
-      
-      if (heroTitle) {
-        gsap.set(heroTitle, { opacity: 0, y: 50 });
-        tl.to(heroTitle, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' });
-      }
-      
-      if (heroSubtitle) {
-        gsap.set(heroSubtitle, { opacity: 0, y: 30 });
-        tl.to(heroSubtitle, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.5');
-      }
-      
-      if (heroButton) {
-        gsap.set(heroButton, { opacity: 0, scale: 0.8 });
-        tl.to(heroButton, { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.7)' }, '-=0.3');
-      }
-    }
-  }
-
-  // Example: Product Cards Animation
-  const productCards = document.querySelectorAll('.product-card, .xb-product, [data-gsap="product"]');
-  if (productCards.length > 0) {
-    gsap.set(productCards, { 
-      opacity: 0, 
-      y: 50,
-      scale: 0.95
-    });
-    
-    gsap.to(productCards, {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      duration: 0.8,
-      ease: 'power2.out',
-      stagger: 0.1,
-      scrollTrigger: {
-        trigger: productCards[0],
-        start: 'top 85%',
-        toggleActions: 'play none none reverse'
-      }
-    });
-  }
-
-  // ADD YOUR CUSTOM ANIMATIONS HERE
-  // Example structure:
-  /*
-  const customElement = document.querySelector('.your-xo-class');
-  if (customElement) {
-    gsap.fromTo(customElement, 
-      { opacity: 0, x: -50 },
-      { 
-        opacity: 1, 
-        x: 0, 
-        duration: 1,
-        scrollTrigger: {
-          trigger: customElement,
-          start: 'top 85%'
+        trigger: wrapper,
+        start: 'top top',
+        end: '+=200% top',
+        scrub: true,
+        pin: true,
+        onUpdate: (self) => {
+          this.handleScrollUpdate(self, video);
         }
       }
-    );
+    });
+
+    // Animation sequence
+    this.buildTimeline(tl, wrapper, video);
+    
+    // Store timeline reference
+    this.timelines.set(animationId, tl);
+    
+    console.log(`🎬 Video animation setup complete for: ${animationId}`);
   }
-  */
+
+  setupVideoProperties(video) {
+    // Ensure video is properly configured
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.loop = false;
+    video.autoplay = false;
+    
+    // Prevent video from auto-playing
+    video.pause();
+    
+    // Handle video loading
+    const handleCanPlay = () => {
+      video.currentTime = 0;
+      console.log('📹 Video ready for scrubbing');
+    };
+
+    const handleLoadedMetadata = () => {
+      // Video metadata is loaded, ready for currentTime manipulation
+      console.log('📊 Video metadata loaded, duration:', video.duration);
+    };
+
+    if (video.readyState >= 1) {
+      handleLoadedMetadata();
+    } else {
+      video.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true });
+    }
+
+    if (video.readyState >= 3) {
+      handleCanPlay();
+    } else {
+      video.addEventListener('canplay', handleCanPlay, { once: true });
+    }
+  }
+
+  buildTimeline(tl, wrapper, video) {
+    // Find hero section to fade out
+    const heroSection = document.querySelector(this.config.selectors.heroSection);
+    
+    if (heroSection) {
+      tl.to(heroSection, { 
+        delay: 0.5, 
+        opacity: 0, 
+        ease: this.config.animation.ease 
+      });
+    }
+    
+    // Fade in video wrapper
+    tl.to(wrapper, { 
+      opacity: 1, 
+      duration: 2, 
+      ease: this.config.animation.ease 
+    });
+    
+    // Add video scrubbing when metadata is loaded
+    this.addVideoScrubbing(tl, video);
+  }
+
+  addVideoScrubbing(tl, video) {
+    const addScrubbing = () => {
+      if (video.duration && video.duration > 0) {
+        tl.to(video, { 
+          currentTime: video.duration, 
+          duration: this.config.animation.duration, 
+          ease: 'none' // Smooth scrubbing
+        }, '<');
+        
+        console.log('🎬 Video scrubbing added to timeline');
+      }
+    };
+
+    if (video.readyState >= 1 && video.duration) {
+      addScrubbing();
+    } else {
+      video.addEventListener('loadedmetadata', addScrubbing, { once: true });
+    }
+  }
+
+  handleScrollUpdate(self, video) {
+    // Additional scroll handling if needed
+    // This is called during scroll updates
+    if (video.readyState >= 1) {
+      // Ensure video stays paused during scrubbing
+      if (!video.paused) {
+        video.pause();
+      }
+    }
+  }
+
+  // Debug and control methods
+  getDebugInfo() {
+    return {
+      isInitialized: this.isInitialized,
+      videosCount: this.videos.size,
+      timelinesCount: this.timelines.size,
+      config: this.config
+    };
+  }
+
+  destroy() {
+    // Clean up timelines
+    this.timelines.forEach((tl) => {
+      if (tl.scrollTrigger) {
+        tl.scrollTrigger.kill();
+      }
+      tl.kill();
+    });
+    
+    // Clean up maps
+    this.videos.clear();
+    this.timelines.clear();
+    
+    console.log('🧹 KPR Video Scroll destroyed');
+  }
+
+  refresh() {
+    // Refresh ScrollTrigger instances
+    if (typeof ScrollTrigger !== 'undefined') {
+      ScrollTrigger.refresh();
+      console.log('🔄 ScrollTrigger refreshed');
+    }
+  }
 }
 
-
-/**
- * Utility Functions
- */
-
-// Function to add animation to specific XO elements
-window.addGSAPAnimation = function(selector, animation) {
-  const elements = document.querySelectorAll(selector);
-  if (elements.length > 0 && typeof gsap !== 'undefined') {
-    gsap.fromTo(elements, animation.from, animation.to);
-  }
-};
-
-// Function to create timeline for complex animations
-window.createGSAPTimeline = function(animations) {
-  if (typeof gsap !== 'undefined') {
-    const tl = gsap.timeline();
-    animations.forEach(anim => {
-      const elements = document.querySelectorAll(anim.selector);
-      if (elements.length > 0) {
-        tl.fromTo(elements, anim.from, anim.to, anim.position || '');
-      }
+// Initialize when DOM is ready and GSAP is loaded
+function initKPRVideoScroll() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      window.kprVideoScroll = new KPRVideoScroll();
     });
-    return tl;
+  } else {
+    window.kprVideoScroll = new KPRVideoScroll();
+  }
+}
+
+// Check if GSAP is already loaded
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+  initKPRVideoScroll();
+} else {
+  // Wait for GSAP to load
+  const checkGSAP = setInterval(() => {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      clearInterval(checkGSAP);
+      initKPRVideoScroll();
+    }
+  }, 100);
+  
+  // Timeout after 10 seconds
+  setTimeout(() => {
+    clearInterval(checkGSAP);
+    console.warn('⚠️ GSAP/ScrollTrigger not loaded within 10 seconds');
+  }, 10000);
+}
+
+// Global debug functions
+window.getVideoScrollDebug = () => {
+  return window.kprVideoScroll ? window.kprVideoScroll.getDebugInfo() : null;
+};
+
+window.refreshVideoScroll = () => {
+  if (window.kprVideoScroll) {
+    window.kprVideoScroll.refresh();
   }
 };
 
-// Debug function
-window.debugGSAP = function() {
-  console.log('🎬 GSAP Debug Info:');
-  console.log('GSAP loaded:', typeof gsap !== 'undefined');
-  console.log('ScrollTrigger loaded:', typeof ScrollTrigger !== 'undefined');
-  console.log('Elements with GSAP classes:', document.querySelectorAll('[class*="gsap-"], [data-gsap]').length);
-  
-  // List all elements with GSAP classes
-  const gsapElements = document.querySelectorAll('[class*="gsap-"], [data-gsap]');
-  gsapElements.forEach((el, index) => {
-    console.log(`Element ${index + 1}:`, el.className, el.dataset.gsap || '');
-  });
+window.destroyVideoScroll = () => {
+  if (window.kprVideoScroll) {
+    window.kprVideoScroll.destroy();
+    window.kprVideoScroll = null;
+  }
 };
-
