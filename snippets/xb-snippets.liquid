@@ -1,0 +1,816 @@
+{% comment %} Version: 1.0.1 {% endcomment %}
+{% case xb_type %}
+  {% when 'image' %}
+    {% comment %}
+      Image
+    
+      Accepts:
+      - image: {Image} Image source (required)
+      - lazyload: {Boolean} Lazyload image. Default: true (optional)
+      - loading_type: {String} 'loader-1' | 'loader-2' | 'loader-3' (optional)
+      - container_class: {String} Class of the image (required)
+      - class: {String} Class of the image (required)
+      - placeholder: {String} Placeholder SVG. Default: "detailed-apparel-1" (optional)
+      - attrs: {String} Additional attributes of the image. Default: "" (optional)
+      - aspect_ratio: {Number} Aspect ratio of the image (optional)
+      - fallback_width: {Number} Fallback width of the image (optional)
+    
+      Usage:
+      {% render 'xb-snippets',
+        xb_type: 'image',
+        image: settings.image,
+      %}
+    {% endcomment %}
+  
+    {% liquid
+      if lazyload == null
+        assign lazyload = false
+      endif
+      if aspect_ratio == blank
+        assign aspect_ratio = image.aspect_ratio
+      endif
+      if loading_type == blank
+        assign loading_type = 'loader-1'
+      endif
+    %}
+    
+    <div class='{{ default_class }}{%- if container_class %} {{ container_class }}{% endif -%}' style='--xo-ratio-percent: {{ aspect_ratio }}'>
+      {%- if image != blank -%}
+        <img
+          {%- if lazyload %}
+            is='xo-lazyload'
+            xo-src='{{ image.src | image_url: width: 100 }}'
+            loading='lazy'
+          {% else %}
+            is='xo-lazyload'
+            xo-src='{{ image.src | image_url: width: 100 }}'
+          {% endif -%}
+          alt='{{ image.alt | default: '' | escape }}'
+          width='{{ image.width | default: '' }}'
+          height='{{ image.height | default: '200' }}'
+          xo-intrinsic-width='{{ image.width | default: '' }}'
+          xo-intrinsic-height='{{ image.height | default: '200' }}'
+          xo-fallback-width='{{ fallback_width | default: '400' }}'
+          {%- if attrs -%}
+            {{ attrs -}}
+          {% endif -%}
+        >
+        {%- if lazyload -%}
+          <div class='xb-image__overlay xo-lazyload-overlay'>
+            <div class='xb-image__loading'>
+              {% case lazyload_type %}
+                {% when 'loader-1' %}
+                   <div class='xo-loader-1' style='--size: 20; --color: {{ color | default: currentColor }}; --duration: 1600;'><span></span></div>
+                {% when 'loader-2' %}
+                   <div class='xo-loader-2' style='--size: 16; --color: {{ color | default: currentColor }}; --duration: 1000;--stroke-width: 2;'><div><span></span></div></div>
+                {% when 'loader-3' %}
+                   <div class='xo-loader-3' style='--size: 8; --color: {{ color | default: currentColor }}; --duration: 1000;'><span></span></div>
+              {% endcase %}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- else -%}
+        {{ placeholder | default: 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+  {% when 'media' %}
+    {% comment %}
+      Renders a media
+    
+      Accepts:
+      - media: {Object or String} Media object or video url
+      - type: {String} Type of media. Example: 'model', 'external_video', 'image' (optional)
+      - class: {String} Adds a media class to the media element (optional)
+      - click_type: {String} Click type: none, link, gallery
+      - loop: {Boolean} Set looping for video. Default: false (optional)
+      - controls: {Boolean} Set controls for video. Default: false (optional)
+      - muted: {Boolean} Set muted for video. Default: false (optional)
+      - autoplay: {Boolean} Set autoplay for video. Default: false (optional)
+    
+      Usage:
+    
+       {% render 'xb-snippets', 
+         xb_type: 'media',
+         type: 'video', 
+         click_type: click_type, 
+         media: media  
+        %}
+    {% endcomment %}
+    
+    {% liquid
+      assign loop = loop | default: false
+      assign controls = controls | default: false
+      assign muted = muted | default: false
+      assign autoplay = autoplay | default: false
+    %}
+    
+    {% case type %}
+      {% when 'video' %}
+        {% case click_type %}
+          {% when 'link' %}
+            <a href="{{ product_item.url }}">
+          {% else %}
+            <div>
+        {% endcase %}
+          <div class='xb-embed-responsive'>
+            {{ media | video_tag: image_size: '1100x', loop: loop, controls: controls, muted: muted, autoplay: autoplay }}
+          </div>
+        {% case click_type %}
+          {% when 'link' %}
+            </a>
+          {% else %}
+            </div>
+        {% endcase %}
+      {% when 'image' %}
+        {% case click_type %}
+          {% when 'link' %}
+            <a href="{{ product_item.url }}">
+              {% render 'xb-snippets', xb_type: 'image', image: media %}
+            </a>
+          {% when 'gallery' %}
+            <xo-gallery-item 
+              xo-thumb-src="{{ media.src | image_url: width: media.height }}"
+              xo-src="{{ media.src | image_url: width: media.height }}"
+            ></xo-gallery-item>
+          {% else %}
+            <div>{% render 'xb-snippets', xb_type: 'image', image: media %}</div>
+        {% endcase %}
+      {% when 'model' %}
+        {% case click_type %}
+          {% when 'link' %}
+            <a href="{{ product_item.url }}">
+          {% else %}
+            <div>
+        {% endcase %}
+          <xo-product-model
+            style="padding-top: min(calc(100vh - 12rem), 100%)"
+          >
+            <button class="xb-product-model__poster" type="button">
+              <span class="xb-product-model__poster-button">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                  class="icon icon-3d-model"
+                  fill="none"
+                  viewBox="0 0 18 21"
+                >
+                  <path d="M7.67998 20.629L1.28002 16.723C0.886205 16.4784 0.561675 16.1368 0.337572 15.731C0.113468 15.3251 -0.00274623 14.8686 -1.39464e-05 14.405V6.59497C-0.00238367 6.13167 0.113819 5.6755 0.33751 5.26978C0.561202 4.86405 0.884959 4.52227 1.278 4.27698L7.67796 0.377014C8.07524 0.131403 8.53292 0.000877102 8.99999 9.73346e-08C9.46678 -0.000129605 9.92446 0.129369 10.322 0.374024V0.374024L16.722 4.27399C17.1163 4.51985 17.4409 4.86287 17.6647 5.27014C17.8885 5.67742 18.0039 6.13529 18 6.59998V14.409C18.0026 14.8725 17.8864 15.3289 17.6625 15.7347C17.4386 16.1405 17.1145 16.4821 16.721 16.727L10.321 20.633C9.92264 20.8742 9.46565 21.0012 8.99999 21C8.53428 20.9998 8.07761 20.8714 7.67998 20.629V20.629ZM8.72398 2.078L2.32396 5.97803C2.22303 6.04453 2.14066 6.13551 2.08452 6.24255C2.02838 6.34959 2.00031 6.46919 2.00298 6.59003V14.4C2.00026 14.5205 2.02818 14.6396 2.08415 14.7463C2.14013 14.853 2.22233 14.9438 2.32298 15.01L7.99999 18.48V10.919C8.00113 10.5997 8.08851 10.2867 8.25292 10.0129C8.41732 9.73922 8.65267 9.51501 8.93401 9.36401L15.446 5.841L9.28001 2.08002C9.19614 2.02738 9.09901 1.99962 8.99999 2C8.90251 1.99972 8.8069 2.02674 8.72398 2.078V2.078Z" fill="currentColor"/>
+                </svg>
+              </span>
+              <div class="xb-product-model__poster-image">
+                <img 
+                  is="xo-lazyload" 
+                  xo-intrinsic-width="810" 
+                  xo-intrinsic-height="590" 
+                  width="810" 
+                  height="590" 
+                  src="{{ media | image_url: width: 550, height: 550 }}" 
+                  alt="{{ media.preview_image.alt | escape }}"
+                >
+                <div class="xo-lazyload-overlay"></div>
+              </div>
+            </button>
+            <div class="model-viewer-wrapper" style="display: none;">
+              {{ media | media_tag: image_size: '2048x', toggleable: true }}
+            </div>
+          </xo-product-model>
+          <button
+            class="button product__xr-button"
+            type="button"
+            aria-label="{{ 'xb.products.xr_button_label' | t }}"
+            data-shopify-xr
+            data-shopify-model3d-id="{{ media.id }}"
+            data-shopify-title="title"
+            data-shopify-xr-hidden
+          >
+            {{ 'xb.products.xr_button' | t }}
+          </button>
+        {% case click_type %}
+          {% when 'link' %}
+            </a>
+          {% else %}
+            </div>
+        {% endcase %}
+    
+      {% when 'external_video' %}
+        {% case click_type %}
+          {% when 'link' %}
+            <a href="{{ product_item.url }}">
+          {% else %}
+            <div>
+        {% endcase %}
+          <div class='xb-embed-responsive'>
+            {%- if media.host == 'youtube' -%}
+              {{ media | external_video_url: autoplay: autoplay, loop: loop, playlist: media.external_id | external_video_tag }}
+            {%- else -%}
+              {{ media | external_video_url: autoplay: autoplay, loop: loop | external_video_tag }}
+            {%- endif -%}
+          </div>
+        {% case click_type %}
+          {% when 'link' %}
+            </a>
+          {% else %}
+            </div>
+        {% endcase %}
+    {% endcase %}
+  {% when 'product_card_placeholder' %}
+    {% for product in (1..limit) %}
+      {% liquid 
+        assign placeholder_image_index = forloop.index0 | modulo: 4 | plus: 1
+        assign placeholder_image = 'product-apparel-' | append: placeholder_image_index
+      %}
+      {% if layout == 'grid' %}
+        <div>
+      {% else %}
+        <xo-carousel-slide>
+      {% endif %}
+        <div class='xo-product-card__image-placeholder'>
+          {{ placeholder_image | placeholder_svg_tag: 'xb-product-list__placeholder' }}
+        </div>
+
+        <div class='xo-product-card__information'>
+          <div class='xo-product-card__vendor' style='display: none;'>
+            {{ 'xb.products.vendor' | t }}
+          </div>
+
+          <a role='link' aria-disabled='true' class='xo-product-card__title'>
+            {{ 'xb.onboarding.product_title' | t }}
+          </a>
+
+          <div class='xo-product-card__price'>
+            {{ 99 | money }}
+          </div>
+        </div>
+      {% if layout == 'grid' %}
+        </div>
+      {% else %}
+        </xo-carousel-slide>
+      {% endif %}
+    {% endfor %}
+  {% when 'article_placeholder' %}
+    {% for item in (1..limit) %}
+      {% assign placeholder_image_index = forloop.index0 | modulo: 3 | plus: 1 %}
+      {% assign placeholder_image = 'blog-apparel-' | append: placeholder_image_index %}
+      {% if layout == 'grid' %}
+        <div>
+      {% else %}
+        <xo-carousel-slide>
+      {% endif %}
+        <div class="xb-article-list__item">
+          <div class='xb-image xb-article-image-placeholder' style="--xb-image-object-fit: cover; --xb-image-aspect-ratio-desktop: 100/65">
+            {{ placeholder_image | placeholder_svg_tag }}
+          </div>
+          <div class="xb-article-title-placeholder">
+            {{ 'xb.onboarding.article_title' | t }}
+          </div>
+        </div> 
+      {% if layout == 'grid' %}
+        </div>
+      {% else %}
+        </xo-carousel-slide>
+      {% endif %}
+    {% endfor %}
+  {% when 'collection_placeholder' %}
+    {% for item in (1..limit) %}
+      {% assign placeholder_image_index = forloop.index0 | modulo: 3 | plus: 1 %}
+      {% assign placeholder_image = 'collection-apparel-' | append: placeholder_image_index %}
+      {% if layout == 'grid' %}
+        <div>
+      {% else %}
+        <xo-carousel-slide>
+      {% endif %}
+        <div class="xb-collection-list__item">
+          <div class='xb-image xb-collection-image-placeholder' style="--xb-image-object-fit: cover; --xb-image-aspect-ratio-desktop: 1">
+            {{ placeholder_image | placeholder_svg_tag }}
+          </div>
+          <div class="xb-collection-title-placeholder">
+            {{ 'xb.onboarding.collection_title' | t }}
+          </div>
+        </div> 
+      {% if layout == 'grid' %}
+        </div>
+      {% else %}
+        </xo-carousel-slide>
+      {% endif %}
+    {% endfor %}
+  {% when 'xb-image-lazyload' %}
+      {%- if lazyload -%}
+        <div class='xb-image__overlay xo-lazyload-overlay'>
+          <div class='xb-image__loading'>
+            {% case lazyload_type %}
+              {% when 'loader-1' %}
+                <div
+                  class='xo-loader-1'
+                  style='--size: {{ size | default: 20 }}; --color: {{ color | default: 'currentColor' }}; --duration: 1600;'
+                ><span></span></div>
+              {% when 'loader-2' %}
+                <div
+                  class='xo-loader-2'
+                  style='--size: {{ size | default: 16 }}; --color: {{ color | default: 'currentColor' }}; --duration: 1000;--stroke-width: 2;'
+                ><div><span></span></div></div>
+              {% when 'loader-3' %}
+                <div
+                  class='xo-loader-3'
+                  style='--size: {{ size | default: 8 }}; --color: {{ color | default: 'currentColor' }}; --duration: 1000;'
+                ><span></span></div>
+            {% endcase %}
+          </div>
+        </div>
+      {%- endif -%}
+   {% when 'price' %}
+      <div class='xb-visually-hidden xb-visually-hidden--inline'>
+        {% if compare_at_price > price %}
+          {{ 'xb.products.price.sale_price' | t }}
+        {% else %}
+          {{ 'xb.products.price.regular_price' | t }}
+        {% endif %}
+      </div>
+      <span class='xb-product-price__item'>
+        {{ money_price }}
+      </span>
+  {% when 'compare_at_price' %}
+    {% if compare_at_price > price %}
+      {%- unless product_item.price_varies == false and product_item.compare_at_price_varies %}
+        <div class='xb-visually-hidden xb-visually-hidden--inline'>{{ 'xb.products.price.regular_price' | t }}</div>
+        <span class='xb-product-price__item xb-product-price__item--del'>
+          {% if settings.currency_code_enabled %}
+            {{ compare_at_price | money_with_currency }}
+          {% else %}
+            {{ compare_at_price | money }}
+          {% endif %}
+        </span>
+      {%- endunless -%}
+    {% endif %}
+  {% when 'price_unit' %}
+    <small class='xb-unit-price{% if product_item.selected_or_first_available_variant.unit_price_measurement == nil %} xb-unit-price--hidden{% endif %}'>
+      <span class='xb-visually-hidden'>{{ 'xb.products.price.unit_price' | t }}</span>
+      <span>
+        <span>{{- product_item.selected_or_first_available_variant.unit_price | money -}}</span>
+        <span aria-hidden='true'>/</span>
+        <div class='xb-visually-hidden xb-visually-hidden--inline'>{{ 'xb.products.price.unit_price_separator' | t }}</div>
+        <span>
+          {%- if product_item.selected_or_first_available_variant.unit_price_measurement.reference_value != 1 -%}
+            {{- product_item.selected_or_first_available_variant.unit_price_measurement.reference_value -}}
+          {%- endif -%}
+          {{ product_item.selected_or_first_available_variant.unit_price_measurement.reference_unit }}
+        </span>
+      </span>
+    </small>
+  {% when 'sale' %}
+    {% assign price_sale = price | minus: compare_at_price %}
+    {% if sale_style == 'text' %}
+      {{ 'xb.products.on_sale' | t }}
+    {% elsif sale_style == 'percent' %}
+      {% assign ratio = product.price | times: 100.0 | divided_by: product.compare_at_price %}
+      -{{ 100 | minus: ratio | ceil }}%
+    {% else %}
+      {{ price_sale | money }}
+    {% endif %}
+  {% when 'star_rating' %}
+    {% for index in (0..4) %}
+      {% assign current_index = index | plus: 1 %}
+      {% if score >= current_index %}
+        <span class="xb-star-rating__item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
+        </span>
+      {% else %}
+        {% assign current = score | modulo: index %}
+        <span class="xb-star-rating__item">
+          {% if score > index and current > 0 %}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M288 376.4l.1-.1 26.4 14.1 85.2 45.5-16.5-97.6-4.8-28.7 20.7-20.5 70.1-69.3-96.1-14.2-29.3-4.3-12.9-26.6L288.1 86.9l-.1 .3V376.4zm175.1 98.3c2 12-3 24.2-12.9 31.3s-23 8-33.8 2.3L288.1 439.8 159.8 508.3C149 514 135.9 513.1 126 506s-14.9-19.3-12.9-31.3L137.8 329 33.6 225.9c-8.6-8.5-11.7-21.2-7.9-32.7s13.7-19.9 25.7-21.7L195 150.3 259.4 18c5.4-11 16.5-18 28.8-18s23.4 7 28.8 18l64.3 132.3 143.6 21.2c12 1.8 22 10.2 25.7 21.7s.7 24.2-7.9 32.7L438.5 329l24.6 145.7z"/></svg>
+          {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z"/></svg>
+          {% endif %}
+        </span>
+      {% endif %}
+    {% endfor %}
+  {% when 'field-sort-by' %}
+    {% liquid
+      assign type = type | default: "select"
+      assign sort_by = collection.sort_by | default: collection.default_sort_by | default: "manual"
+    %}
+
+    {% if type == 'select' %}
+      {% liquid
+        capture options
+          for option in results.sort_options
+            assign checked = false
+            if option.value == sort_by
+              assign checked = true
+            endif
+            render 'xb-snippets', xb_type: 'field-select-custom-option', label: option.name, name: 'sort_by', value: option.value, checked: checked
+          endfor
+        endcapture
+        render 'xb-snippets', xb_type: 'field-select-custom', use_with: 'filters', name: name, value: results.sort_options[0].name, options: options
+      %}
+    {% elsif type == 'collapse' %}
+      {% capture content %}
+        {%- for option in results.sort_options -%}
+          {% assign checked = false %}
+          {% if option.value == sort_by %}
+            {% assign checked = true %}
+          {% endif %}
+          <xo-filters-field>
+            {% render 'xb-snippets', xb_type: 'field-radio-2', name: 'sort_by', value: option.value, label: option.name, checked: checked, enable_filter_count: enable_filter_count, enable_filter_collapse: enable_filter_collapse %}
+          </xo-filters-field>
+        {%- endfor -%}
+      {% endcapture %}
+
+      {% render 'xb-snippets', xb_type: 'collapse', name: name, title: 'Sort by', content: content, size: '20px', facets_drawer: facets_drawer %}
+    {% endif %}
+  {% when 'filters-refine' %}
+    <xo-filters-refine class='xb-filters-refine'>
+      <xo-filters-clear xo-clear-all>{{ 'xb.products.facets.clear_all' | t }}</xo-filters-clear>
+      <xo-filters-refine-clear-icon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" fill="none">
+          <path d="M6.34397 17.6597C6.19745 17.5132 6.11514 17.3145 6.11514 17.1073C6.11514 16.9001 6.19745 16.7014 6.34397 16.5549L10.8955 12.0033L6.34308 7.45089C6.19657 7.30437 6.11426 7.10566 6.11426 6.89846C6.11426 6.69126 6.19657 6.49254 6.34308 6.34603C6.48959 6.19952 6.68831 6.11721 6.89551 6.11721C7.10271 6.11721 7.30142 6.19952 7.44794 6.34603L12.0004 10.8985L16.5528 6.34601C16.6993 6.1995 16.898 6.11719 17.1052 6.11719C17.3124 6.11719 17.5112 6.1995 17.6577 6.34601C17.8042 6.49252 17.8865 6.69124 17.8865 6.89844C17.8865 7.10564 17.8042 7.30435 17.6577 7.45086L13.1052 12.0033L17.6568 16.5549C17.8033 16.7014 17.8856 16.9001 17.8856 17.1073C17.8856 17.3145 17.8033 17.5132 17.6568 17.6597C17.5103 17.8063 17.3116 17.8886 17.1044 17.8886C16.8972 17.8886 16.6984 17.8063 16.5519 17.6597L12.0004 13.1082L7.44882 17.6597C7.30231 17.8062 7.10359 17.8885 6.89639 17.8885C6.68919 17.8885 6.49048 17.8062 6.34397 17.6597Z" fill="currentColor"/>
+        </svg>
+      </xo-filters-refine-clear-icon>
+    </xo-filters-refine>
+  {% when 'field-select-custom-option' %}
+    <label class='xb-field-select-custom__check'>
+      <input
+        type='radio'
+        class='xb-field-select-custom__input'
+        name='{{ name }}'
+        xo-label='{{ label | escape }}'
+        value='{{ value | escape }}'
+        {% if checked %}
+          checked
+        {% endif %}
+      >
+      <span class='xb-field-select-custom__icon'>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='20'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          stroke-width='2'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        >
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </span>
+      <span class='xb-field-select-custom__label'>{{ label | escape }}</span>
+    </label>
+  {% when 'field-select-custom' %}
+    <xo-builder-popover
+      xo-type="click"
+      xo-placement='{{ placement | default: 'bottom-right' }}'
+      class='xb-field-select-custom'
+    >
+      <div
+        class='xb-field-select-custom__trigger'
+      >
+        {% if use_with == 'filters' %}
+          <xo-filters-sort-by-selected class='xb-field-select-custom__name'>
+            {{ value | escape }}
+          </xo-filters-sort-by-selected>
+        {% elsif use_with == 'product-variant' %}
+          <xo-product-variant-selected xo-name='{{ name | escape }}' class='xb-field-select-custom__name'>
+            {{ value | escape }}
+          </xo-product-variant-selected>
+        {% endif %}
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='15'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          stroke-width='2'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+      <xo-builder-popover-content
+        xo-placement='{{ placement | default: 'bottom-right' }}'
+        xo-portal
+        style="padding-top: 10px;"
+      >
+        <div class='xb-field-select-custom__popover xb-scrollbar'>
+          {% if use_with == 'filters' %}
+            {{ options | replace: '<label', '<xo-filters-field><label' | replace: '</label>', '</label></xo-filters-field>' }}
+          {% elsif use_with == 'product-variant' %}
+            {{ options }}
+          {% endif %}
+        </div>
+      </xo-builder-popover-content>
+    </xo-builder-popover>
+  {% when 'field-radio-2' %}
+    <label class='xb-field-radio-2{% if style %} xb-field-radio-2--{{ style }}{% endif %}' style='--icon-size: {{ icon_size | default: '16px' }}'>
+      <input
+        class='xb-field-radio-2__input'
+        type='radio'
+        name='{{ name }}'
+        value='{{ value | escape }}'
+        xo-label='{{ label | escape }}'
+        {% if checked %}
+          checked
+        {% endif %}
+      >
+      {% if style != 'boxed' %}
+        <span class='xb-field-radio-2__item'>
+          <span class='xb-field-radio-2__icon'></span>
+        </span>
+      {% endif %}
+      {% if label != null %}
+        <span class='xb-field-radio-2__label'>
+          <span>{{ label | escape }}</span>
+          {% if enable_filter_count and count_value %}
+            <xo-filters-count xo-unique-id='{{ count_id }}'>({{ count_value | default: 0 }})</xo-filters-count>
+          {% endif %}
+        </span>
+      {% endif %}
+    </label>
+  {% when 'collapse' %}
+    {% if enable_filter_collapse %}
+      <div class='xb-collapse'>
+        <xo-collapse-trigger
+          class='xb-collapse__trigger'
+          {% if name %}
+            xo-name='{{ name }}'
+          {% endif %}
+          {% if facets_vertical %}
+            xo-active
+          {% endif %}
+        >
+          <div class='xb-collapse__trigger-option'>
+            {{ title }}
+          </div>
+          <div class='xb-collapse__trigger-icon'>
+            {% if facets_vertical or facets_drawer %}
+              <div class='xb-collapse__trigger-icon-icon'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='15'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  stroke-width='2'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            {% else %}
+              <div class='xb-collapse__trigger-icon-default'>
+                <svg xmlns='http://www.w3.org/2000/svg' width='15' viewBox='0 0 24 24' fill='none'>
+                  <path d="M11.4482 19.7712C11.5947 19.9177 11.7934 20 12.0006 20C12.2078 20 12.4065 19.9177 12.553 19.7712C12.6996 19.6247 12.7819 19.426 12.7819 19.2188V12.7819H19.2188C19.426 12.7819 19.6247 12.6996 19.7712 12.5531C19.9177 12.4066 20 12.2078 20 12.0006C20 11.7934 19.9177 11.5947 19.7712 11.4482C19.6247 11.3017 19.426 11.2194 19.2188 11.2194H12.7819V4.78125C12.7819 4.57405 12.6996 4.37534 12.553 4.22882C12.4065 4.08231 12.2078 4 12.0006 4C11.7934 4 11.5947 4.08231 11.4482 4.22882C11.3017 4.37534 11.2194 4.57405 11.2194 4.78125V11.2194H4.78125C4.57405 11.2194 4.37534 11.3017 4.22882 11.4482C4.08231 11.5947 4 11.7934 4 12.0006C4 12.2078 4.08231 12.4066 4.22882 12.5531C4.37534 12.6996 4.57405 12.7819 4.78125 12.7819H11.2194V19.2188C11.2194 19.426 11.3017 19.6247 11.4482 19.7712Z" fill="currentColor"/>
+                </svg>
+
+              </div>
+              <div class='xb-collapse__trigger-icon-active'>
+                <svg xmlns='http://www.w3.org/2000/svg' width='20' viewBox='0 0 24 24' fill='none'>
+                  <path d="M4.78125 12.7812H19.2188C19.426 12.7812 19.6247 12.6989 19.7712 12.5524C19.9177 12.4059 20 12.2072 20 12C20 11.7928 19.9177 11.5941 19.7712 11.4476C19.6247 11.3011 19.426 11.2188 19.2188 11.2188H4.78125C4.57405 11.2188 4.37534 11.3011 4.22882 11.4476C4.08231 11.5941 4 11.7928 4 12C4 12.2072 4.08231 12.4059 4.22882 12.5524C4.37534 12.6989 4.57405 12.7812 4.78125 12.7812Z" fill="currentColor"/>
+                </svg>
+              </div>
+            {% endif %}
+          </div>
+        </xo-collapse-trigger>
+        <xo-collapse
+          class='xb-collapse__body xb-scrollbar'
+          {% if name %}
+            xo-name='{{ name }}'
+          {% endif %}
+          {% if facets_vertical %}
+            xo-active
+          {% endif %}
+        >
+          <div class='xb-collapse__content'>
+            {{ content }}
+          </div>
+        </xo-collapse>
+      </div>
+    {% else %}   
+      <div class='xb-collapse'>
+        <div
+          class='xb-collapse__trigger'
+          {% if name %}
+            xo-name='{{ name }}'
+          {% endif %}
+          {% if facets_vertical %}
+            xo-active
+          {% endif %}
+        >
+          <div class='xb-collapse__trigger-option'>
+            {{ title }}
+          </div>
+        </div>
+        <div
+          class='xb-collapse__body xb-scrollbar'
+          {% if name %}
+            xo-name='{{ name }}'
+          {% endif %}
+          {% if facets_vertical %}
+            xo-active
+          {% endif %}
+        >
+          <div class='xb-collapse__content'>
+            {{ content }}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% when 'filters-fieldset' %}
+    {% case type %}
+      {% when 'popover' %}
+        {% render 'xb-snippets', xb_type: 'fieldset-popover', filter: filter, facets_horizontal: facets_horizontal, enable_filter_count: enable_filter_count %}
+      {% else %}
+        {% render 'xb-snippets', xb_type: 'fieldset-collapse', filter: filter, facets_vertical: facets_vertical, facets_drawer: facets_drawer, enable_filter_count: enable_filter_count, enable_filter_collapse: enable_filter_collapse %}
+    {% endcase %}
+  {% when 'fieldset-popover' %}
+    {%- assign max_price_amount = filter.range_max | money | strip_html | escape -%}
+    {% assign reset_label = 'xb.products.facets.reset' | t %}
+
+    <xo-builder-popover
+      xo-type="click"
+      xo-placement="bottom-left"
+      class='xb-fieldset-popover'
+      xo-offset="10"
+    >
+      <div
+        class='xb-fieldset-popover__trigger'
+      >
+        <div class='xb-fieldset-popover__label'>{{ filter.label | escape }}</div>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='15'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          stroke-width='2'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+      <xo-builder-popover-content
+        xo-placement='bottom-left'
+        xo-portal
+        style="padding-top: 10px;"
+      >
+        <div class='xb-fieldset-popover__popover xb-scrollbar'>
+          <div class='xb-fieldset-popover__heading'>
+            {% if filter.type == 'price_range' %}
+              <div class='xb-fieldset-popover__caption'>
+                {{ 'xb.products.facets.max_price' | t: price: max_price_amount }}
+              </div>
+              <xo-filters-clear xo-name="['{{ filter.min_value.param_name }}', '{{ filter.max_value.param_name }}']">
+                <div class="xb-fieldset-popover__caption-icon">{{ reset_label }}</div>
+              </xo-filters-clear>
+            {% else %}
+              <div class='xb-fieldset-popover__caption'>
+                <xo-filters-active-size xo-unique-id='{{ filter.param_name }}-horizontal'>
+                  {{- 'xb.products.facets.filters_selected' | t: count: filter.active_values.size -}}
+                </xo-filters-active-size>
+              </div>
+              <xo-filters-clear xo-name='{{ filter.param_name }}'>
+                <div class="xb-fieldset-popover__caption-icon">{{ 'xb.products.facets.clear' | t }}</div>
+              </xo-filters-clear>
+            {% endif %}
+          </div>
+          <div class='xb-fieldset-popover__content xb-scrollbar'>
+            {% render 'xb-snippets', xb_type: 'fieldset-fields', filter: filter, facets_horizontal: facets_horizontal, enable_filter_count: enable_filter_count %}
+          </div>
+        </div>
+      </xo-builder-popover-content>
+    </xo-builder-popover>
+  {% when 'fieldset-collapse' %}
+    {%- assign max_price_amount = filter.range_max | money | strip_html | escape -%}
+    {% assign title = filter.label | escape %}
+    {% capture Content %}{% render 'xb-snippets', xb_type: 'fieldset-fields', filter: filter, enable_filter_count: enable_filter_count %}{% endcapture %}
+    {% capture icon %}
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        width='15'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        stroke-width='2'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+      >
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    {% endcapture %}
+
+    {% render 'xb-snippets', xb_type: 'collapse', name: filter.param_name, title: title, content: Content, icon: 'chevron-down', facets_vertical: facets_vertical, facets_drawer: facets_drawer, enable_filter_count: enable_filter_count, enable_filter_collapse: enable_filter_collapse %}
+  {% when 'fieldset-fields' %}
+    {% case filter.type %}
+      {% when 'boolean', 'list' %}
+        {%- for value in filter.values -%}
+          {% assign count_id = value.param_name | append: '-' | append: value.value %}
+          
+          <xo-filters-field>
+            {% render 'xb-snippets',
+              xb_type: 'field-checkbox-1',
+              name: value.param_name,
+              value: value.value,
+              label: value.label,
+              count_id: count_id,
+              count_value: value.count,
+              facets_horizontal: facets_horizontal,
+              enable_filter_count: enable_filter_count
+            %}
+          </xo-filters-field>
+        {%- endfor -%}
+      {% when 'price_range' %}
+        {% render 'xb-snippets', xb_type: 'field-price', filter: filter %}
+      {% else %}
+    {% endcase %}
+  {% when 'field-checkbox-1' %}
+    <label class='xb-field-checkbox-1 {% if facets_horizontal %}xb-field-checkbox-1--reverse{% endif %}' style='--icon-size: {{ icon_size | default: '16px' }}'>
+      <input
+        class='xb-field-checkbox-1__input'
+        type='checkbox'
+        name='{{ name }}'
+        value='{{ value | escape }}'
+        xo-label='{{ label | escape }}'
+        {% if checked %}
+          checked
+        {% endif %}
+      >
+      <span class='xb-field-checkbox-1__item'>
+        <span class='xb-field-checkbox-1__icon'>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            width='20'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            stroke-width='2'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+          >
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </span>
+      </span>
+      {% if label != null %}
+        <span class='xb-field-checkbox-1__label'>
+          <span>{{ label | escape }}</span>
+          {% if enable_filter_count and count_value %}
+            <xo-filters-count xo-unique-id="{{ count_id }}">({{ count_value | default: 0 }})</xo-filters-count>
+          {% endif %}
+        </span>
+      {% endif %}
+    </label>
+  {% when 'field-price' %}
+    {% liquid
+      assign currencies_using_comma_decimals = 'ANG,ARS,BRL,BYN,BYR,CLF,CLP,COP,CRC,CZK,DKK,EUR,HRK,HUF,IDR,ISK,MZN,NOK,PLN,RON,RUB,SEK,TRY,UYU,VES,VND' | split: ','
+      assign uses_comma_decimals = false
+      if currencies_using_comma_decimals contains cart.currency.iso_code
+        assign uses_comma_decimals = true
+      endif
+
+      if uses_comma_decimals
+        assign range_max = filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.'
+      else
+        assign range_max = filter.range_max | money_without_currency | replace: ',', ''
+      endif
+    %}
+    <xo-filters-field>
+      <div class='xb-field-price'>
+        <xo-range
+          class='xb-field-price__range'
+          xo-component-name='range-price'
+          xo-name="['{{ filter.min_value.param_name }}', '{{ filter.max_value.param_name }}']"
+          xo-min='0'
+          xo-max='{{ range_max }}'
+          xo-step='0.1'
+          xo-value='[0, {{ range_max }}]'
+        ></xo-range>
+
+        <div class='xb-field-price__input-group'>
+          <div class='xb-field-price__input-box'>
+            <span>{{ cart.currency.symbol }}</span>
+            <input
+              class='xb-field-price__input'
+              type='text'
+              value='0'
+              xo-component-name='range-price'
+              xo-type='min'
+            >
+          </div>
+          <span>{{ 'xb.products.facets.to' | t }}</span>
+          <div class='xb-field-price__input-box'>
+            <span>{{ cart.currency.symbol }}</span>
+            <input
+              class='xb-field-price__input'
+              type='text'
+              xo-component-name='range-price'
+              xo-type='max'
+              xo-max='{{ range_max }}'
+            >
+          </div>
+        </div>
+      </div>
+    </xo-filters-field>
+{% endcase %}
