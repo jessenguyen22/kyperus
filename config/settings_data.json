@@ -9,11 +9,12 @@
  */
 {
   "current": {
+    "loading_bar_style": "minimal",
     "logo": "shopify://shop_images/logo_kyperus_w.png",
     "logo_width": 90,
-    "type_header_font": "assistant_n4",
+    "type_header_font": "tomorrow_n7",
     "heading_scale": 100,
-    "type_body_font": "assistant_n4",
+    "type_body_font": "ibm_plex_sans_n4",
     "body_scale": 100,
     "page_width": 1600,
     "spacing_sections": 0,
@@ -167,11 +168,6 @@
         "settings": {
           "xotheme": false
         }
-      },
-      "21474836472147483647": {
-        "type": "shopify://apps/ecomposer-landing-page-builder/blocks/app-embed/a0fc26e1-7741-4773-8b27-39389b4fb4a0",
-        "disabled": false,
-        "settings": {}
       }
     },
     "color_schemes": {
