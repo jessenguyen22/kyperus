@@ -1,0 +1,88 @@
+.card-product-custom-div {
+  visibility: hidden;
+}
+
+.card-product-custom-div.loaded {
+  visibility: visible;
+}
+
+.card__content.card-swatch__content,
+.card__information.card-swatch__information {
+padding-top: 0;
+}
+
+.collection-product-card__swatch-variants {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.collection-product-card__swatch {
+  display: inline-block;
+  margin-top: 5px;
+  margin-right: 5px;
+}
+
+.collection-product-card__swatch input {
+  display: none;
+}
+
+.collection-product-card__swatch label {
+  display: block;
+  width: var(--card-swatch-width);
+  height: var(--card-swatch-height);
+  border: 1px solid #777;
+  border-radius: var(--card-swatch-border-radius);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.collection-product-card__swatch label:hover {
+  border-color: #333;
+}
+
+.collection-product-card__swatch input:checked + label {
+  border-color: #333;
+  border-width: 2px; 
+  box-shadow: inset 0 0 0 1px #fff; 
+}  
+
+.collection-product-card__swatch input.disabled + label {
+  opacity: 0.5;
+  position: relative; 
+}
+
+.collection-product-card__swatch input.disabled + label::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to bottom right, transparent 45%, rgba(255, 0, 0, 0.6) 50%, transparent 55%);
+  pointer-events: none;
+}
+
+.collection-product-card__swatch-overflow {
+  display: inline-block;
+  margin-top: 5px;
+  margin-left: 5px;
+  font-weight: var(--font-heading-weight);
+  color: rgb(var(--color-foreground));
+  cursor: pointer;
+}
+
+.card-swatch--standard {
+padding: 0 0;
+}
+
+.card-swatch--card {
+padding: 0 2rem;
+}
+

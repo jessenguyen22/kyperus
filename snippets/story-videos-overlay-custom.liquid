@@ -1,0 +1,65 @@
+{% if block.settings.enable_story_videos %}
+
+  {% if block.settings.video_source == 'metaobject_entry' %}
+      {% assign video_metaobject = shop.metaobjects.story_style_videos[block.settings.metaobject_reference] %}
+  {% elsif block.settings.video_source == 'product_metafield' %}
+      {% assign video_metaobject = product.metafields.custom[block.settings.metaobject_reference].value %}
+  {% endif %}
+
+  {% if video_metaobject %}
+    <div id="story-overlay" class="story-overlay">
+      <div class="story-overlay__player">
+        <button class="story-overlay__close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="<http://www.w3.org/2000/svg>">
+            <path d="M18 6L6 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 6L18 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="story-overlay__mute-toggle">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="<http://www.w3.org/2000/svg>" class="unmuted">
+            <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19.07 4.93C20.9447 6.80528 21.9979 9.34836 22 12C22 14.6516 20.9468 17.1947 19.07 19.07M15.54 8.46C16.4774 9.39764 17.0039 10.6692 17 12C17 13.3308 16.4735 14.6024 15.54 15.54" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="<http://www.w3.org/2000/svg>" class="muted" style="display: none;">
+            <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23 9L17 15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17 9L23 15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="story-overlay__scroller">
+          <div class="story-overlay__nav-container">
+            <button class="story-overlay__nav story-overlay__nav--prev">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="<http://www.w3.org/2000/svg>">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="story-overlay__thumbnails">
+              {% for video in video_metaobject.files.value %}
+                <div class="story-overlay__preview" data-video-id="{{ video.id }}">
+                </div>
+              {% endfor %}
+            </div>
+            <button class="story-overlay__nav story-overlay__nav--next">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="<http://www.w3.org/2000/svg>">
+                <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="story-overlay__video-wrapper">
+          <div class="story-overlay__video story-overlay__video--prev"></div>
+          <div class="story-overlay__video story-overlay__video--current"></div>
+          <div class="story-overlay__video story-overlay__video--next"></div>
+          {% if block.settings.enable_swipe_indicator %}
+            <div class="story-overlay__scroll-indicator">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="<http://www.w3.org/2000/svg>">
+                <path d="M12 5v14M19 12l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="story-overlay__scroll-text">{{ block.settings.swipe_indicator_text }}</div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}

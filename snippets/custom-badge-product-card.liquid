@@ -1,0 +1,69 @@
+{% comment %}
+  Renders a custom badge based on provided settings.
+{% endcomment %}
+
+{%- if badge_type == "standard" -%}
+  {%- if product.available == false -%}
+    <span
+      id="NoMediaStandardBadge-{{ section_id }}-{{ product.id }}"
+      class="badge badge--bottom-left color-{{ settings.sold_out_badge_color_scheme }}"
+      style="display: {{ settings.custom_badge_layout }}; margin-top: {{ settings.custom_badge_spacing }}px;"
+    >
+      {{- 'products.product.sold_out' | t -}}
+    </span>
+  {%- elsif product.compare_at_price > product.price and product.available -%}
+    <span
+      id="NoMediaStandardBadge-{{ section_id }}-{{ product.id }}"
+      class="badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}"
+      style="display: {{ settings.custom_badge_layout }}; margin-top: {{ settings.custom_badge_spacing }}px;"
+    >
+
+      {% if settings.show_sale_pc_off %}
+        {%- assign difference = product.compare_at_price | minus: product.price -%}
+        {%- assign float_difference = difference | times: 1.0 -%}
+        {%- assign discount_fraction = float_difference | divided_by: product.compare_at_price -%}
+        {%- assign discount_percentage = discount_fraction | times: 100 | round -%}
+        {{ discount_percentage }}{{ settings.show_sale_pc_off_text }}
+      {% else %}
+
+        {{- 'products.product.on_sale' | t -}}
+
+      {% endif %} 
+
+    </span>
+  {%- endif -%}
+{%- elsif badge_type == "custom" -%}
+  {%- if custom_badge_option == "text" -%}
+    <span
+      id="NoMediaCustomBadge-{{ section_id }}-{{ product.id }}"
+      class="badge badge--bottom-left color-{{ custom_badge_color_scheme }}"
+      style="display: {{ settings.custom_badge_layout }}; margin-top: {{ settings.custom_badge_spacing }}px;"
+    >
+      {{ custom_badge_text }}
+    </span>
+  {%- elsif custom_badge_option == "image" -%}
+    <span
+      id="NoMediaCustomBadge-{{ section_id }}-{{ product.id }}"
+    >
+      <img src="{{ custom_badge_image | img_url: 'master' }}" width={{ custom_badge_image_width }} height="auto">
+    </span>
+  {%- elsif custom_badge_option == "dynamic_text" -%}
+    {% if product.metafields.custom.custom_dynamic_text_badge != nil %}
+      <span
+        id="NoMediaCustomBadge-{{ section_id }}-{{ product.id }}"
+        class="badge badge--bottom-left color-{{ custom_badge_color_scheme }}"
+        style="display: {{ settings.custom_badge_layout }}; margin-top: {{ settings.custom_badge_spacing }}px;"
+      >
+        {{ product.metafields.custom.custom_dynamic_text_badge.value }}
+      </span>
+    {% endif %}
+  {%- elsif custom_badge_option == "dynamic_image" -%}
+    {% if product.metafields.custom.custom_dynamic_badge != nil %}
+      <span
+        id="NoMediaCustomBadge-{{ section_id }}-{{ product.id }}"
+      >
+        <img src="{{ product.metafields.custom.custom_dynamic_badge | img_url: 'master' }}" width={{ custom_badge_image_width }} height="auto">
+      </span>
+    {% endif %}
+  {%- endif -%}
+{% endif %}

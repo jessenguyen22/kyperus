@@ -1,0 +1,103 @@
+.custom-text-input {
+  margin-bottom: 1rem;
+}
+.custom-text-input label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.custom-text-field {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.custom-input-container {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.custom-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.custom-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+/* Toggle style */
+.toggle-style .custom-checkbox-slider {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-style .custom-checkbox-slider::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.toggle-style .custom-checkbox-input:checked + .custom-checkbox-slider::before {
+  transform: translateX(20px);
+}
+
+/* Checkbox style */
+.checkbox-style .custom-checkbox-slider {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.checkbox-style .custom-checkbox-slider::before {
+  content: "\2714";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  color: #fff;
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.checkbox-style .custom-checkbox-input:checked + .custom-checkbox-slider {
+  background-color: var(--toggle-color);
+  border-color: var(--toggle-color);
+}
+
+.checkbox-style .custom-checkbox-input:checked + .custom-checkbox-slider::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.checkbox-text mark {
+  background-color: var(--highlight-color);
+  color: inherit;
+  padding: 0;
+  border-radius: 2px;
+}
+

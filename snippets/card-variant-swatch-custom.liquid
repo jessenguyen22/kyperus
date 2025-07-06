@@ -1,0 +1,165 @@
+{% comment %}
+  Description:
+  Renders product variant swatch options for collection page based on image URLs. 
+  Defaults to buttons if no image URL is present.
+
+  Accepts:
+  - product: {Object} product object.
+  - option: {Object} current product_option object.
+  - variant_images_data: list of variant images
+  - lazy_load_all_variants: lazy load all variant images for immediate availability when clicking swatches
+
+  Usage:
+  {% render 'variant-swatch-collection',
+    product: product,
+    option: option,
+    variant_images_data: variant_images_data,
+    lazy_load_all_variants: lazy_load_all_variants
+  %}
+{% endcomment %}
+
+{% assign base_store_files_url = '//' | append: shop.permanent_domain | append: '/cdn/shop/files/' %}
+{% assign product_form_id = 'product-form-' | append: product.id %}
+
+{% if settings.limit_swatches %}
+  {% assign max_swatches = settings.max_swatches %}
+{% else %}
+  {% assign max_swatches = option.values.size %}
+{% endif %}
+{% assign total_swatches = option.values.size %}
+{% assign hidden_swatches = total_swatches | minus: max_swatches %}
+
+<div class="collection-product-card__swatch-variants">
+  {% for value in option.values limit: max_swatches %}
+    {% assign variant_image_url = nil %}
+    {% assign variant_id = nil %}
+    {% assign option_disabled = true %}
+    {% assign first_match_found = false %}
+
+    {% for variant in product.variants %}
+      {% if first_match_found == false %}
+        {% case option.position %}
+          {% when 1 %}
+            {% if variant.option1 == value %}
+              {% assign variant_image_url = variant.featured_media | img_url: '360x360' %}
+              {% assign variant_id = variant.id %}
+              {% if lazy_load_all_variants %}
+                <img 
+                  src="{{ variant_image_url }}" 
+                  alt="{{ variant.title }}" 
+                  style="display: none;" 
+                  loading="lazy"
+                  data-variant-id="{{ variant.id }}"
+                  width="{{ variant.featured_media.width }}"
+                  height="{{ variant.featured_media.height }}">
+              {% endif %}
+              {% if variant.available %}
+                {% assign option_disabled = false %}
+              {% endif %}
+              {% assign first_match_found = true %}
+            {% endif %}
+          {% when 2 %}
+            {% if variant.option2 == value and variant.option1 == product.selected_or_first_available_variant.option1 %}
+              {% assign variant_image_url = variant.featured_media | img_url: '360x360' %}
+              {% assign variant_id = variant.id %}
+              {% if lazy_load_all_variants %}
+                <img 
+                  src="{{ variant_image_url }}" 
+                  alt="{{ variant.title }}" 
+                  style="display: none;" 
+                  loading="lazy"
+                  data-variant-id="{{ variant.id }}"
+                  width="{{ variant.featured_media.width }}"
+                  height="{{ variant.featured_media.height }}">
+              {% endif %}
+              {% if variant.available %}
+                {% assign option_disabled = false %}
+              {% endif %}
+              {% assign first_match_found = true %}
+            {% endif %}
+          {% when 3 %}
+            {% if variant.option3 == value and variant.option1 == product.selected_or_first_available_variant.option1 and variant.option2 == product.selected_or_first_available_variant.option2 %}
+              {% assign variant_image_url = variant.featured_media | img_url: '360x360' %}
+              {% assign variant_id = variant.id %}
+              {% if lazy_load_all_variants %}
+                <img 
+                  src="{{ variant_image_url }}" 
+                  alt="{{ variant.title }}" 
+                  style="display: none;" 
+                  loading="lazy"
+                  data-variant-id="{{ variant.id }}"
+                  width="{{ variant.featured_media.width }}"
+                  height="{{ variant.featured_media.height }}">
+              {% endif %}           
+              {% if variant.available %}
+                {% assign option_disabled = false %}
+              {% endif %}
+              {% assign first_match_found = true %}
+            {% endif %}
+        {% endcase %}
+      {% endif %}
+
+      {% if variant_image_url %}
+        {% assign swatch_found = false %}
+        {% for item in variant_images_data %}
+          {% if item.variant_value == value %}
+            {% if item.variant_swatch != blank %}
+              {% assign variant_image_url = base_store_files_url | append: item.variant_swatch %}
+              {% assign swatch_found = true %}
+            {% elsif item.variant_hex %}
+              {% assign hex_color = item.variant_hex | replace: '#', '%23' %}
+              {% assign svg = '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="100%" height="100%" fill="' | append: hex_color | append: '" /></svg>' %}
+              {% assign encoded_svg = svg | replace: '"', '%22' | replace: '<', '%3C' | replace: '>', '%3E' %}
+              {% assign variant_image_url = 'data:image/svg+xml;charset=utf-8,' | append: encoded_svg %}
+              {% assign swatch_found = true %}
+            {% endif %}
+            {% if swatch_found %}
+              {% break %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+
+    {%- capture input_id -%}
+      collection-{{ section.id }}-{{ product.id }}-{{ option.position }}-{{ forloop.index0 }}
+    {%- endcapture -%}
+
+    {%- capture input_name -%}
+      collection-{{ section.id }}-{{ product.id }}-{{ option.name }}-{{ option.position }}
+    {%- endcapture -%}
+
+    <div class="collection-product-card__swatch">
+      <input 
+        type="radio"
+        id="{{ input_id }}"
+        name="{{ input_name }}"
+        value="{{ value | escape }}"
+        form="{{ product_form_id }}"
+        data-section-id="{{ section.id }}"
+        data-product-id="{{ product.id }}"
+        data-variant-id="{{ variant_id }}"
+        data-product-url="{{ product.url }}"
+        data-option-value-id="{{ value.id }}"
+        data-image-url="{{ variant_image_url }}"
+        {% if option.selected_value == value %}
+          checked
+        {% endif %}
+        {% if option_disabled %}
+          class="disabled"
+        {% endif %}
+      >
+      <label for="{{ input_id }}" style="background-image: url('{{ variant_image_url }}');">
+        <span class="visually-hidden">{{ value | escape }}</span>
+        <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
+      </label>
+    </div>
+  {% endfor %}
+
+  {% if hidden_swatches > 0 and settings.limit_swatches %}
+    <div class="collection-product-card__swatch-overflow">
+      <span class="swatch-overflow-indicator" style="font-size: {{ settings.overflow_swatches_font_size }}px;">+{{ hidden_swatches }}</span>
+    </div>
+  {% endif %}
+
+</div>

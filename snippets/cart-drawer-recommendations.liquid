@@ -1,0 +1,202 @@
+{% comment %}
+  Generates and renders cart drawer recommendations
+{% endcomment %}
+
+<div class="cart-drawer__recommendations">
+
+  {% assign products_to_recommend = settings.cart_drawer_recommendations_products_to_recommend %}
+  {% assign products_to_show = settings.cart_drawer_recommendations_products_to_show %}
+  {% assign section_id = "cart-drawer" %}
+  {% capture cart_items_json %}
+    [
+      {% for item in cart.items %}
+        {
+          "product_id": {{ item.product_id | json }},
+          "quantity": {{ item.quantity | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  {% endcapture %}
+ 
+  <div class="cart-drawer__recommendations-heading">{{ settings.cart_drawer_recommendations_heading }}</div>
+  <comprehensive-cart-recommendations
+    class="complementary-products"
+    data-url="{{ routes.product_recommendations_url }}?limit={{ products_to_recommend }}{% if settings.cart_drawer_upsell_type == 'complementary' %}&intent=complementary{% endif %}"
+    data-section-id="{{ section_id }}"
+    data-cart-items="{{ cart_items_json | strip_newlines | strip | escape }}"
+    data-max-position="{{ products_to_recommend }}"
+    data-products-to-show="{{ products_to_show }}"
+    data-weight-quantity="{{ settings.recommendation_weight_quantity }}"
+    data-weight-frequency="{{ settings.recommendation_weight_frequency }}"
+    data-weight-position="{{ settings.recommendation_weight_position }}"
+    >
+      {% if recommendations.performed and recommendations.products_count > 0 %}
+        <ul class="grid product-grid">
+          {% for recommendation in recommendations.products %}
+            <li class="grid__item">
+              {% render 'cart-drawer-upsell-product', product: recommendation, section_id: section_id %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+  </comprehensive-cart-recommendations>
+</div>
+
+<style>
+  .cart-drawer__recommendations {
+    margin-top: 20px;
+    border-top: 1px solid var(--color-border);
+    background-color: {{ settings.cart_drawer_recommendations_background_color }};
+    padding: 10px;
+    display: none;
+  }
+
+  .cart-drawer__recommendations.has-recommendations {
+    display: block; 
+  }
+
+  .cart-drawer__recommendations .complementary-products .grid__item {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .cart-drawer__recommendations-heading {
+    font-size: {{ settings.cart_drawer_recommendations_heading_font_size }}px;
+    font-weight: {{ settings.cart_drawer_recommendations_heading_font_weight }};
+    color: {{ settings.cart_drawer_recommendations_heading_color }};
+    margin-bottom: 20px;
+    margin-top: 0;
+    text-align: center;
+  }
+
+  .product-recommendations.no-markers {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .product-recommendations.no-markers li {
+    list-style-type: none;
+  }
+
+  .product-recommendations.no-markers li::marker {
+    display: none;
+  }
+
+  .cart-upsell-item {
+    margin-bottom: 20px;
+  }
+
+  .cart-upsell-item__inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    border-color: rgba(var(--color-foreground), 0.75);
+    background: var(--gradient-background);
+  }
+
+  .cart-upsell-item__media-wrapper {
+    flex: 0 0 {{ settings.cart_drawer_recommendation_media_width }}%;
+  }
+
+  .cart-upsell-item__media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+
+  .cart-upsell-item__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cart-upsell-item__title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    line-height: 1.2;
+  }
+
+  .cart-upsell-item__link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .cart-upsell-item__link:hover {
+    text-decoration: underline;
+  }
+
+  .cart-upsell-item__price {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .cart-upsell-item__variants {
+    margin-bottom: 15px;
+  }
+
+  .cart-upsell-item__variants select {
+    width: 100%;
+    padding: 4px 8px;
+    border-color: rgba(var(--color-foreground), 0.75);
+    font-size: 14px;
+  }
+
+  .cart-upsell-item__variants .product-form__input--dropdown {
+    margin-bottom: 0.7rem;
+  }
+
+  {% if settings.cart_drawer_recommendation_hide_variant_titles %}
+    .cart-upsell-item__variants .product-form__input .form__label {
+      display: none;
+    }
+  {% endif %}
+
+  .cart-upsell-item__variants .product-form__input .select__select {
+    height: 3rem;
+  }
+
+  .cart-upsell-item__variants .product-form__input--pill input[type=radio]+label {
+    margin: .5rem .5rem .3rem 0;
+    padding: 0.5rem 1rem;
+    font-size: 1.25rem;
+    letter-spacing: 0.06rem;
+  }
+
+  .cart-upsell-item__variants .product-form__input--swatch .swatch-input__input+.swatch-input__label {
+    --swatch-input--size: 2.3rem;
+    margin: .5rem 1.0rem .2rem 0;
+  }
+
+  .cart-upsell-item__button .product-form__submit {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px 15px;
+    border-radius: 4px;
+    border: none;
+    background-color: {{ settings.cart_drawer_recommendation_btn_color }};
+    color: {{ settings.cart_drawer_recommendation_btn_text_color }};
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+    
+  .cart-upsell-item__button .button:after {
+        box-shadow: 0 0 0 calc(var(--buttons-border-width) + var(--border-offset))
+        rgba(var(--color-button-text), var(--border-opacity)),
+      0 0 0 var(--buttons-border-width) {{ settings.cart_drawer_recommendation_btn_color }};
+  }
+
+  .cart-upsell-item__button .button:not([disabled]):hover::after {
+    box-shadow: 0 0 0 calc(var(--buttons-border-width) + var(--border-offset))
+        rgba(var(--color-button-text), var(--border-opacity)),
+      0 0 0 calc(var(--buttons-border-width) + 1px) {{ settings.cart_drawer_recommendation_btn_color }};
+  }
+  
+</style>
+
+{{ 'section-main-product.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}

@@ -1,0 +1,79 @@
+<p
+  class="product__inventory {% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
+  {{ block.shopify_attributes }}
+  id="Inventory-{{ section.id }}"
+  role="status"
+>
+  {%- if product.selected_or_first_available_variant.inventory_management == 'shopify' -%}
+    {%- if product.selected_or_first_available_variant.inventory_quantity > 0 -%}
+      {%- if product.selected_or_first_available_variant.inventory_quantity <= block.settings.inventory_threshold -%}
+        {%- unless block.settings.hide_low_stock -%}
+          {%- if block.settings.low_stock_icon -%}
+            <img src="{{ block.settings.low_stock_icon | img_url: '150x' }}" alt="Low Stock" style="width: 15px; height: 15px;">
+          {%- else -%}
+            <span class="svg-wrapper" style="color: rgb(238, 148, 65)">
+              {{- 'icon-inventory-status.svg' | inline_asset_content -}}
+            </span>
+          {%- endif -%}
+          {%- if block.settings.show_inventory_quantity -%}
+            {{- 'products.product.inventory_low_stock_show_count' | t: quantity: product.selected_or_first_available_variant.inventory_quantity -}}
+          {%- else -%}
+            {{- 'products.product.inventory_low_stock' | t -}}
+          {%- endif -%}
+        {%- endunless -%}   
+      {%- else -%}
+        {%- unless block.settings.hide_in_stock -%}
+          {%- if block.settings.in_stock_icon -%}
+            <img src="{{ block.settings.in_stock_icon | img_url: '150x' }}" alt="In Stock" style="width: 15px; height: 15px;">
+          {%- else -%}
+            <span class="svg-wrapper" style="color: rgb(62, 214, 96)">
+              {{- 'icon-inventory-status.svg' | inline_asset_content -}}
+            </span>
+          {%- endif -%}
+          {%- if block.settings.show_inventory_quantity -%}
+            {{- 'products.product.inventory_in_stock_show_count' | t: quantity: product.selected_or_first_available_variant.inventory_quantity -}}
+          {%- else -%}
+              {{- 'products.product.inventory_in_stock' | t -}}
+          {%- endif -%}
+        {%- endunless -%}
+              
+      {%- endif -%}
+    {%- else -%}
+      {%- if product.selected_or_first_available_variant.inventory_policy == 'continue' -%}
+        {%- unless block.settings.hide_in_stock -%}
+          {%- if block.settings.in_stock_icon -%}
+            <img src="{{ block.settings.in_stock_icon | img_url: '150x' }}" alt="In Stock" style="width: 15px; height: 15px;">
+          {%- else -%}
+            <span class="svg-wrapper" style="color: rgb(62, 214, 96)">
+              {{- 'icon-inventory-status.svg' | inline_asset_content -}}
+            </span>
+          {%- endif -%}
+          {{- 'products.product.inventory_out_of_stock_continue_selling' | t -}}
+        {%- endunless -%}
+      {%- else -%}
+        {%- unless block.settings.hide_out_of_stock -%}
+          {%- if block.settings.out_of_stock_icon -%}
+            <img src="{{ block.settings.out_of_stock_icon | img_url: '150x' }}" alt="Out Of Stock" style="width: 15px; height: 15px;">
+          {%- else -%}
+            <span class="svg-wrapper" style="color: rgb(200,200,200)">
+              {{- 'icon-inventory-status.svg' | inline_asset_content -}}
+            </span>
+          {%- endif -%}
+          {%- if block.settings.show_back_in_stock_date -%}                
+            {%- assign current_date = 'now' | date: '%Y-%m-%d' %}
+            {%- assign back_in_stock_date = product.selected_or_first_available_variant.metafields.custom.back_in_stock_date.value %}
+            {%- if back_in_stock_date == blank or back_in_stock_date == null or back_in_stock_date < current_date -%}
+              {{- 'products.product.inventory_out_of_stock' | t -}}
+            {%- else -%}
+              {%- assign formatted_back_in_stock_date = back_in_stock_date | date: block.settings.back_in_stock_date_format %}
+              {%- assign custom_back_in_stock_text = block.settings.back_in_stock_text | replace: '[back_in_stock_date]', formatted_back_in_stock_date -%}
+              {{ custom_back_in_stock_text }}
+            {%- endif -%}
+          {%- else -%}
+            {{- 'products.product.inventory_out_of_stock' | t -}}
+          {%- endif -%}   
+        {%- endunless -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endif -%}
+</p>

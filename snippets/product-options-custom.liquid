@@ -1,0 +1,218 @@
+{%- case block.type -%}
+
+{%- when 'custom_text_input' -%}
+  {% assign custom_input_properties = product.metafields.custom.custom_input_properties_to_enable | remove: '[' | remove: ']' | remove: '"' | split: ',' %}
+  {% assign current_property = block.settings.property_name | strip %}
+  {% for property in custom_input_properties %}
+    {% assign trimmed_property = property | strip %}
+    {% if trimmed_property == current_property %}
+      <div class="custom-text-input" {{ block.shopify_attributes }}>
+        <label for="custom-text-{{ block.id }}" class="form__label">{{ block.settings.label }}</label>
+        <input 
+          type="text" 
+          id="custom-text-{{ block.id }}" 
+          class="custom-text-field" 
+          data-property-name="{{ block.settings.property_name }}"
+          data-hidden-input-id="hidden-{{ block.id }}-{{ block.settings.property_name | handle }}"
+          placeholder="{{ block.settings.placeholder }}"
+        >
+      </div>
+      {% break %}
+    {% endif %}
+  {% endfor %}
+         
+{%- when 'custom_checkbox_input' -%}
+  {% assign custom_input_properties = product.metafields.custom.custom_input_properties_to_enable | remove: '[' | remove: ']' | remove: '"' | split: ',' %}
+  {% assign current_property = block.settings.property_name | strip %}
+  {% for property in custom_input_properties %}
+    {% assign trimmed_property = property | strip %}
+    {% if trimmed_property == current_property %}
+      <div class="custom-input-container">
+        <label class="custom-checkbox-label form__label {% if block.settings.checkbox_style == 'toggle' %}toggle-style{% else %}checkbox-style{% endif %}">
+          <input type="checkbox"
+                 id="custom-checkbox-{{ block.id }}"
+                 class="custom-checkbox-input"
+                 data-block-id="{{ block.id }}"
+                 data-hidden-input-id="hidden-{{ block.id }}-{{ block.settings.property_name | handle }}"
+                 {% if block.settings.default_checked %}checked="checked"{% endif %}>
+          <span class="custom-checkbox-slider" style="--toggle-color: {{ block.settings.toggle_color }};"></span>
+          <span class="checkbox-text{% if block.settings.highlight_text %} highlighted-text{% endif %}" style="
+            font-size: {{ block.settings.font_size }}px;
+            font-style: {% if block.settings.font_style == 'italic' %}italic{% else %}normal{% endif %};
+            font-weight: {% if block.settings.font_style == 'bold' %}bold{% else %}normal{% endif %};
+          ">
+            {% if block.settings.highlight_text %}
+              <mark style="background-color: {{ block.settings.highlight_color }};">{{ block.settings.label }}</mark>
+            {% else %}
+              {{ block.settings.label }}
+            {% endif %}
+          </span>
+
+        </label>
+        <style>
+          #custom-checkbox-{{ block.id }}:checked + .custom-checkbox-slider {
+            background-color: {{ block.settings.toggle_color }} !important;
+          }
+        </style>
+      </div>
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+{%- when 'custom_options_picker' -%}   
+{% assign custom_input_properties = product.metafields.custom.custom_input_properties_to_enable | remove: '[' | remove: ']' | remove: '"' | split: ',' %}
+{% assign current_property = block.settings.property_name | strip %}
+{% for property in custom_input_properties %}
+  {% assign trimmed_property = property | strip %}
+  {% if trimmed_property == current_property %}
+    {% assign custom_options_pickers = product.metafields.custom.custom_options_pickers_to_enable.value %}
+    {% assign matching_metaobject = nil %}
+    {% for metaobject in custom_options_pickers %}
+      {% if metaobject.option_name == current_property %}
+        {% assign matching_metaobject = metaobject %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+    {% if matching_metaobject %}  
+      {% assign option_name = matching_metaobject.option_name %}
+      {% assign option_values = matching_metaobject.option_values.value %}
+      {% assign target_entry = nil %}
+      {% for entry in shop.metaobjects.variant_swatch_map.values %}
+        {% if entry.title == block.settings.variant_swatch_metaobject %}
+          {% assign target_entry = entry %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+      {% if target_entry %}
+        {% assign variant_images_data = target_entry.variant_images_json %}
+      {% else %}
+        {% assign variant_images_data = nil %}
+      {% endif %}
+      {%- if option_values.size > 0 -%}
+        {%- if block.settings.picker_type == 'button' -%}
+          {% if block.settings.swatch_shape_custom == "none" %}
+            <fieldset class="js product-form__input product-form__input--pill" data-block-id="{{ block.id }}" data-option-name="{{ option_name }}">
+              <legend class="form__label">{{ option_name }}</legend>
+              {% for value in option_values %}
+                <input
+                  type="radio"
+                  id="option-{{ value | handleize }}-{{ block.id }}"
+                  name="custom_option_{{ block.id }}"
+                  value="{{ value }}"
+                  data-option-value="{{ value }}"
+                  data-block-id="{{ block.id }}"
+                  data-option-name="{{ option_name | handle }}"
+                  {% if forloop.first %}checked="checked"{% endif %}
+                >
+                <label for="option-{{ value | handleize }}-{{ block.id }}">{{ value }}</label>
+              {% endfor %}
+            </fieldset>
+          {% else %}
+            {% assign base_store_files_url = '//' | append: shop.permanent_domain | append: '/cdn/shop/files/' %}
+            {% assign variant_options_images = variant_images_data.value | where: "variant_name", option_name %}
+            <fieldset class="js product-form__input product-form__input--pill" data-block-id="{{ block.id }}" data-option-name="{{ option_name }}">
+              <legend class="form__label">
+                {{ option_name }}:
+                <span id="selected{{ option_name }}">{{ option_values.first }}</span>
+              </legend>
+              {% for value in option_values %}
+                {% assign variant_image_url = nil %}
+                {% assign swatch_found = false %}
+                {% for item in variant_options_images %}
+                  {% if item.variant_value == value %}
+                    {% if item.variant_swatch != blank %}
+                      {% assign variant_image_url = base_store_files_url | append: item.variant_swatch %}
+                      {% assign swatch_found = true %}
+                    {% elsif item.variant_hex %}
+                      {% assign hex_color = item.variant_hex | replace: '#', '%23' %}
+                      {% assign svg = '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="100%" height="100%" fill="' | append: hex_color | append: '" /></svg>' %}
+                      {% assign encoded_svg = svg | replace: '"', '%22' | replace: '<', '%3C' | replace: '>', '%3E' %}
+                      {% assign variant_image_url = 'data:image/svg+xml;charset=utf-8,' | append: encoded_svg %}
+                      {% assign swatch_found = true %}
+                    {% endif %}
+                    {% if swatch_found %}
+                      {% break %}
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+                {% if swatch_found %}
+                  <div class="product-form__swatch"> 
+                    <input
+                      type="radio"
+                      id="option-{{ value | handleize }}-{{ block.id }}"
+                      name="custom_option_{{ block.id }}"
+                      value="{{ value }}"
+                      data-option-value="{{ value }}"
+                      data-block-id="{{ block.id }}"
+                      data-option-name="{{ option_name | handle }}"
+                      {% if forloop.first %}checked="checked"{% endif %}
+                      onclick="document.getElementById('selected{{ option_name }}').innerText = '{{ value }}';"
+                    >
+
+                    <label
+                      for="option-{{ value | handleize }}-{{ block.id }}"
+                      style="
+                        background-image: url('{{ variant_image_url }}');
+                        height: {{ block.settings.swatch_size }}px;
+                        width: 
+                          {% if block.settings.swatch_shape_custom == 'aspect_ratio' %}
+                            {{ block.settings.custom_swatch_width }}px
+                          {% else %}
+                            {{ block.settings.swatch_size }}px
+                          {% endif %};
+                        border-radius: 
+                          {% case block.settings.swatch_shape_custom %}
+                            {% when 'circle' %} 50%;
+                            {% when 'square' %} 0%;
+                            {% when 'aspect_ratio' %} 0%;
+                            {% else %} 0%;
+                          {% endcase %} !important;
+                      "
+                    >
+                      <span class="visually-hidden">{{ value }}</span>
+                    </label>
+                  </div>
+                {% else %}
+                  <input
+                    type="radio"
+                    id="option-{{ value | handleize }}-{{ block.id }}"
+                    name="custom_option_{{ block.id }}"
+                    value="{{ value }}"
+                    data-option-value="{{ value }}"
+                    data-block-id="{{ block.id }}"
+                    data-option-name="{{ option_name | handle }}"
+                    {% if forloop.first %}checked="checked"{% endif %}
+                  >
+                  <label for="option-{{ value | handleize }}-{{ block.id }}">{{ value }}</label>
+                {% endif %}
+              {% endfor %}
+            </fieldset>
+          {% endif %}
+        {%- elsif block.settings.picker_type == 'dropdown' -%}
+          <div class="product-form__input product-form__input--dropdown">
+            <label for="OptionSelect-{{ block.id }}" class="form__label">{{ option_name }}</label>
+            <div class="select">
+              <select
+                id="OptionSelect-{{ block.id }}"
+                name="custom_option_{{ block.id }}"
+                class="select__select"
+                data-block-id="{{ block.id }}"
+                data-option-name="{{ option_name | handle }}"
+              >
+                {% for value in option_values %}
+                  <option value="{{ value }}">{{ value }}</option>
+                {% endfor %}
+              </select>
+              <span class="svg-wrapper">
+                {{- 'icon-error.svg' | inline_asset_content -}}
+              </span>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    {% endif %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+                        
+{% endcase %}

@@ -1,0 +1,133 @@
+<div class="page-width">
+  {% render 'icon-with-text-custom',
+    block_or_section_id: section.id,
+    icon_source: section.settings.icon_source,
+    metaobject_entry_name: section.settings.metaobject_entry_name,
+    layout: section.settings.layout,
+    icons_per_line: section.settings.icons_per_line,
+    num_columns: section.settings.num_columns,
+    icon_size: section.settings.icon_size,
+    heading_size: section.settings.heading_size,
+    icons_horiz_padding_left: section.settings.icons_horiz_padding_left,
+    icons_horiz_padding_right: section.settings.icons_horiz_padding_right
+  %}
+</div>
+
+{% schema %}
+  {
+    "name": "Icon with Text Custom",
+    "settings": [
+      {
+        "type": "select",
+        "id": "icon_source",
+        "label": "Icon Source",
+        "options": [
+          {
+            "value": "product_metafield",
+            "label": "Product Metafield"
+          },
+          {
+            "value": "metaobject_entry",
+            "label": "Metaobject Entry"
+          }
+        ],
+        "default": "metaobject_entry"
+      },
+      {
+        "type": "text",
+        "id": "metaobject_entry_name",
+        "label": "Metaobject Entry Name"
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "options": [
+          {
+            "value": "horizontal",
+            "label": "t:sections.main-product.blocks.icon_with_text.settings.layout.options__1.label"
+          },
+          {
+            "value": "vertical",
+            "label": "t:sections.main-product.blocks.icon_with_text.settings.layout.options__2.label"
+          }
+        ],
+        "default": "horizontal",
+        "label": "t:sections.main-product.blocks.icon_with_text.settings.layout.label"
+      },
+      {
+        "type": "range",
+        "id": "icons_per_line",
+        "label": "Icons per Line (horizontal layout)",
+        "default": 5,
+        "min": 1,
+        "max": 8
+      },  
+      {
+        "type": "range",
+        "id": "icons_horiz_padding_left",
+        "label": "Icons Left Padding (horizontal layout)",
+        "min": 0,
+        "step": 1,
+        "max": 100,
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "icons_horiz_padding_right",
+        "label": "Icons Right Padding (horizontal layout)",
+        "min": 0,
+        "step": 1,
+        "max": 100,
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "num_columns",
+        "label": "Number of Columns (vertical layout)",
+        "default": 2,
+        "min": 1,
+        "max": 5
+      },   
+      {
+        "type": "range",
+        "id": "icon_size",
+        "label": "Icon Size",
+        "min": 3,
+        "max": 15,
+        "step": 0.5,
+        "default": 7,
+        "unit": "rem"
+      },
+      {
+        "type": "select",
+        "id": "heading_size",
+        "label": "Heading Size",
+        "options": [
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          },
+          {
+            "value": "h4",
+            "label": "H4"
+          },
+          {
+            "value": "h5",
+            "label": "H5"
+          }
+        ],
+        "default": "h4"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Icon With Text Custom",
+        "category": "Image"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,98 @@
+{% comment %}
+  Description:
+  Renders product variant swatch options based on image URLs. Defaults to buttons if no image URL is present.
+  This is generalized for any variant type.
+
+  Accepts:
+  - product: {Object} product object.
+  - option: {Object} current product_option object.
+  - variant_images_data: list of variant images
+
+  Usage:
+  {% render 'product-variant-swatch-custom',
+    product: product,
+    option: option,
+    variant_images_data: variant_images_data
+  %}
+{% endcomment %}
+
+{% assign base_store_files_url = '//' | append: shop.permanent_domain | append: '/cdn/shop/files/' %}
+
+{%- liquid
+  assign product_form_id = 'product-form-' | append: section.id
+-%}
+
+<div class="product-form-swatch__variants">
+  {% for value in option.values %}
+    {% assign variant_image_url = nil %}
+    {% assign option_disabled = true %}
+
+    {% for variant in product.variants %}
+      {% assign option_index = option.position | minus: 1 %}
+      {% assign variant_option_value = variant.options[option_index] %}
+      {% if variant_option_value == value %}
+        {% assign variant_image_url = variant.image | img_url: '100x100' %}
+        {% if variant.available %}
+          {% assign option_disabled = false %}
+        {% endif %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+
+    {% assign swatch_found = false %}
+    {% for item in variant_images_data %}
+      {% if item.variant_value == value %}
+        {% if item.variant_swatch != blank %}
+          {% assign variant_image_url = base_store_files_url | append: item.variant_swatch %}
+          {% assign swatch_found = true %}
+        {% elsif item.variant_hex %}
+          {% assign hex_color = item.variant_hex | replace: '#', '%23' %}
+          {% assign svg = '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="100%" height="100%" fill="' | append: hex_color | append: '" /></svg>' %}
+          {% assign encoded_svg = svg | replace: '"', '%22' | replace: '<', '%3C' | replace: '>', '%3E' %}
+          {% assign variant_image_url = 'data:image/svg+xml;charset=utf-8,' | append: encoded_svg %}
+          {% assign swatch_found = true %}
+        {% endif %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+
+    {% unless variant_image_url %}
+      {% assign variant_image_url = 'image' | placeholder_svg_tag %}
+    {% endunless %}
+
+    {%- capture input_id -%}
+      {{ section.id }}-{{ option.position }}-{{ forloop.index0 }}
+    {%- endcapture -%}
+
+    {%- capture input_name -%}
+      {{ option.name }}-{{ option.position }}
+    {%- endcapture -%}
+
+    <div class="product-form__swatch">
+      <input 
+        type="radio"
+        id="{{ input_id }}"
+        name="{{ input_name }}"
+        value="{{ value | escape }}"
+        form="{{ product_form_id }}"
+        data-product-url="{{ product.url }}"
+        data-option-value-id="{{ value.id }}"
+        data-image-url="{{ variant_image_url }}"
+        {% if option.selected_value == value %}
+          checked
+        {% endif %}
+        {% if option_disabled %}
+          class="disabled"
+        {% endif %}
+      >
+      <label for="{{ input_id }}" {% if variant_image_url != blank %}style="background-image: url('{{ variant_image_url }}')"{% else %}class="placeholder-svg"{% endif %}>
+        {% if variant_image_url == blank %}
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
+        <span class="visually-hidden">{{ value | escape }}</span>
+        <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
+      </label>
+    </div>
+
+  {% endfor %}
+</div>

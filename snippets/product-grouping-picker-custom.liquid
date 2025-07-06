@@ -1,0 +1,307 @@
+{%- if product.metafields.custom[block.settings.option_type_metafield_key] -%} 
+  
+  {% if product.has_only_default_variant %}
+    {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  {% unless block.settings.combined_listing_swatch_shape_custom == "none" %}
+    {{ 'component-product-variant-swatch-custom.css' | asset_url | stylesheet_tag }}
+  {% endunless %} 
+  
+  {% assign related_products_metaobject = product.metafields.custom[block.settings.option_type_metafield_key].value %}
+  {% assign related_products = related_products_metaobject.product_grouping.value %}
+
+  {% if product.metafields.custom.variant_swatch_map_override.value %}
+    {% assign target_entry = product.metafields.custom.variant_swatch_map_override.value %}
+  {% else %}  
+    {% assign entry_title = block.settings.combined_listing_variant_swatch_metaobject %} 
+    {% assign target_entry = nil %}
+    {% for entry in shop.metaobjects.variant_swatch_map.values %}
+      {% if entry.title == entry_title %}
+        {% assign target_entry = entry %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+      
+  {% if target_entry %}
+    {% assign variant_images_data = target_entry.variant_images_json %}
+  {% else %}
+    {% assign variant_images_data = nil %}
+  {% endif %}
+
+  {%- if block.settings.picker_type == 'button' -%}
+
+    {% if block.settings.combined_listing_swatch_shape_custom == "none" %}
+      
+      <fieldset class="js product-form__input product-form__input--pill">
+        <legend class="form__label">{{ block.settings.grouping_label }}</legend>
+        {% for related_product in related_products %}
+          <input
+            type="radio"
+            id="related_product-{{ related_product.id }}-{{ block.id }}"
+            name="related_product_{{ block.id }}"
+            value="{{ related_product.url }}"
+            onchange="handleStyleChange(this)"
+            data-variants="{{ related_product.variants | map: 'id' | join: ',' }}|{{ related_product.variants | map: 'option1' | join: ',' }}|{{ related_product.variants | map: 'option2' | join: ',' }}|{{ related_product.variants | map: 'option3' | join: ',' }}"
+            data-option-label="{{ related_product.metafields.custom[block.settings.option_value_metafield_key].value }}"
+            {% if product.handle == related_product.handle %}
+              checked="checked"
+            {% endif %}
+          >
+          <label for="related_product-{{ related_product.id }}-{{ block.id }}">{{ related_product.metafields.custom[block.settings.option_value_metafield_key].value }}</label>
+        {% endfor %}
+      </fieldset>
+  
+    {% else %}
+      
+      {% assign variant_options_images = variant_images_data.value | where: "variant_name", block.settings.grouping_label %}
+      <fieldset class="js product-form__input product-form__input--pill">
+        {% assign base_store_files_url = '//' | append: shop.permanent_domain | append: '/cdn/shop/files/' %}
+        {% for related_product in related_products %}
+          {% if product.handle == related_product.handle %}
+            <legend class="form__label">
+              {{ block.settings.grouping_label }}:
+              <span id="selected{{ block.settings.grouping_label }}" class="product-grouping-selected-value">{{ related_product.metafields.custom[block.settings.option_value_metafield_key].value }}</span>
+            </legend>
+          {% endif %}
+          {% assign variant_image_url = nil %}
+          {% assign option_disabled = true %}
+          {% if related_product.available %}
+            {% assign option_disabled = false %}
+          {% endif %}
+          {% assign swatch_found = false %}
+          {% for item in variant_options_images %}
+            {% if item.variant_value == related_product.metafields.custom[block.settings.option_value_metafield_key].value %}
+               {% if item.variant_swatch != blank %}
+                {% assign variant_image_url = base_store_files_url | append: item.variant_swatch %}
+                {% assign swatch_found = true %}
+              {% elsif item.variant_hex %}
+                {% assign hex_color = item.variant_hex | replace: '#', '%23' %}
+                {% assign svg = '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="100%" height="100%" fill="' | append: hex_color | append: '" /></svg>' %}
+                {% assign encoded_svg = svg | replace: '"', '%22' | replace: '<', '%3C' | replace: '>', '%3E' %}
+                {% assign variant_image_url = 'data:image/svg+xml;charset=utf-8,' | append: encoded_svg %}
+                {% assign swatch_found = true %}
+              {% endif %}
+              {% if swatch_found %}
+                {% break %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {% unless swatch_found %}
+            {% assign variant_image_url = related_product.featured_image.src | img_url: '100x100' %}
+          {% endunless %}
+           <div class="product-form__swatch"> 
+              <input
+                type="radio"
+                id="related_product-{{ related_product.id }}-{{ block.id }}"
+                name="related_product_{{ block.id }}"
+                value="{{ related_product.url }}"
+                onchange="handleStyleChange(this)"
+                data-product-id="{{ product.id }}" 
+                data-image-url="{{ variant_image_url }}"
+                data-variants="{{ related_product.variants | map: 'id' | join: ',' }}|{{ related_product.variants | map: 'option1' | join: ',' }}|{{ related_product.variants | map: 'option2' | join: ',' }}|{{ related_product.variants | map: 'option3' | join: ',' }}"
+                data-option-label="{{ related_product.metafields.custom[block.settings.option_value_metafield_key].value }}"
+                {% if product.handle == related_product.handle %}
+                  checked="checked"
+                {% endif %}
+                {% if option_disabled %}
+                  class="disabled"
+                {% endif %}
+              >
+                <label for="related_product-{{ related_product.id }}-{{ block.id }}" 
+                  style="
+                    background-image: url('{{ variant_image_url }}'); 
+                    width: {% if block.settings.combined_listing_swatch_shape_custom == 'aspect_ratio' %}{{ block.settings.combined_listing_custom_swatch_width }}px{% else %}{{ block.settings.combined_listing_swatch_size }}px{% endif %}; 
+                    height: {{ block.settings.combined_listing_swatch_size }}px; 
+                    border-radius: {% case block.settings.combined_listing_swatch_shape_custom %}
+                      {% when 'circle' %}50%
+                      {% when 'square' %}0%
+                      {% when 'aspect_ratio' %}0%
+                      {% else %}0%
+                    {% endcase %} !important;
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;"
+                  >
+                <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
+              </label>
+           </div>
+         {% endfor %}
+      </fieldset>
+      
+    {% endif %}
+    
+  {%- elsif block.settings.picker_type == 'dropdown' -%}
+    <div class="product-form__input product-form__input--dropdown">
+      <label for="ProductSelect-related-{{ section.id }}" class="form__label">{{ block.settings.grouping_label }}</label>
+      <div class="select">
+        <select
+          id="ProductSelect-related-{{ section.id }}-{{ block.id }}"
+          class="select__select"
+          onchange="handleStyleChange(this)"
+        >
+          {% for related_product in related_products %}
+            <option
+              value="{{ related_product.url }}"
+              {% if product.handle == related_product.handle %}
+                selected="selected"
+              {% endif %}
+              data-variants="{{ related_product.variants | map: 'id' | join: ',' }}|{{ related_product.variants | map: 'option1' | join: ',' }}|{{ related_product.variants | map: 'option2' | join: ',' }}|{{ related_product.variants | map: 'option3' | join: ',' }}"
+              data-option-label="{{ related_product.metafields.custom[block.settings.option_value_metafield_key].value }}"
+            >
+              {{ related_product.metafields.custom[block.settings.option_value_metafield_key].value }}
+            </option>
+          {% endfor %}
+        </select>
+        <span class="svg-wrapper">
+          {{- 'icon-caret.svg' | inline_asset_content -}}
+        </span>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <script>
+    (function() {
+        function handleStyleChange(element) {
+            const currentProductUrl = window.location.pathname;
+            let newProductUrl, variantsData;
+    
+            if (element.tagName === 'SELECT') {
+                const selectedOption = element.options[element.selectedIndex];
+                newProductUrl = selectedOption.value;
+                variantsData = selectedOption.getAttribute('data-variants');
+            } else {
+                newProductUrl = element.value;
+                variantsData = element.getAttribute('data-variants');
+            }
+    
+            if (new URL(newProductUrl, window.location.origin).pathname !== currentProductUrl) {
+                revertSelection(currentProductUrl);
+            }
+    
+            let navigateUrl = newProductUrl;
+    
+            if (variantsData) {
+                const currentOptions = getCurrentVariantOptions();
+                const [ids, option1s, option2s, option3s] = variantsData.split('|').map(item => item.split(','));
+                const variants = ids.map((id, index) => ({
+                    id,
+                    options: [option1s[index], option2s[index], option3s[index]].filter(Boolean)
+                }));
+    
+                const bestMatchVariant = findBestMatchingVariant(currentOptions, variants);
+                
+                if (bestMatchVariant) {
+                    const url = new URL(navigateUrl, window.location.origin);
+                    url.searchParams.set('variant', bestMatchVariant.id);
+                    navigateUrl = url.toString();
+                }
+            }
+            
+            if (new URL(navigateUrl, window.location.origin).pathname !== currentProductUrl) {
+                window.location.href = navigateUrl;
+            } else {
+                updateCustomUI();
+            }
+        }
+    
+        function revertSelection(productUrl) {
+            const styleInputs = document.querySelectorAll('input[type="radio"][name^="related_product_"], select[id^="ProductSelect-related-"]');
+            
+            styleInputs.forEach(input => {
+                if (input.tagName === 'SELECT') {
+                    const currentSelectedIndex = input.selectedIndex;
+                    Array.from(input.options).forEach((option, index) => {
+                        const optionUrl = new URL(option.value, window.location.origin);
+                        if (optionUrl.pathname === productUrl) {
+                            input.selectedIndex = index;
+                        }
+                    });
+                    if (currentSelectedIndex !== input.selectedIndex) {
+                        updateCustomUI();
+                    }
+                } else {
+                    const inputUrl = new URL(input.value, window.location.origin);
+                    const wasChecked = input.checked;
+                    input.checked = (inputUrl.pathname === productUrl);
+                    if (wasChecked !== input.checked) {
+                        updateCustomUI();
+                    }
+                }
+            });
+        }
+    
+        function getCurrentVariantOptions() {
+            const variantSelects = document.querySelector('variant-radios, variant-selects');
+            if (variantSelects && variantSelects.querySelector && variantSelects.querySelector('.product-form__input')) {
+                return Array.from(variantSelects.querySelectorAll('.product-form__input')).map(input => {
+                    const selected = input.querySelector('input:checked') || input.querySelector('select');
+                    return selected ? selected.value : null;
+                }).filter(Boolean);
+            }
+            return [];
+        }
+    
+        function findBestMatchingVariant(currentOptions, variants) {
+            let bestMatch = null;
+            let maxMatchingOptions = 0;
+    
+            variants.forEach(variant => {
+                let matchingOptions = 0;
+                for (let i = 0; i < currentOptions.length && i < variant.options.length; i++) {
+                    const currentOption = currentOptions[i].replace(/\s+/g, '').toLowerCase();
+                    const variantOption = variant.options[i].replace(/\s+/g, '').toLowerCase();
+                    if (currentOption === variantOption) {
+                        matchingOptions++;
+                    }
+                }
+    
+                if (matchingOptions > maxMatchingOptions) {
+                    maxMatchingOptions = matchingOptions;
+                    bestMatch = variant;
+                }
+            });
+    
+            return bestMatch;
+        }
+    
+        function updateCustomUI() {
+            const selectedStyle = document.querySelector('input[type="radio"][name^="related_product_"]:checked, select[id^="ProductSelect-related-"]');
+            if (selectedStyle) {
+                let selectedValue;
+                let labelElement;
+    
+                if (selectedStyle.tagName === 'SELECT') {
+                    selectedValue = selectedStyle.options[selectedStyle.selectedIndex].text;
+                    labelElement = selectedStyle.parentElement.querySelector('.form__label');
+                } else {
+                    const label = document.querySelector(`label[for="${selectedStyle.id}"]`);
+                    selectedValue = selectedStyle.dataset.optionLabel || (label ? label.textContent.trim() : '');
+                    labelElement = selectedStyle.closest('fieldset').querySelector('.form__label');
+                }
+    
+                if (labelElement) {
+                    const target = labelElement.querySelector('.product-grouping-selected-value');
+                    if (target) {
+                        target.textContent = selectedValue;
+                    }
+                }
+            }
+        }
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            revertSelection(window.location.pathname);
+        });
+    
+        document.addEventListener('change', function(event) {
+            if (event.target.tagName === 'SELECT' && event.target.id.startsWith('ProductSelect-related-')) {
+                handleStyleChange(event.target);
+            }
+        });
+    
+        window.handleStyleChange = handleStyleChange;
+    })();
+    </script>
+
+{%- endif -%}

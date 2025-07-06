@@ -1,0 +1,250 @@
+{% assign product_form_id = 'product-form-' | append: section.id %}
+{% assign base_price = product.selected_or_first_available_variant.price %}
+
+<div class="tiered-quantity-selector" {{ block.shopify_attributes }}>
+  <style>
+    .tiered-quantity-options {
+      --selected-bg-color: {{ block.settings.selected_button_bg_color }};
+      --savings-text-color: {{ block.settings.savings_text_color }};
+      --savings-bg-color: {{ block.settings.savings_bg_color }};
+      --border-radius: {{ block.settings.border_radius }}rem;
+      --option-bottom-spacing: {{ block.settings.option_bottom_spacing }}rem;
+      --compare-price-font-size: {{ block.settings.compare_price_font_size }}rem;
+      --final-price-font-size: {{ block.settings.final_price_font_size }}rem;
+      --per-unit-font-size: {{ block.settings.per_unit_font_size }}rem;
+      --label-font-size: {{ block.settings.label_font_size }}rem;
+      --text-color-unselected: {{ block.settings.text_color_unselected }};
+      --text-color-selected: {{ block.settings.text_color_selected }};
+      --savings-label-font-size: {{ block.settings.savings_label_font_size }}rem;
+
+      --badge-bg-color: {{ block.settings.badge_bg_color }};
+      --badge-font-size: {{ block.settings.badge_font_size }}rem;
+      --badge-font-color: {{ block.settings.badge_font_color }};
+    }
+
+    .tiered-quantity-selector {
+      margin: 1em 0;
+    }
+
+    .tiered-quantity-options {
+      display: flex;
+      gap: 1em;
+      margin-top: 0.7rem;
+      flex-wrap: wrap;
+      align-items: stretch;
+    }
+
+    .tiered-option-wrapper {
+      position: relative;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .tiered-option {
+      cursor: pointer;
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      text-align: center;
+      transition: all 0.3s;
+      background: #fff;
+      font-size: var(--pricing-font-size);
+      color: var(--text-color-unselected);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--border-radius);
+      position: relative;
+      padding-bottom: var(--option-bottom-spacing);
+      overflow: hidden;
+      width: 100%;
+    }
+    .tiered-option--active {
+      background: var(--selected-bg-color);
+      color: var(--text-color-selected);
+    }
+    .tiered-option:hover {
+      border-color: #000;
+    }
+
+    .tiered-option__badge {
+      position: absolute;
+      top: 0; 
+      left: 50%;
+      transform: translate(-50%, -80%);
+      display: inline-block;
+      background: var(--badge-bg-color);
+      color: var(--badge-font-color);
+      font-size: var(--badge-font-size);
+      font-weight: bold;
+      text-align: center;
+      white-space: nowrap;
+      padding: 0.1em 0.5em;
+      border-radius: var(--border-radius);
+      z-index: 2;
+    }
+
+    .tiered-option__label {
+      font-weight: 600;
+      margin-bottom: 0.5em;
+      font-size: var(--label-font-size);
+    }
+    .tiered-option__prices {
+      margin: 0.5em 0;
+    }
+    .tiered-option__compare-price {
+      color: inherit;
+      opacity: 0.75;
+      text-decoration: line-through;
+      display: block;
+      margin-bottom: 0.25em;
+      font-size: var(--compare-price-font-size);
+    }
+    .tiered-option__final-price {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 0.25em;
+      font-size: var(--final-price-font-size);
+    }
+    .tiered-option__per-unit {
+      font-size: var(--per-unit-font-size);
+      color: inherit;
+      opacity: 0.75;
+      margin-bottom: 0.5em;
+    }
+    .tiered-option__discount-area {
+      position: absolute;
+      bottom: -0.25px;
+      left: -1px;
+      width: calc(100% + 2px);
+      box-sizing: border-box;
+      text-align: center;
+      padding: 0.5em;
+      background: var(--savings-bg-color);
+      color: var(--savings-text-color);
+      font-size: var(--savings-label-font-size);
+      font-weight: bold;
+      transform: translateZ(0);
+      will-change: transform;
+    }
+  </style>
+
+  <!-- Hidden quantity input -->
+  <input type="hidden" name="quantity" id="Quantity-{{ section.id }}" value="1" form="{{ product_form_id }}" />
+
+  {% assign per_unit_label = block.settings.per_unit_label %}
+  {% assign show_zero_percent_savings = block.settings.show_zero_percent_savings %}
+  {% assign show_savings_labels = block.settings.show_savings_labels %}
+  {% assign show_strikethrough = block.settings.show_strikethrough %}
+  {% assign show_per_unit = block.settings.show_per_unit %}
+  {% assign show_total_pricing = block.settings.show_total_pricing %}
+
+  {% assign show_quantity_label = block.settings.show_quantity_label %}
+  {% assign quantity_label_text = block.settings.quantity_label_text %}
+
+  {% if show_quantity_label %}
+    <legend class="form__label">{{ quantity_label_text }}</legend>
+  {% endif %}
+
+  <div class="tiered-quantity-options" data-quantity-input-id="Quantity-{{ section.id }}">
+
+    {% assign option_numbers = "1,2,3" | split: "," %}
+    {% for i in option_numbers %}
+      {% assign label_key = "option_" | append: i | append: "_label" %}
+      {% assign quantity_key = "option_" | append: i | append: "_quantity" %}
+      {% assign discount_pct_key = "option_" | append: i | append: "_discount_percentage" %}
+      {% assign badge_enable_key = "option_" | append: i | append: "_badge_enable" %}
+      {% assign badge_text_key = "option_" | append: i | append: "_badge_text" %}
+
+      {% assign label = block.settings[label_key] %}
+      {% assign quantity = block.settings[quantity_key] | plus: 0 %}
+      {% assign discount_pct = block.settings[discount_pct_key] | plus: 0 %}
+      {% assign badge_enable = block.settings[badge_enable_key] %}
+      {% assign badge_text = block.settings[badge_text_key] %}
+
+      {% if label != blank and quantity > 0 %}
+        {% assign compare_total_cents = quantity | times: base_price %}
+        {% assign discount_multiplier = 100 | minus: discount_pct %}
+        {% assign final_price_cents = compare_total_cents | times: discount_multiplier | divided_by: 100 %}
+        {% assign per_unit_cents = final_price_cents | divided_by: quantity %}
+
+        {% capture compare_price_formatted %}{{ compare_total_cents | money }}{% endcapture %}
+        {% capture final_price_formatted %}{{ final_price_cents | money }}{% endcapture %}
+        {% capture per_unit_price_formatted %}{{ per_unit_cents | money }}{% endcapture %}
+
+        {% assign show_compare = false %}
+        {% if discount_pct > 0 and show_strikethrough %}
+          {% assign show_compare = true %}
+        {% endif %}
+
+        {% assign show_discount = false %}
+        {% if show_savings_labels %}
+          {% if discount_pct > 0 %}
+            {% assign show_discount = true %}
+          {% elsif discount_pct == 0 and show_zero_percent_savings %}
+            {% assign show_discount = true %}
+          {% endif %}
+        {% endif %}
+
+        <div class="tiered-option-wrapper">
+          {% if badge_enable %}
+            <div class="tiered-option__badge">{{ badge_text }}</div>
+          {% endif %}
+          <button type="button"
+                  class="tiered-option{% if forloop.first %} tiered-option--active{% endif %}"
+                  data-quantity="{{ quantity }}">
+            <div class="tiered-option__content">
+              <div class="tiered-option__label">{{ label }}</div>
+              <div class="tiered-option__prices">
+                {% if show_compare %}
+                  <span class="tiered-option__compare-price">{{ compare_price_formatted }}</span>
+                {% endif %}
+                {% if show_total_pricing %}
+                  <span class="tiered-option__final-price">{{ final_price_formatted }}</span>
+                {% endif %}
+                {% if show_per_unit %}
+                  <div class="tiered-option__per-unit">{{ per_unit_price_formatted }} / {{ per_unit_label }}</div>
+                {% endif %}
+              </div>
+            </div>
+            {% if show_discount %}
+              <div class="tiered-option__discount-area">
+                {{ block.settings.save_label_text }} {{ discount_pct }}%
+              </div>
+            {% endif %}
+          </button>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var container = document.querySelector('.tiered-quantity-options[data-quantity-input-id="Quantity-{{ section.id }}"]');
+  if (!container) return;
+  var quantityInput = document.getElementById(container.dataset.quantityInputId);
+  var buttons = container.querySelectorAll('.tiered-option');
+
+  buttons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      buttons.forEach(b => {
+        b.classList.remove('tiered-option--active');
+        b.style.background = '#fff';
+        b.style.color = 'var(--text-color-unselected)';
+      });
+      this.classList.add('tiered-option--active');
+      this.style.background = getComputedStyle(this).getPropertyValue('--selected-bg-color') || '#000';
+      this.style.color = 'var(--text-color-selected)';
+      var qty = parseInt(this.getAttribute('data-quantity'), 10);
+      if (quantityInput && !isNaN(qty)) {
+        quantityInput.value = qty;
+        quantityInput.dispatchEvent(new Event('change'));
+      }
+    });
+  });
+});
+</script>

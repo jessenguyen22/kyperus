@@ -1,0 +1,75 @@
+{% if menu_images_toggle != 'none' %}
+  {% assign menu_image_url = '' %}
+  {% assign menu_image_obj = nil %}
+
+  {% if menu_images_toggle == 'featured' %}
+    {% if link.object.featured_image %}
+      {% assign menu_image_obj = link.object.featured_image %}
+    {% endif %}
+  {% elsif menu_images_toggle == 'metafield' %}
+    {% if link.object.metafields.custom.header_menu_image %}
+      {% assign menu_image_obj = link.object.metafields.custom.header_menu_image %}
+    {% endif %}
+  {% endif %}
+
+  {% if menu_image_obj == nil %}
+    {% assign key_to_find = link.handle | default: link.title | handle %}
+    {% assign menu_fallback_image = shop.metaobjects.custom_menu_image_fallback[key_to_find] %}
+    {% if menu_fallback_image and menu_fallback_image.image %}
+      {% assign menu_image_obj = menu_fallback_image.image %}
+    {% endif %}
+  {% endif %}
+
+  {% if menu_image_obj %}
+    {% assign menu_image_url = menu_image_obj | image_url: width: menu_images_size, height: menu_images_size %}
+    <img src="{{ menu_image_url }}" alt="{{ link.title | escape }}" class="header-menu-image">
+  {% else %}
+    {{ 'image' | placeholder_svg_tag: 'header-menu-image' }}
+  {% endif %}
+
+  <style>
+
+    {% if menu_images_toggle and menu_images_border_toggle %}
+      .menu-drawer__menu {
+        list-style: none;
+        padding-left: 0; /* Remove default padding */
+      }
+      
+      .menu-drawer__menu li {
+        border-top: 1px solid {{ menu_images_border_color }};
+      }
+      
+      .menu-drawer__menu li:last-child {
+        border-bottom: 1px solid {{ menu_images_border_color }};
+      }  
+      
+      .header__submenu > li:not(:last-child) {
+        border-bottom: 1px solid {{ menu_images_border_color }};
+      }
+      
+      .header__submenu.header__submenu > li:not(:last-child) {
+        border-bottom: 1px solid {{ menu_images_border_color }};
+      }
+      
+      .header__submenu.list-menu {
+        padding: 0;
+      }
+      .header__submenu.header__submenu {
+        margin: 0;
+      }
+    
+    {% endif %}
+      
+    .header-menu-image {
+      margin-left: auto; 
+      width: {{ menu_images_size }}px;
+      height: {{ menu_images_size }}px;
+      object-fit: cover;
+    }
+    
+    .list-menu--disclosure.list-menu--images {
+      width: {{ menu_dropdown_width }}rem;
+    }
+
+  </style>
+{% endif %}

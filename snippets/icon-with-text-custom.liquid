@@ -1,0 +1,132 @@
+{% comment %}
+  Renders icons with text blocks using a metaobject/metafield for dynamic icon count and ordering.  
+{% endcomment %}
+
+{% if icon_source == 'product_metafield' %}
+  {% assign page_icons = product.metafields.custom.icons.value %}
+{% elsif icon_source == 'metaobject_entry' %}
+  {% assign page_icons = nil %}
+  {% for entry in shop.metaobjects.icon_with_text.values %}
+    {% if entry.name == metaobject_entry_name %}
+      {% assign page_icons = entry %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+<ul 
+  class="icon-with-text icon-with-text-custom--{{ block_or_section_id }} icon-with-text--{{ layout }} list-unstyled"
+  style="--icons-per-line: {{ icons_per_line }}; --columns: {{ num_columns }};"
+>
+  {% for icon_path in page_icons.icons.value %}
+    {% assign image_url = icon_path | img_url: 'master' %}
+    {% assign icon_index = forloop.index0 %}
+    {% assign icon_text = page_icons.text.value[icon_index] %}
+    <li class="icon-with-text__item">
+      <img src="{{ image_url }}" alt="{{ icon_text | escape }}" height="auto" width="auto" loading="lazy">
+      <span class="{{ heading_size }} inline-richtext icon-with-text-custom--{{ block_or_section_id }}">{{ icon_text }}</span>
+    </li>
+  {% endfor %}
+</ul>
+
+<style>
+  
+  .icon-with-text.icon-with-text-custom--{{ block_or_section_id }} {
+    --icon-size: calc(var(--font-heading-scale) * {{ icon_size }}rem);
+  }
+  
+  .icon-with-text--horizontal.icon-with-text-custom--{{ block_or_section_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding-left: {{ icons_horiz_padding_left }}%;
+    padding-right: {{ icons_horiz_padding_right }}%;
+  }
+
+  .icon-with-text--horizontal.icon-with-text-custom--{{ block_or_section_id }} .icon-with-text__item {
+    flex: 1 0 calc((100% / var(--icons-per-line)) - 2rem);
+    text-align: center; 
+  }
+
+.icon-with-text--vertical.icon-with-text-custom--{{ block_or_section_id }} {
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  gap: 2rem; 
+}
+
+.icon-with-text--vertical.icon-with-text-custom--{{ block_or_section_id }} .icon-with-text__item {
+  text-align: center; 
+  margin-bottom: 0rem;
+}
+
+  
+/* Icon with text (needed styles if not on a product page) */
+  .icon-with-text {
+    --icon-size: calc(var(--font-heading-scale) * 3rem);
+    --icon-spacing: calc(var(--font-heading-scale) * 1rem);
+  }
+  
+  .icon-with-text--horizontal {
+    display: flex;
+    justify-content: center;
+    column-gap: 3rem;
+    flex-direction: row;
+  }
+  
+  .icon-with-text--vertical {
+    --icon-size: calc(var(--font-heading-scale) * 2rem);
+  }
+  
+  .icon-with-text .icon {
+    fill: rgb(var(--color-foreground));
+    height: var(--icon-size);
+    width: var(--icon-size);
+  }
+  
+  .icon-with-text--horizontal .icon,
+  .icon-with-text--horizontal img {
+    margin-bottom: var(--icon-spacing);
+  }
+  
+  .icon-with-text--vertical .icon {
+    min-height: var(--icon-size);
+    min-width: var(--icon-size);
+    margin-right: var(--icon-spacing);
+  }
+  
+  .icon-with-text img {
+    height: var(--icon-size);
+    width: var(--icon-size);
+    object-fit: contain;
+  }
+  
+  .icon-with-text--vertical img {
+    margin-right: var(--icon-spacing);
+  }
+  
+  .icon-with-text--horizontal .h4 {
+    padding-top: calc(var(--icon-size) + var(--icon-spacing));
+    text-align: center;
+  }
+  
+  .icon-with-text--horizontal svg + .h4,
+  .icon-with-text--horizontal img + .h4,
+  .icon-with-text--horizontal.icon-with-text--text-only .h4 {
+    padding-top: 0;
+  }
+  
+  .icon-with-text__item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .icon-with-text--horizontal .icon-with-text__item {
+    flex-direction: column;
+    width: 33%;
+  }
+  
+  .icon-with-text--vertical .icon-with-text__item {
+    margin-bottom: var(--icon-size);
+  }
+  
+</style>

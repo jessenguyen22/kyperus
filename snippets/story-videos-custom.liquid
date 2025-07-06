@@ -1,0 +1,1060 @@
+{% if block.settings.enable_story_videos %}
+
+  {% if block.settings.video_source == 'metaobject_entry' %}
+      {% assign video_metaobject = shop.metaobjects.story_style_videos[block.settings.metaobject_reference] %}
+  {% elsif block.settings.video_source == 'product_metafield' %}
+      {% assign video_metaobject = product.metafields.custom[block.settings.metaobject_reference].value %}
+  {% endif %}
+
+  {% if video_metaobject %}
+      <div class="story-preview" {{ block.shopify_attributes }}>
+        <div class="story-preview__header">
+          <div class="story-preview__heading">{{ block.settings.heading }}</div>
+          <div class="story-preview__nav-wrapper">
+            <button class="story-preview__nav story-preview__nav--prev">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="<http://www.w3.org/2000/svg>">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button class="story-preview__nav story-preview__nav--next">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="<http://www.w3.org/2000/svg>">
+                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="story-preview__slider">
+          <div class="story-preview__container">
+            {% for video in video_metaobject.files.value %}
+              {% if video.media_type == 'video' %}
+                  <div class="story-preview__item">
+                  <button class="story-preview__thumbnail" data-video-id="{{ video.id }}">
+                      <div class="story-preview__video-wrapper">
+                          {{ video | video_tag: 
+                              image_size: '400x',
+                              autoplay: true, 
+                              loop: true, 
+                              muted: true, 
+                              controls: false,
+                              preload: "metadata"
+                          }}
+                      </div>
+                  </button>
+                  </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    
+      {% if block.settings.product_thumbnail_shape == "9_16_rectangle" %}
+        {% assign product_thumbnail_height = block.settings.product_thumbnail_size | times: 16 | divided_by: 9 %}
+      {% elsif block.settings.product_thumbnail_shape == "3_4_rectangle" %}
+          {% assign product_thumbnail_height = block.settings.product_thumbnail_size | times: 4 | divided_by: 3 %}
+      {% else %}
+          {% assign product_thumbnail_height = block.settings.product_thumbnail_size %}
+      {% endif %}
+
+      {% if block.settings.overlay_thumbnail_shape == "9_16_rectangle" %}
+          {% assign overlay_thumbnail_height = block.settings.overlay_thumbnail_size | times: 16 | divided_by: 9 %}
+      {% elsif block.settings.overlay_thumbnail_shape == "3_4_rectangle" %}
+          {% assign overlay_thumbnail_height = block.settings.overlay_thumbnail_size | times: 4 | divided_by: 3 %}
+      {% else %}
+          {% assign overlay_thumbnail_height = block.settings.overlay_thumbnail_size %}
+      {% endif %}
+
+      <style>
+          .story-preview {
+            margin: 20px 0;
+          }
+          
+          .story-preview__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px;
+          }
+          
+          .story-preview__heading {
+            margin: 0;
+            font-size: {{ block.settings.heading_font_size }}px;
+            flex-grow: 1;
+          }
+          
+          .story-preview__nav-wrapper {
+            display: flex;
+            gap: 0px;
+            margin-left: auto; 
+          }
+          
+          .story-preview__nav {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            color: #000;
+          }
+          
+          .story-preview__nav:hover {
+            color: #555;
+          }
+
+          .story-preview__nav:disabled {
+              opacity: 0.5;
+          }
+          
+          .story-preview__nav svg {
+            display: block;
+            width: 24px;
+            height: 24px;
+          }
+          
+          .story-preview__slider {
+            position: relative;
+            overflow: hidden;
+          }
+          
+          .story-preview__container {
+            display: flex;
+            transition: transform 0.3s ease;
+          }
+          
+          .story-preview__item {
+            flex: 0 0 auto;
+            width: {{block.settings.product_thumbnail_size}}px;
+            height: {{ product_thumbnail_height }}px;
+            margin-right: 20px;
+          }
+          
+          .story-preview__thumbnail {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border: none;
+            border-radius: {% case block.settings.product_thumbnail_shape %}
+              {% when "circle" %}50%
+              {% when "square" %}0
+              {% when "9_16_rectangle" %}{{block.settings.product_thumbnail_size | times: 0.07}}px
+              {% when "3_4_rectangle" %}{{block.settings.product_thumbnail_size | times: 0.07}}px
+            {% endcase %};
+            overflow: hidden;
+            cursor: pointer;
+            background: none;
+          }
+          
+          .story-preview__video-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+          }
+          
+          .story-preview__video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+          
+          .story-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+          }
+          
+          .story-overlay__player {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+          }
+          
+          .story-overlay__close,
+          .story-overlay__mute-toggle,
+          .story-overlay__nav {
+            position: absolute;
+            background: rgba(128, 128, 128, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1001;
+            transition: background-color 0.3s ease;
+          }
+          
+          .story-overlay__close:hover,
+          .story-overlay__mute-toggle:hover,
+          .story-overlay__nav:hover {
+            background: rgba(128, 128, 128, 0.7);
+          }
+          
+          .story-overlay__close {
+            top: 20px;
+            right: 20px;
+          }
+          
+          .story-overlay__mute-toggle {
+            top: 20px;
+            right: 70px;
+          }
+          
+          .story-overlay__close svg,
+          .story-overlay__mute-toggle svg,
+          .story-overlay__nav svg {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.5));
+          }
+          
+          .story-overlay__close svg path,
+          .story-overlay__mute-toggle svg path,
+          .story-overlay__nav svg path {
+            stroke: white;
+            stroke-width: 2;
+          }
+          
+          .story-overlay__scroller {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: {{block.settings.overlay_thumbnail_size | plus: 40}}px;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 0;
+            overflow: hidden;
+          }
+          
+          .story-overlay__nav-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+          }
+          
+          .story-overlay__nav:disabled {
+            opacity: 0.5;
+          }
+
+          .story-overlay__thumbnails {
+            position: relative;
+            height: {{ overlay_thumbnail_height | plus: 20 | times: 3 }}px;
+            width: {{block.settings.overlay_thumbnail_size}}px;
+            margin: 1px 0;
+            transition: transform 0.3s ease;
+          }
+          
+          .story-overlay__preview {
+            width: {{block.settings.overlay_thumbnail_size}}px;
+            height: {{ overlay_thumbnail_height }}px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: {% case block.settings.overlay_thumbnail_shape %}
+              {% when "circle" %}50%
+              {% when "square" %}0
+              {% when "9_16_rectangle" %}{{block.settings.overlay_thumbnail_size | times: 0.07}}px
+              {% when "3_4_rectangle" %}{{block.settings.overlay_thumbnail_size | times: 0.07}}px
+            {% endcase %};
+            overflow: hidden;
+            opacity: 0.7;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            position: absolute;
+            left: 0;
+          }
+          
+          .story-overlay__preview.active {
+            opacity: 1;
+            border: 2px solid #fff;
+          }
+          
+          .story-overlay__preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+          
+          .story-overlay__preview:not(.visible) {
+            opacity: 0;
+            pointer-events: none;
+          }
+          
+          .story-overlay__video-wrapper {
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 100px;
+            width: 100%;
+            height: 100%;
+          }
+          
+          .story-overlay__video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          
+          .story-overlay__video.transitioning {
+            transition-property: transform, opacity;
+            transition-timing-function: ease;
+          }
+          
+          .story-overlay__video--prev,
+          .story-overlay__video--next {
+            opacity: 0;
+            pointer-events: none;
+          }
+          
+          .story-overlay__video--current {
+            opacity: 1;
+            z-index: 1;
+          }
+          
+          .story-overlay__video video,
+          .story-overlay__video img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            cursor: pointer;
+          }
+          
+          .story-overlay__nav {
+            position: static;
+            transform: none;
+            margin: 10px 0;
+          }
+          
+          .story-overlay__nav--prev svg {
+            transform: rotate(90deg);
+          }
+          
+          .story-overlay__nav--next svg {
+            transform: rotate(90deg);
+          }
+        
+          .story-overlay__video video,
+          .story-overlay__video img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            cursor: pointer;
+          }
+          
+          .story-overlay__play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            z-index: 1000;
+          }
+          
+          .story-overlay__play-button svg {
+            width: 128px;
+            height: 128px;
+          }
+          
+          .story-overlay__scroll-indicator {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+          }
+          
+          .story-overlay__scroll-indicator svg {
+            width: 48px;
+            height: 48px;
+            animation: bounce 1.0s infinite;
+            filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.5));
+          }
+          
+          .story-overlay__scroll-indicator svg path {
+            stroke: #eeeeee;
+          }
+          
+          .story-overlay__scroll-text {
+            margin-top: 8px;
+            color: #eeeeee;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 500;
+            filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.5));
+          }
+          
+          @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+              transform: translateY(0);
+            }
+            40% {
+              transform: translateY(-20px);
+            }
+            60% {
+              transform: translateY(-10px);
+            }
+          }
+          
+          @media screen and (min-width: 750px) {
+            .story-overlay__scroll-indicator {
+              display: none;
+            }
+          }
+          
+          @media screen and (max-width: 749px) {
+            .story-overlay__scroller {
+              display: none;
+            }
+            
+            .story-overlay__video-wrapper {
+              margin-left: 0;
+            }
+            
+            .story-overlay__video video,
+            .story-overlay__video img {
+              max-width: 100%;
+              max-height: 100%;
+            }
+            
+            .story-overlay__close {
+              top: 10px;
+              right: 10px;
+            }
+            
+            .story-overlay__mute-toggle {
+              top: 10px;
+              right: 60px;
+            }
+          }
+        </style>
+        
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded and parsed');
+          
+            // Selectors
+            const container = document.querySelector('.story-preview__container');
+            const productPrevBtn = document.querySelector('.story-preview__nav--prev');
+            const productNextBtn = document.querySelector('.story-preview__nav--next');
+            const overlay = document.getElementById('story-overlay');
+            const closeBtn = overlay.querySelector('.story-overlay__close');
+            const thumbnails = document.querySelectorAll('.story-preview__thumbnail');
+            const scroller = overlay.querySelector('.story-overlay__scroller');
+            const overlayThumbnails = overlay.querySelector('.story-overlay__thumbnails');
+            const overlayPrevBtn = overlay.querySelector('.story-overlay__nav--prev');
+            const overlayNextBtn = overlay.querySelector('.story-overlay__nav--next');
+            const muteToggle = overlay.querySelector('.story-overlay__mute-toggle');
+            
+            const videoContainerWrapper = overlay.querySelector('.story-overlay__video-wrapper');
+            const prevContainer = videoContainerWrapper.querySelector('.story-overlay__video--prev');
+            const currentContainer = videoContainerWrapper.querySelector('.story-overlay__video--current');
+            const nextContainer = videoContainerWrapper.querySelector('.story-overlay__video--next');
+            
+            const scrollIndicator = overlay.querySelector('.story-overlay__scroll-indicator');
+            let scrollIndicatorTimeout;
+            console.log('scrollIndicator: ', scrollIndicator);
+        
+            console.log('Selectors initialized:', { 
+              container, overlay, videoContainerWrapper, 
+              prevContainer, currentContainer, nextContainer 
+            });
+          
+            // Variables
+            let currentVideoIndex = 0;
+            let isPlaying = true;
+            let currentVideoElement = null;
+            let playButtonOverlay = null;
+            let isMuted = true;
+            const previewItems = Array.from(overlayThumbnails.querySelectorAll('.story-overlay__preview'));
+            let startY, currentY, isDragging = false;
+            let dragStartTime;
+            const dragThreshold = 10;
+            const tapThreshold = 200;
+            const slideThreshold = 50;
+            const minDragVelocity = 0.5;
+            let lastToggleTime = 0;
+            const toggleDebounceTime = 300;
+        
+            const sliderItems = container.querySelectorAll('.story-preview__item');
+            let currentScrollPosition = 0;
+            const itemWidth = sliderItems[0].offsetWidth + 20;
+        
+            let isDraggingSlider = false;
+            let startX, currentX;
+            let startScrollPosition;
+
+            console.log('Variables initialized');
+          
+            function populateOverlayPreviews() {
+              console.log('Populating overlay previews');
+              const thumbnails = document.querySelectorAll('.story-preview__thumbnail');
+              const overlayPreviews = overlay.querySelectorAll('.story-overlay__preview');
+          
+              thumbnails.forEach((thumbnail, index) => {
+                const video = thumbnail.querySelector('video');
+                const overlayPreview = overlayPreviews[index];
+          
+                if (video && overlayPreview) {
+                  const clonedVideo = video.cloneNode(true);
+                  clonedVideo.muted = true;
+                  clonedVideo.loop = true;
+                  clonedVideo.playsInline = true;
+                  clonedVideo.controls = false;
+                  clonedVideo.autoplay = false;
+                  overlayPreview.appendChild(clonedVideo);
+                }
+              });
+              console.log('Overlay previews populated');
+            }
+          
+            populateOverlayPreviews();
+          
+            function updateThumbnailScroll() {
+              console.log('Updating thumbnail scroll');
+              const thumbWidth = {{ block.settings.overlay_thumbnail_size }};
+              const thumbHeight = {{ overlay_thumbnail_height }};
+              const containerHeight = overlayThumbnails.offsetHeight;
+              const visibleThumbs = 3;
+              const totalThumbs = previewItems.length;
+              
+              let centerIndex;
+              if (currentVideoIndex === 0) {
+                  centerIndex = 1;
+              } else if (currentVideoIndex >= totalThumbs - 1) {
+                  centerIndex = totalThumbs - 2;
+              } else {
+                  centerIndex = currentVideoIndex;
+              }
+          
+              const centerPosition = containerHeight / 2 - thumbHeight / 2;
+          
+              previewItems.forEach((item, index) => {
+                  const offset = (index - centerIndex) * (thumbHeight + 10);
+                  item.style.transform = `translateY(${centerPosition + offset}px)`;
+                  
+                  const isVisible = Math.abs(index - centerIndex) <= 1;
+                  item.classList.toggle('visible', isVisible);
+                  item.classList.toggle('active', index === currentVideoIndex);
+          
+                  const previewVideo = item.querySelector('video');
+                  if (previewVideo) {
+                      if (isVisible) {
+                          previewVideo.play().catch(e => console.log("Preview video play failed:", e));
+                      } else {
+                          previewVideo.pause();
+                      }
+                  }
+              });
+              console.log('Thumbnail scroll updated');
+            }
+          
+            function updateOverlayVideo(index) {
+              console.log('Updating overlay video for index:', index);
+              currentVideoIndex = index;
+              const videoId = previewItems[index].dataset.videoId;
+              
+              const originalVideo = document.querySelector(`[data-video-id="${videoId}"] video`);
+              
+              prevContainer.innerHTML = '';
+              currentContainer.innerHTML = '';
+              nextContainer.innerHTML = '';
+          
+              const overlayVideo = originalVideo.cloneNode(true);
+              
+              overlayVideo.muted = isMuted;
+              overlayVideo.controls = false;
+              overlayVideo.autoplay = true;
+              overlayVideo.loop = true;
+              overlayVideo.playsInline = true;
+              overlayVideo.classList.add('story-overlay__video');
+          
+              currentContainer.appendChild(overlayVideo);
+              
+              playButtonOverlay = document.createElement('div');
+              playButtonOverlay.className = 'story-overlay__play-button';
+              playButtonOverlay.innerHTML = `
+                <svg width="128" height="128" viewBox="0 0 48 48" fill="none" xmlns="<http://www.w3.org/2000/svg>">
+                  <circle cx="24" cy="24" r="20" fill="rgba(0,0,0,0.5)"/>
+                  <path d="M20 16L32 24L20 32V16Z" fill="white"/>
+                </svg>
+              `;
+              playButtonOverlay.style.display = 'none';
+              currentContainer.appendChild(playButtonOverlay);
+          
+              if (index > 0) {
+                const prevVideo = previewItems[index - 1].querySelector('video');
+                prevContainer.appendChild(prevVideo.cloneNode(true));
+              }
+              if (index < previewItems.length - 1) {
+                const nextVideo = previewItems[index + 1].querySelector('video');
+                nextContainer.appendChild(nextVideo.cloneNode(true));
+              }
+          
+              updateThumbnailScroll();
+          
+              overlayVideo.addEventListener('click', togglePlayPause);
+              playButtonOverlay.addEventListener('click', togglePlayPause);
+          
+              updateMuteButtonState(overlayVideo);
+          
+              currentVideoElement = overlayVideo;
+              isPlaying = true;
+              console.log('Overlay video updated');
+        
+              updateOverlayNavButtons();
+            }
+          
+            function togglePlayPause(e) {
+              if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+              
+              const now = new Date().getTime();
+              if (now - lastToggleTime < toggleDebounceTime) {
+                console.log('Ignoring rapid toggle');
+                return;
+              }
+              lastToggleTime = now;
+          
+              console.log('togglePlayPause called');
+              if (isPlaying) {
+                currentVideoElement.pause();
+                playButtonOverlay.style.display = 'block';
+              } else {
+                currentVideoElement.play();
+                playButtonOverlay.style.display = 'none';
+              }
+              isPlaying = !isPlaying;
+              console.log('Video playing state:', isPlaying);
+            }
+          
+            function updateMuteButtonState(videoElement) {
+              console.log('Updating mute button state');
+              const mutedIcon = muteToggle.querySelector('.muted');
+              const unmutedIcon = muteToggle.querySelector('.unmuted');
+              if (isMuted) {
+                mutedIcon.style.display = 'block';
+                unmutedIcon.style.display = 'none';
+              } else {
+                mutedIcon.style.display = 'none';
+                unmutedIcon.style.display = 'block';
+              }
+              console.log('Mute button state updated');
+            }
+        
+            function showScrollIndicator() {
+              if (window.innerWidth < 750) {
+                const scrollIndicator = overlay.querySelector('.story-overlay__scroll-indicator');
+                if (scrollIndicator) {
+                  scrollIndicator.style.opacity = '1';
+                  scrollIndicator.dataset.enabled = 'true';
+                  clearTimeout(scrollIndicatorTimeout);
+                  scrollIndicatorTimeout = setTimeout(() => {
+                    scrollIndicator.style.opacity = '0';
+                    scrollIndicator.dataset.enabled = 'false';
+                  }, 2500);
+                }
+              }
+            }
+          
+            function openOverlay(videoId) {
+              console.log('Opening overlay for video ID:', videoId);
+              overlay.style.display = 'flex';
+              document.body.style.overflow = 'hidden';
+              
+              const index = previewItems.findIndex(item => item.dataset.videoId === videoId);
+              console.log('Video index:', index);
+              currentVideoIndex = index;
+              
+              updateOverlayVideo(index);
+              showScrollIndicator();
+            }
+          
+            function slideVideo(direction, startOffset = 0) {
+              console.log('slideVideo called with direction:', direction, 'startOffset:', startOffset);
+              const newIndex = currentVideoIndex + direction;
+              console.log('New index:', newIndex);
+              if (newIndex >= 0 && newIndex < previewItems.length) {
+                const currentVideo = currentContainer.querySelector('video');
+                const targetContainer = direction > 0 ? nextContainer : prevContainer;
+                const targetVideo = targetContainer.querySelector('video');
+                
+                if (currentVideo && targetVideo) {
+                  console.log('Sliding video...');
+                  currentVideo.pause();
+                  targetVideo.currentTime = 0;
+                  targetVideo.play();
+                  
+                  currentContainer.classList.remove('transitioning');
+                  targetContainer.classList.remove('transitioning');
+                  
+                  const containerHeight = currentContainer.offsetHeight;
+                  const remainingOffset = direction * containerHeight - startOffset;
+                  
+                  currentContainer.style.transform = `translateY(${startOffset}px)`;
+                  targetContainer.style.transform = `translateY(${direction < 0 ? startOffset - containerHeight : startOffset + containerHeight}px)`;
+                  targetContainer.style.opacity = '1';
+                  
+                  void currentContainer.offsetWidth;
+                  
+                  const baseDuration = 300;
+                  const duration = Math.max(100, baseDuration * (Math.abs(remainingOffset) / containerHeight));
+                  
+                  currentContainer.style.transitionDuration = `${duration}ms`;
+                  targetContainer.style.transitionDuration = `${duration}ms`;
+                  
+                  currentContainer.classList.add('transitioning');
+                  targetContainer.classList.add('transitioning');
+                  
+                  currentContainer.style.transform = `translateY(${-direction * containerHeight}px)`;
+                  targetContainer.style.transform = 'translateY(0)';
+                  
+                  setTimeout(() => {
+                    console.log('Updating overlay video after slide');
+                    updateOverlayVideo(newIndex);
+                    currentContainer.classList.remove('transitioning');
+                    targetContainer.classList.remove('transitioning');
+                    currentContainer.style.transform = 'translateY(0)';
+                    prevContainer.style.transform = 'translateY(-100%)';
+                    nextContainer.style.transform = 'translateY(100%)';
+                    prevContainer.style.opacity = '0';
+                    nextContainer.style.opacity = '0';
+                    
+                    currentContainer.style.transitionDuration = '';
+                    targetContainer.style.transitionDuration = '';
+                  }, duration);
+                } else {
+                  console.log('Current or target video not found');
+                }
+              } else {
+                console.log('New index out of bounds');
+              }
+            }
+            
+            function resetVideoPosition() {
+              console.log('Resetting video position');
+              currentContainer.classList.add('transitioning');
+              prevContainer.classList.add('transitioning');
+              nextContainer.classList.add('transitioning');
+              
+              currentContainer.style.transform = 'translateY(0)';
+              prevContainer.style.transform = 'translateY(-100%)';
+              nextContainer.style.transform = 'translateY(100%)';
+              prevContainer.style.opacity = '0';
+              nextContainer.style.opacity = '0';
+              
+              setTimeout(() => {
+                currentContainer.classList.remove('transitioning');
+                prevContainer.classList.remove('transitioning');
+                nextContainer.classList.remove('transitioning');
+              }, 300);
+            }
+          
+            function handleDragStart(e) {
+              console.log('Drag start event triggered');
+              e.preventDefault();
+              startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+              currentY = startY;
+              isDragging = false;
+              dragStartTime = new Date().getTime();
+              console.log('Start position:', startY);
+            }
+          
+            function handleDragMove(e) {
+              if (startY === undefined) return;
+              
+              console.log('Drag move event triggered');
+              currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+              const diffY = currentY - startY;
+              console.log('Current position:', currentY, 'diff:', diffY);
+          
+              if (!isDragging && Math.abs(diffY) > dragThreshold) {
+                isDragging = true;
+                console.log('Drag threshold met, starting drag');
+              }
+          
+              if (isDragging) {
+                e.preventDefault();
+                console.log('Dragging video');
+                currentContainer.style.transform = `translateY(${diffY}px)`;
+                if (diffY > 0 && currentVideoIndex > 0) {
+                  console.log('Dragging up, showing previous video');
+                  prevContainer.style.transform = `translateY(${diffY - prevContainer.offsetHeight}px)`;
+                  prevContainer.style.opacity = '1';
+                } else if (diffY < 0 && currentVideoIndex < previewItems.length - 1) {
+                  console.log('Dragging down, showing next video');
+                  nextContainer.style.transform = `translateY(${diffY + nextContainer.offsetHeight}px)`;
+                  nextContainer.style.opacity = '1';
+                }
+              }
+            }
+          
+            function handleDragEnd(e) {
+              console.log('Drag end event triggered');
+              if (startY === undefined) return;
+          
+              const endY = e.type.includes('mouse') ? e.clientY : (e.changedTouches ? e.changedTouches[0].clientY : currentY);
+              const diffY = endY - startY;
+              const dragDuration = new Date().getTime() - dragStartTime;
+              const dragVelocity = Math.abs(diffY) / dragDuration;
+              console.log('Final drag distance:', diffY, 'Duration:', dragDuration, 'Velocity:', dragVelocity.toFixed(3), 'px/ms');
+            
+              if (Math.abs(diffY) > slideThreshold || dragVelocity > minDragVelocity) {
+                console.log('Significant drag detected, sliding video');
+                if (diffY > 0 && currentVideoIndex > 0) {
+                  console.log('Sliding to previous video');
+                  slideVideo(-1, diffY);
+                } else if (diffY < 0 && currentVideoIndex < previewItems.length - 1) {
+                  console.log('Sliding to next video');
+                  slideVideo(1, diffY);
+                } else {
+                  console.log('Cannot slide, resetting position');
+                  resetVideoPosition();
+                }
+              } else if (Math.abs(diffY) < dragThreshold && dragDuration < tapThreshold) {
+                console.log('Tap detected, toggling play/pause');
+                togglePlayPause(e);
+              } else {
+                console.log('Short drag or long press detected, resetting position');
+                resetVideoPosition();
+              }
+          
+              startY = undefined;
+              currentY = undefined;
+              isDragging = false;
+            }
+        
+            function scrollSlider(direction) {
+              const containerWidth = container.offsetWidth;
+              const totalWidth = itemWidth * sliderItems.length;
+              const maxScroll = totalWidth - containerWidth;
+      
+              currentScrollPosition += direction * itemWidth;
+      
+              if (currentScrollPosition < 0) {
+                  currentScrollPosition = 0;
+              }
+      
+              if (currentScrollPosition > maxScroll) {
+                  currentScrollPosition = maxScroll;
+              }
+      
+              updateSliderPosition();
+            }
+
+            function updateSliderPosition() {
+                container.style.transform = `translateX(-${currentScrollPosition}px)`;
+                productPrevBtn.disabled = currentScrollPosition === 0;
+                productNextBtn.disabled = currentScrollPosition >= (itemWidth * sliderItems.length - container.offsetWidth);
+            }
+        
+            function initializeSlider() {
+                const containerWidth = container.offsetWidth;
+                const totalWidth = itemWidth * sliderItems.length;
+        
+                if (totalWidth <= containerWidth) {
+                    productPrevBtn.disabled = true;
+                    productNextBtn.disabled = true;
+                } else {
+                    productPrevBtn.disabled = true;
+                    productNextBtn.disabled = false;
+                }
+            }
+        
+            function updateOverlayNavButtons() {
+                if (overlayPrevBtn) {
+                    overlayPrevBtn.disabled = currentVideoIndex === 0;
+                }
+                if (overlayNextBtn) {
+                    overlayNextBtn.disabled = currentVideoIndex === previewItems.length - 1;
+                }
+            }
+        
+            function handleSliderDragStart(e) {
+              if (e.type !== 'touchstart') return;
+              isDraggingSlider = true;
+              startX = e.touches[0].clientX;
+              startScrollPosition = currentScrollPosition;
+              container.style.transition = 'none';
+              console.log('Slider drag start:', startX);
+            }
+
+            function handleSliderDragMove(e) {
+                if (!isDraggingSlider || e.type !== 'touchmove') return;
+                
+                currentX = e.touches[0].clientX;
+                const dragDistance = startX - currentX;
+                currentScrollPosition = startScrollPosition + dragDistance;
+
+                const maxScroll = (itemWidth * sliderItems.length) - container.offsetWidth;
+                currentScrollPosition = Math.max(0, Math.min(currentScrollPosition, maxScroll));
+
+                updateSliderPosition();
+                console.log('Slider drag move:', currentScrollPosition);
+            }
+
+            function handleSliderDragEnd(e) {
+                if (e.type !== 'touchend') return;
+                isDraggingSlider = false;
+                container.style.transition = 'transform 0.3s ease';
+                console.log('Slider drag end');
+            }
+        
+            initializeSlider();
+            window.addEventListener('resize', initializeSlider);
+          
+            thumbnails.forEach(thumbnail => {
+              thumbnail.addEventListener('click', () => {
+                console.log('Thumbnail clicked:', thumbnail.dataset.videoId);
+                openOverlay(thumbnail.dataset.videoId);
+              });
+            });
+          
+            if (closeBtn) {
+              closeBtn.addEventListener('click', () => {
+                console.log('Close button clicked');
+                overlay.style.display = 'none';
+                prevContainer.innerHTML = '';
+                currentContainer.innerHTML = '';
+                nextContainer.innerHTML = '';
+                document.body.style.overflow = '';
+              });
+            }
+          
+            if (overlayNextBtn) {
+              overlayNextBtn.addEventListener('click', () => {
+                console.log('Next button clicked');
+                if (currentVideoIndex < previewItems.length - 1) {
+                  slideVideo(1);
+                } else {
+                  console.log('Already at last video');
+                }
+              });
+            }
+          
+            if (overlayPrevBtn) {
+              overlayPrevBtn.addEventListener('click', () => {
+                console.log('Previous button clicked');
+                if (currentVideoIndex > 0) {
+                  slideVideo(-1);
+                } else {
+                  console.log('Already at first video');
+                }
+              });
+            }
+            
+            if (muteToggle) {
+              muteToggle.addEventListener('click', () => {
+                console.log('Mute toggle clicked');
+                if (currentVideoElement) {
+                  isMuted = !isMuted;
+                  currentVideoElement.muted = isMuted;
+                  updateMuteButtonState(currentVideoElement);
+                }
+              });
+            }
+          
+            if (overlayThumbnails) {
+              overlayThumbnails.addEventListener('click', (event) => {
+                console.log('Overlay thumbnail clicked');
+                const preview = event.target.closest('.story-overlay__preview');
+                if (preview) {
+                  const clickedIndex = previewItems.indexOf(preview);
+                  console.log('Clicked thumbnail index:', clickedIndex);
+                  const direction = clickedIndex - currentVideoIndex;
+                  if (direction !== 0) {
+                    slideVideo(direction > 0 ? 1 : -1);
+                  }
+                }
+              });
+            }
+        
+            if (productPrevBtn) {
+                productPrevBtn.addEventListener('click', () => {
+                    console.log('Preview previous button clicked');
+                    scrollSlider(-1);
+                });
+            }
+        
+            if (productNextBtn) {
+                productNextBtn.addEventListener('click', () => {
+                    console.log('Preview next button clicked');
+                    scrollSlider(1);
+                });
+            }
+          
+            videoContainerWrapper.addEventListener('mousedown', (e) => {
+              handleDragStart(e);
+              document.addEventListener('mousemove', handleDragMove);
+              document.addEventListener('mouseup', handleDragEnd);
+            });
+          
+            videoContainerWrapper.addEventListener('touchstart', (e) => {
+              handleDragStart(e);
+              document.addEventListener('touchmove', handleDragMove, { passive: false });
+              document.addEventListener('touchend', handleDragEnd);
+            }, { passive: false });
+          
+            videoContainerWrapper.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+          
+            if (scrollIndicator) {
+              videoContainerWrapper.addEventListener('touchstart', () => {
+                  if (scrollIndicator.dataset.enabled === 'true') {
+                      scrollIndicator.style.opacity = '0';
+                      clearTimeout(scrollIndicatorTimeout);
+                  }
+              }, { passive: true });
+            }
+        
+            container.addEventListener('touchstart', handleSliderDragStart, { passive: true });
+            document.addEventListener('touchmove', handleSliderDragMove, { passive: true });
+            document.addEventListener('touchend', handleSliderDragEnd);
+
+            container.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+
+            window.addEventListener('resize', () => {
+              console.log('Window resized');
+              if (overlay.style.display === 'flex') {
+                if (currentVideoElement) {
+                  currentVideoElement.style.maxWidth = '100%';
+                  currentVideoElement.style.maxHeight = '100%';
+                }
+              }
+              initializeSlider();
+            });
+
+            console.log('All event listeners attached');
+          });
+        </script>
+  {% endif %}
+{% endif %}
