@@ -329,7 +329,10 @@ function initVideoScrubAnimation() {
 
   console.log('📹 Initializing video scrub animation for:', videoWrapper.className);
 
-  // Set initial state
+  // Add body class to indicate GSAP is loaded
+  document.body.classList.add('gsap-loaded');
+  
+  // Set initial state - CSS will handle this, but ensure GSAP takes control
   gsap.set(videoWrapper, { 
     marginTop: '-150vh', 
     opacity: 0 
@@ -343,6 +346,26 @@ function initVideoScrubAnimation() {
   
   // Prevent auto-play
   video.pause();
+  
+  // Force override XO positioning if CSS !important doesn't work
+  const forceVideoPositioning = () => {
+    video.style.setProperty('position', 'relative', 'important');
+    video.style.setProperty('top', 'auto', 'important');
+    video.style.setProperty('left', 'auto', 'important');
+    
+    // Ensure video container has proper height
+    const videoContainer = video.closest('.xb-html-video');
+    if (videoContainer) {
+      videoContainer.style.height = '100vh';
+      videoContainer.style.position = 'relative';
+    }
+  };
+  
+  // Apply positioning fix
+  forceVideoPositioning();
+  
+  // Reapply after any potential XO updates
+  setTimeout(forceVideoPositioning, 100);
 
   // Function to setup scrub animation
   const setupScrubAnimation = () => {
@@ -390,6 +413,9 @@ function initVideoScrubAnimation() {
       }, '<'); // Start with previous animation
 
       console.log('📹 Video scrub animation initialized successfully');
+      
+      // Add ready class to video wrapper
+      videoWrapper.classList.add('gsap-ready');
       
     } else {
       console.warn('📹 Video duration not available, retrying...');
