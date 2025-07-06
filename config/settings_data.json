@@ -131,8 +131,9 @@
     "enable_custom_cart_bubble": true,
     "cart_bubble_color": "#ffffff",
     "enable_cart_bubble_animation": true,
-    "enable_cart_progress_bar": true,
-    "show_progress_bar_icons": true,
+    "enable_cart_progress_bar": false,
+    "show_progress_bar_icons": false,
+    "enable_goal_1": false,
     "sections": {
       "main-password-header": {
         "type": "main-password-header",
