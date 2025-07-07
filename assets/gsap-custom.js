@@ -122,7 +122,7 @@ class GSAPAnimationManager {
       scrollTrigger: {
         trigger: introSection,
         start: 'top top',
-        end: '+=120%', // Đồng bộ với hero section
+        end: '+=150%', // Đồng bộ với hero section
         scrub: 2.5,   // Đồng bộ với hero section
         pin: true,
       }
@@ -220,7 +220,7 @@ class GSAPAnimationManager {
       tl.to(wrapper, { opacity: 1, duration: 2, ease: 'power1.inOut' })
         .to('.entrance-message', { 
         opacity: 0,
-        duration: 0.5,
+        duration: 1,
         ease: 'power1.inOut'
       },'<');
       
