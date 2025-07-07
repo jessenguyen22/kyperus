@@ -59,12 +59,6 @@ class KPRVideoScroll {
   }
 
   buildTimeline(tl, wrapper, video) {
-    const heroSection = document.querySelector('.hero-section');
-    
-    if (heroSection) {
-      tl.to(heroSection, { delay: 0.5, opacity: 0, ease: 'power1.inOut' });
-    }
-    
     tl.to(wrapper, { opacity: 1, duration: 2, ease: 'power1.inOut' });
     
     if (video.duration > 0) {
