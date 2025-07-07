@@ -90,7 +90,7 @@ class GSAPAnimationManager {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: introSection,
-        start: 'top bottom',
+        start: 'top top',
         end: '+=200%', // Đồng bộ với hero section
         scrub: 2.5,   // Đồng bộ với hero section
         pin: true,
