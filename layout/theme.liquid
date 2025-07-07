@@ -34,11 +34,9 @@
     {% endif %}
 
     {% render 'meta-tags' %}
-    {% render 'hydrogen-init' %}
 
-    <!-- Hydrogen Navigation System - Load Early -->
-    <script src="{{ 'performance-optimizer.js' | asset_url }}" defer="defer"></script>
-    <script src="{{ 'hydrogen-navigation.js' | asset_url }}" defer="defer"></script>
+    <!-- Simple Prefetch System -->
+    <script src="{{ 'prefetch.js' | asset_url }}" defer="defer"></script>
     
     <script src="{{ 'constants.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'pubsub.js' | asset_url }}" defer="defer"></script>
@@ -278,7 +276,6 @@
     {% endstyle %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
-    {{ 'hydrogen-navigation.css' | asset_url | stylesheet_tag }}
     {{ 'gsap-custom.css' | asset_url | stylesheet_tag }}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 
