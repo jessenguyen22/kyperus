@@ -89,26 +89,25 @@ class GSAPAnimationManager {
 
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: '.hero-section', // Trigger từ hero section thay vì intro
+        trigger: introSection,
         start: 'top top',
-        end: '+=200%',
-        scrub: 2.5,
-        // Không pin intro - để nó xuất hiện trong hero timeline
+        end: '+=100%',
+        scrub: 1,
+        pin: true,
       }
     });
 
-    // Bắt đầu animation vào cuối hero timeline (80-90%)
     tl
       .to(introSection, { 
         opacity: 1,
-        duration: 0.3,
+        duration: 0.5,
         ease: 'power1.inOut'
-      }, '80%') // Bắt đầu ở 80% của hero scroll
+      })
       .to(introSection, { 
         maskImage: 'radial-gradient(circle at 50% 0vh, black 70%, transparent 100%)',
-        duration: 0.5, 
+        duration: 1, 
         ease: 'power1.inOut' 
-      }, '85%'); // Mask reveal ở 85%
+      }, '<0.2');
 
     this.animations.push({ name: 'introReveal', timeline: tl });
   }
