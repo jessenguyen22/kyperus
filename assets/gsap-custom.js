@@ -90,7 +90,7 @@ class KPRVideoScroll {
         end: '10% center',
         scrub: 2,
       }
-    }).to('.kpr-video', { opacity: 0, duration: 1, ease: 'power1.inOut' });
+    }).to('.kpr-video-wrapper', { opacity: 0, duration: 1, ease: 'power1.inOut' });
   }
 }
 
