@@ -47,7 +47,7 @@ class GSAPAnimationManager {
     });
 
     gsap.set('.mask-logo', { marginTop: '-100vh', opacity: 0 });
-    gsap.set('.entrance-message', { marginTop: '-150vh' });
+    gsap.set('.entrance-message', { marginTop: '-120vh' });
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -138,7 +138,7 @@ class GSAPAnimationManager {
 
       this.setupVideoProperties(video);
       
-      gsap.set(wrapper, { marginTop: '', opacity: 0 });
+      gsap.set(wrapper, { marginTop: '-120vh', opacity: 0 });
       
       const tl = gsap.timeline({
         scrollTrigger: {
