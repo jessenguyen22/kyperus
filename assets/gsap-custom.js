@@ -102,9 +102,9 @@ class GSAPAnimationManager {
     
     if (width >= 1920) {
       return {
-        initialMaskPos: "50% 20%",
+        initialMaskPos: "50% 18%",
         initialMaskSize: "4000% 4000%",
-        maskPos: "50% 20%",
+        maskPos: "50% 18%",
         maskSize: "15% 15%",
       };
     }
