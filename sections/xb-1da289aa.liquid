@@ -1,35 +1,35 @@
 {{ 'xb-1da289aa.min.css' | asset_url | stylesheet_tag }}<section
-      class="xb-section id_mcss4mun44gq" style="--xb-section-z-index:1;--xb-section-width-desktop:100%;--xb-section-width-tablet:100%;--xb-section-width-mobile:100%;--xb-section-blur:0px;--xb-section-position-type:relative;--xb-section-background-gradient-animated-duration:10s;"   
-      data-xb-section-id="id_mcss4mun44gq"
-      data-xb-scroll-id="id_mcss4mun44gq"
+      class="xb-section modern-collection id_mcsx6r7w46bd" style="--xb-section-z-index:1;--xb-section-width-desktop:100%;--xb-section-width-tablet:100%;--xb-section-width-mobile:100%;--xb-section-blur:0px;--xb-section-position-type:relative;--xb-section-background-gradient-animated-duration:10s;"   
+      data-xb-section-id="id_mcsx6r7w46bd"
+      data-xb-scroll-id="id_mcsx6r7w46bd"
       data-xb-section-global="false"
       xo-preset="1426778086"
     >
       
   <div class="xb-container xb-full-width" style="--xb-container-gap-desktop:0px;--xb-container-gap-tablet:15px;--xb-container-gap-mobile:15px;">
     <div
-  class="xb-grid id_mcss4mun59a8" style="--xb-col-desktop:2;--xb-col-tablet:2;--xb-col-mobile:1;--xb-grid-row-desktop:1;--xb-grid-row-tablet:1;--xb-grid-row-mobile:1;--xb-grid-row-height-desktop:100px;--xb-grid-row-height-tablet:100px;--xb-grid-row-height-mobile:100px;--xb-layout-spacing-grid-horizontal-desktop:0px;--xb-layout-spacing-grid-horizontal-tablet:20px;--xb-layout-spacing-grid-horizontal-mobile:15px;--xb-layout-spacing-grid-vertical-desktop:31px;--xb-layout-spacing-grid-vertical-tablet:20px;--xb-layout-spacing-grid-vertical-mobile:15px;"   
+  class="xb-grid id_mcsx6r7w5o1e" style="--xb-col-desktop:2;--xb-col-tablet:2;--xb-col-mobile:1;--xb-grid-row-desktop:1;--xb-grid-row-tablet:1;--xb-grid-row-mobile:1;--xb-grid-row-height-desktop:100px;--xb-grid-row-height-tablet:100px;--xb-grid-row-height-mobile:100px;--xb-layout-spacing-grid-horizontal-desktop:0px;--xb-layout-spacing-grid-horizontal-tablet:20px;--xb-layout-spacing-grid-horizontal-mobile:15px;--xb-layout-spacing-grid-vertical-desktop:31px;--xb-layout-spacing-grid-vertical-tablet:20px;--xb-layout-spacing-grid-vertical-mobile:15px;"   
 >
   
 <div 
   xo-column 
-  class="xb-column id_mcss4mun95gf" 
+  class="xb-column id_mcsx6r7w94je" 
   style="--xb-span-col-desktop:2;--xb-span-col-tablet:2;--xb-span-col-mobile:1;--xb-span-row-desktop:1;--xb-span-row-tablet:1;--xb-span-row-mobile:1;--xb-column-order-desktop:0;--xb-column-order-tablet:0;--xb-column-order-mobile:0;align-self:auto;" 
   false
 >{% assign designMode = false %}
 <div
-  class="xb-product-list xb-product-list-grid id_mcss4mun10yz9"   
+  class="xb-product-list xb-product-list-slide id_mcsx6r7w10md8"   
 >
   {% liquid 
     assign product_source = "custom"
     assign sort_by = "manual"
     if designMode
-      assign limit = 4
+      assign limit = 8
     else
-      assign limit = 4
+      assign limit = 8
     endif
     assign available_only = "yes"
-    assign layout = "grid"
+    assign layout = "slide"
     case product_source
       when 'all'
         assign current_collection = collections["all"]
@@ -73,7 +73,7 @@
 %}
 
 <div 
-  class="xb-product-list__item id_mcss4mun12sam" xo-animate="scroll" xo-cascade xo-duration="800" xo-type="fade-up"  
+  class="xb-product-list__item id_mcsx6r7w12al1" xo-animate="scroll" xo-cascade xo-duration="800" xo-type="fade-up"  
   {% if link_enabled == 'yes' %}
     xb-href="{{ product.url }}"
   {% endif %}
@@ -87,10 +87,10 @@
     </xo-product-data>
   {% endunless %}
   <div
-  class="xb-hover id_mcss4mun13a7d"   
+  class="xb-hover id_mcsx6r7w13a5z"   
 >
   <div
-  class="xb-wrapper id_mcss4mun14ztp" style="--xb-wld:column;--xb-wvsd:0px;--xb-whsd:0px;--xb-wvst:0px;--xb-wvsm:0px;--xb-whst:0px;--xb-whsm:0px;--xb-wwd:100%;--xb-wwt:100%;--xb-wwm:100%;--xb-wvad:none;--xb-wvat:none;--xb-wvam:none;--xb-whad:start;--xb-what:start;--xb-wham:start;--xb-wwrd:undefined;--xb-wwrt:undefined;--xb-wwrm:undefined;--xb-wz:1;--xb-wpt:relative;"   
+  class="xb-wrapper id_mcsx6r7w14ecx" style="--xb-wld:column;--xb-wvsd:0px;--xb-whsd:0px;--xb-wvst:0px;--xb-wvsm:0px;--xb-whst:0px;--xb-whsm:0px;--xb-wwd:100%;--xb-wwt:100%;--xb-wwm:100%;--xb-wvad:none;--xb-wvat:none;--xb-wvam:none;--xb-whad:start;--xb-what:start;--xb-wham:start;--xb-wwrd:undefined;--xb-wwrt:undefined;--xb-wwrm:undefined;--xb-wz:1;--xb-wpt:relative;"   
   
 >
   {% assign designMode = false %}
@@ -115,7 +115,7 @@
   %}
   <a
     href="{{ product_item.url }}"
-    class="xb-product-image xb-image xb-product-image__static xb-link id_mcss4mun15i9n" style="--xo-animate-infinite-duration: 800ms; --xb-product-media-aspect-ratio-desktop:100 / 135;--xb-product-media-aspect-ratio-tablet:100 / 135;--xb-product-media-aspect-ratio-mobile:100 / 135;--xb-product-media-object-fit:cover;--xb-product-media-width-desktop:100%;--xb-product-media-width-tablet:100%;--xb-product-media-width-mobile:100%;--xb-product-image-mask-svg:url('https://cdn.shopify.com/s/files/1/0677/7900/2622/files/Mask_Abstract_1.svg?v=1712119221');width:100%;" xo-animate="infinite" xo-animate-infinite="none"  
+    class="xb-product-image xb-image xb-product-image__static xb-link id_mcsx6r7w15w48" style="--xo-animate-infinite-duration: 800ms; --xb-product-media-aspect-ratio-desktop:100 / 135;--xb-product-media-aspect-ratio-tablet:100 / 135;--xb-product-media-aspect-ratio-mobile:100 / 135;--xb-product-media-object-fit:cover;--xb-product-media-width-desktop:100%;--xb-product-media-width-tablet:100%;--xb-product-media-width-mobile:100%;--xb-product-image-mask-svg:url('https://cdn.shopify.com/s/files/1/0677/7900/2622/files/Mask_Abstract_1.svg?v=1712119221');width:100%;" xo-animate="infinite" xo-animate-infinite="none"  
   >
     <div
       class="xb-product-image__first"
@@ -195,15 +195,15 @@
   
 </div>
 <div
-  class="xb-grid id_mcss4mun19mr4" style="--xb-col-desktop:5;--xb-col-tablet:3;--xb-col-mobile:1;--xb-grid-row-desktop:1;--xb-grid-row-tablet:1;--xb-grid-row-mobile:1;--xb-grid-row-height-desktop:100px;--xb-grid-row-height-tablet:100px;--xb-grid-row-height-mobile:100px;--xb-layout-spacing-grid-horizontal-desktop:0px;--xb-layout-spacing-grid-horizontal-tablet:0px;--xb-layout-spacing-grid-horizontal-mobile:0px;--xb-layout-spacing-grid-vertical-desktop:5px;--xb-layout-spacing-grid-vertical-tablet:5px;--xb-layout-spacing-grid-vertical-mobile:0px;"   
+  class="xb-grid id_mcsx6r7w194cs" style="--xb-col-desktop:5;--xb-col-tablet:3;--xb-col-mobile:1;--xb-grid-row-desktop:1;--xb-grid-row-tablet:1;--xb-grid-row-mobile:1;--xb-grid-row-height-desktop:100px;--xb-grid-row-height-tablet:100px;--xb-grid-row-height-mobile:100px;--xb-layout-spacing-grid-horizontal-desktop:0px;--xb-layout-spacing-grid-horizontal-tablet:0px;--xb-layout-spacing-grid-horizontal-mobile:0px;--xb-layout-spacing-grid-vertical-desktop:5px;--xb-layout-spacing-grid-vertical-tablet:5px;--xb-layout-spacing-grid-vertical-mobile:0px;"   
 >
   <div 
   xo-column 
-  class="xb-column id_mcss4mun20pbh" 
+  class="xb-column id_mcsx6r7w207ha" 
   style="--xb-span-col-desktop:5;--xb-span-col-tablet:3;--xb-span-col-mobile:3;--xb-span-row-desktop:1;--xb-span-row-tablet:1;--xb-span-row-mobile:1;--xb-column-order-desktop:0;--xb-column-order-tablet:0;--xb-column-order-mobile:0;align-self:auto;" 
   false
 ><div
-  class="xb-wrapper id_mcss4mun21who" style="--xb-wld:row;--xb-wvsd:0px;--xb-whsd:0px;--xb-wvst:0px;--xb-wvsm:0px;--xb-whst:0px;--xb-whsm:0px;--xb-wwd:100%;--xb-wwt:100%;--xb-wwm:100%;--xb-whad:space-between;--xb-what:space-between;--xb-wham:space-between;--xb-wmhd:100%;--xb-wmht:100%;--xb-wmhm:100%;--xb-wvad:center;--xb-wvat:center;--xb-wvam:start;--xb-wwrd:wrap;--xb-wwrt:nowrap;--xb-wwrm:nowrap;--xb-wz:1;--xb-wpt:relative;" xo-animate="scroll" xo-cascade xo-duration="800" xo-type="fade-up"  
+  class="xb-wrapper id_mcsx6r7w21ewv" style="--xb-wld:row;--xb-wvsd:0px;--xb-whsd:0px;--xb-wvst:0px;--xb-wvsm:0px;--xb-whst:0px;--xb-whsm:0px;--xb-wwd:100%;--xb-wwt:100%;--xb-wwm:100%;--xb-whad:space-between;--xb-what:space-between;--xb-wham:space-between;--xb-wmhd:100%;--xb-wmht:100%;--xb-wmhm:100%;--xb-wvad:center;--xb-wvat:center;--xb-wvam:start;--xb-wwrd:wrap;--xb-wwrt:nowrap;--xb-wwrm:nowrap;--xb-wz:1;--xb-wpt:relative;" xo-animate="scroll" xo-cascade xo-duration="800" xo-type="fade-up"  
   
 >
   {% assign designMode = false %}
@@ -223,7 +223,7 @@
 
 {% if product_item and product_item != blank %}
   <h3
-    class="xb-product-title xb-heading xb-h3 id_mcss4mun22ilt"   
+    class="xb-product-title xb-heading xb-h3 id_mcsx6r7w22zbh"   
   >
     <a 
       class="xb-link"
@@ -245,13 +245,13 @@
   if cond
     assign product_item = all_products["undefined"]
   endif
-  assign elementId = "id_mcss4mun23yxm"
+  assign elementId = "id_mcsx6r7w23w8o"
 -%}
 
 
 
 <div
-  class="xb-product-price id_mcss4mun23yxm"   
+  class="xb-product-price id_mcsx6r7w23w8o"   
 >
   {% if product_item and product_item != blank %}
     <xo-product-will-change xo-unique-id="{{ section.id }}-{{ product_item.id }}-{{ elementId }}-price">
@@ -270,7 +270,7 @@
           <div class="xb-product-price__sale xb-product-price__sale--row" style="justify-content: flex-start">
             {% assign designMode = false %}
 <div
-  class="id_mcss4mun241sg"   
+  class="id_mcsx6r7w24n4j"   
 >
   {% render 'xb-snippets', 
     xb_type: 'price', 
@@ -286,7 +286,7 @@
           <div class="xb-product-price__regular  xb-product-price__sale--row" style="justify-content: flex-start">
             {% assign designMode = false %}
 <div
-  class="id_mcss4mun241sg"   
+  class="id_mcsx6r7w24n4j"   
 >
   {% render 'xb-snippets', 
     xb_type: 'price', 
@@ -316,11 +316,11 @@
 </div>
 <div 
   xo-column 
-  class="xb-column id_mcss4mun26zq5" 
+  class="xb-column id_mcsx6r7w26vhl" 
   style="--xb-span-col-desktop:5;--xb-span-col-tablet:3;--xb-span-col-mobile:1;--xb-span-row-desktop:1;--xb-span-row-tablet:1;--xb-span-row-mobile:1;--xb-column-order-desktop:0;--xb-column-order-tablet:0;--xb-column-order-mobile:0;align-self:auto;" 
   false
 ><div
-  class="xb-wrapper id_mcss4mun27zuv" style="--xb-wld:row;--xb-wvsd:0px;--xb-whsd:18px;--xb-wvst:0px;--xb-wvsm:0px;--xb-whst:18px;--xb-whsm:18px;--xb-wwd:100%;--xb-wwt:100%;--xb-wwm:100%;--xb-whad:space-between;--xb-what:space-between;--xb-wham:space-between;--xb-wmhd:100%;--xb-wmht:100%;--xb-wmhm:100%;--xb-wvad:start;--xb-wvat:start;--xb-wvam:start;--xb-wwrd:nowrap;--xb-wwrt:nowrap;--xb-wwrm:nowrap;--xb-wz:1;--xb-wpt:relative;" xo-animate="scroll" xo-cascade xo-duration="800" xo-type="fade-up"  
+  class="xb-wrapper id_mcsx6r7w2764z" style="--xb-wld:row;--xb-wvsd:0px;--xb-whsd:18px;--xb-wvst:0px;--xb-wvsm:0px;--xb-whst:18px;--xb-whsm:18px;--xb-wwd:100%;--xb-wwt:100%;--xb-wwm:100%;--xb-whad:space-between;--xb-what:space-between;--xb-wham:space-between;--xb-wmhd:100%;--xb-wmht:100%;--xb-wmhm:100%;--xb-wvad:start;--xb-wvat:start;--xb-wvam:start;--xb-wwrd:nowrap;--xb-wwrt:nowrap;--xb-wwrm:nowrap;--xb-wz:1;--xb-wpt:relative;" xo-animate="scroll" xo-cascade xo-duration="800" xo-type="fade-up"  
   
 >
   {% assign designMode = false %}
@@ -341,7 +341,7 @@
 {% if product_item and product_item != blank %}
   {% if product_item.vendor != blank %}
     <a
-      class="xb-product-vendor xb-link id_mcss4mun28la5"   
+      class="xb-product-vendor xb-link id_mcsx6r7w28xpr"   
       href="{{ shop.url }}/collections/vendors?q={{ product_item.vendor | escape }}"
     >
       {{ product_item.vendor }}
@@ -383,7 +383,7 @@
 %}
 
 <style>
-  .xb-add-to-cart-button:has(.id_mcss4mun299zi) {
+  .xb-add-to-cart-button:has(.id_mcsx6r7w29vgl) {
     width: auto;
   }
 </style>
@@ -421,7 +421,7 @@
       role="button"
       aria-label="{{ 'xb.products.add_to_cart' | t }}"
     >
-      <span class="xb-add-to-cart-button__content id_mcss4mun299zi xb-add-to-cart-button--modifier-01">
+      <span class="xb-add-to-cart-button__content id_mcsx6r7w29vgl xb-add-to-cart-button--modifier-01">
         
         {% if textEnabled == 'yes' %}
           <span class="xb-add-to-cart-button__text">
@@ -434,7 +434,7 @@
         {% endif %}
         
         <span class="xb-add-to-cart-button__icon"><div
-  class="xb-icon xb-icon--modifier-01 id_mcss4mun30jrc"   
+  class="xb-icon xb-icon--modifier-01 id_mcsx6r7w30x0t"   
 >
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M160 112v48H288V112c0-35.3-28.7-64-64-64s-64 28.7-64 64zm-48 96H48V416c0 26.5 21.5 48 48 48H352c26.5 0 48-21.5 48-48V208H336v56c0 13.3-10.7 24-24 24s-24-10.7-24-24V208H160v56c0 13.3-10.7 24-24 24s-24-10.7-24-24V208zm0-48V112C112 50.1 162.1 0 224 0s112 50.1 112 112v48h64c26.5 0 48 21.5 48 48V416c0 53-43 96-96 96H96c-53 0-96-43-96-96V208c0-26.5 21.5-48 48-48h64z"/></svg>
 </div>
@@ -488,12 +488,12 @@
       --xb-col-desktop: 4;
       --xb-col-tablet: 4;
       --xb-col-mobile: 2;
-      --xb-layout-spacing-grid-horizontal-desktop: 0px;
-      --xb-layout-spacing-grid-horizontal-tablet: 0px;
-      --xb-layout-spacing-grid-horizontal-mobile: 0px;
-      --xb-layout-spacing-grid-vertical-desktop: 0px;
-      --xb-layout-spacing-grid-vertical-tablet: 0px;
-      --xb-layout-spacing-grid-vertical-mobile: 0px;
+      --xb-layout-spacing-grid-horizontal-desktop: 15px;
+      --xb-layout-spacing-grid-horizontal-tablet: 15px;
+      --xb-layout-spacing-grid-horizontal-mobile: 15px;
+      --xb-layout-spacing-grid-vertical-desktop: 15px;
+      --xb-layout-spacing-grid-vertical-tablet: 15px;
+      --xb-layout-spacing-grid-vertical-mobile: 15px;
     "
   > 
     {% if current_collection != blank and productSize != 0 %}
@@ -514,7 +514,7 @@
   </xo-carousel-inner>
 {% endif %}
 <div
-  class="xb-carousel-navigation xb-carousel-navigation--center xb-carousel-navigation--absolute id_mcss4mun31e0s" style="--xb-carousel-direction:row;--xb-carousel-vertical-gap:15px;--xb-carousel-horizontal-gap:15px;--xb-carousel-horizontal-align:space-between;--xb-carousel-vertical-align:start;"   
+  class="xb-carousel-navigation xb-carousel-navigation--center xb-carousel-navigation--absolute id_mcsx6r7w31k0f" style="--xb-carousel-direction:row;--xb-carousel-vertical-gap:15px;--xb-carousel-horizontal-gap:15px;--xb-carousel-horizontal-align:space-between;--xb-carousel-vertical-align:start;"   
   data-carousel-name=""
 >
   <xo-carousel-prev
@@ -522,9 +522,9 @@
   
 >
   <div
-  class="xb-icon xb-icon--modifier-02 id_mcss4mun33cak"   
+  class="xb-icon xb-icon--modifier-03 id_mcsx6r7w33rnq"   
 >
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M47 239c-9.4 9.4-9.4 24.6 0 33.9L207 433c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9L97.9 256 241 113c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0L47 239z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M368 400c-.4-16 7.3-31.2 20.4-40.4C436.1 326.2 464 276.9 464 224c0-91.4-86.9-176-208-176S48 132.6 48 224c0 52.9 27.9 102.2 75.6 135.6c13.1 9.2 20.8 24.4 20.4 40.4l0 0v64h48V440c0-13.3 10.7-24 24-24s24 10.7 24 24v24h32V440c0-13.3 10.7-24 24-24s24 10.7 24 24v24h48V400l0 0zm48-1.1c0 .4 0 .7 0 1.1v64c0 26.5-21.5 48-48 48H144c-26.5 0-48-21.5-48-48V400c0-.4 0-.7 0-1.1C37.5 357.8 0 294.7 0 224C0 100.3 114.6 0 256 0S512 100.3 512 224c0 70.7-37.5 133.8-96 174.9zM112 256a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm232-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
 </div>
 
 </xo-carousel-prev>
@@ -533,27 +533,27 @@
   
 >
   <div
-  class="xb-icon xb-icon--modifier-02 id_mcss4mun35ezl"   
+  class="xb-icon xb-icon--modifier-03 id_mcsx6r7w35pun"   
 >
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M273 239c9.4 9.4 9.4 24.6 0 33.9L113 433c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l143-143L79 113c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0L273 239z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M368 400c-.4-16 7.3-31.2 20.4-40.4C436.1 326.2 464 276.9 464 224c0-91.4-86.9-176-208-176S48 132.6 48 224c0 52.9 27.9 102.2 75.6 135.6c13.1 9.2 20.8 24.4 20.4 40.4l0 0v64h48V440c0-13.3 10.7-24 24-24s24 10.7 24 24v24h32V440c0-13.3 10.7-24 24-24s24 10.7 24 24v24h48V400l0 0zm48-1.1c0 .4 0 .7 0 1.1v64c0 26.5-21.5 48-48 48H144c-26.5 0-48-21.5-48-48V400c0-.4 0-.7 0-1.1C37.5 357.8 0 294.7 0 224C0 100.3 114.6 0 256 0S512 100.3 512 224c0 70.7-37.5 133.8-96 174.9zM112 256a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm232-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
 </div>
 
 </xo-carousel-next>
 
 </div>
 <xo-carousel-pagination
-  class="xb-carousel-pagination xb-carousel-pagination--center xb-carousel-pagination--static xb-carousel-pagination--modifier-03 id_mcss4mun36ozw" style="--xb-pagination-gap:5px;--xb-pagination-align:center;"   
+  class="xb-carousel-pagination xb-carousel-pagination--center xb-carousel-pagination--static xb-carousel-pagination--modifier-03 id_mcsx6r7w36j7k" style="--xb-pagination-gap:5px;--xb-pagination-align:center;"   
 ></xo-carousel-pagination>
 
   {% endcapture %}
 
   {% capture ContentSlide %}
     <xo-carousel
-      xo-name="id_mcss4mun10yz9"
-      xo-observed="575184382"
+      xo-name="id_mcsx6r7w10md8"
+      xo-observed="2675354793"
       xo-per-view='4'
       xo-overflow='overflow'
-      xo-gap="0"
+      xo-gap="15"
       xo-per-move="1"
       xo-rewind="true"
       
@@ -561,16 +561,16 @@
         {
           768: {
             perView: 2,
-            gap: 0,
+            gap: 15,
           },
           992: {
             perView: 4,
-            gap: 0,
+            gap: 15,
           },
         }
       '
       xo-render-bullet="<div class='pagination__inner'> <span class='pagination__inner-content'></span> </div>"
-      style="--xo-per-view: 4; --xo-gap: 0px;"
+      style="--xo-per-view: 4; --xo-gap: 15px;"
     >
       {{ ProductListChild }}
     </xo-carousel>
