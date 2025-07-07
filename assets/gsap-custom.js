@@ -14,6 +14,9 @@ class GSAPAnimationManager {
     
     // Khởi tạo tất cả animations
     this.initializeAnimations();
+    
+    // Listen for hydrogen navigation page changes
+    this.setupNavigationListener();
   }
 
   shouldEnable() {
@@ -22,7 +25,34 @@ class GSAPAnimationManager {
            typeof ScrollTrigger !== 'undefined';
   }
 
+  /**
+   * Setup listener for hydrogen navigation page transitions
+   */
+  setupNavigationListener() {
+    // Listen for hydrogen navigation page changes
+    document.addEventListener('page:loaded', (e) => {
+      console.log('🔄 Page loaded via navigation, reinitializing GSAP animations');
+      this.reinitializeAnimations();
+    });
+  }
+
+  /**
+   * Reinitialize animations after page transition
+   */
+  reinitializeAnimations() {
+    // Cleanup existing animations
+    this.destroy();
+    
+    // Small delay to ensure DOM is ready
+    setTimeout(() => {
+      this.initializeAnimations();
+    }, 50);
+  }
+
   initializeAnimations() {
+    // Clear animations array
+    this.animations = [];
+    
     // Thêm tất cả animations vào đây
     this.heroMaskAnimation();
     this.introRevealAnimation();

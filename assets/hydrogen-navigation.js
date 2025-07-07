@@ -279,13 +279,36 @@ class HydrogenNavigation {
    * Reinitialize custom elements and scripts
    */
   reinitializeComponents() {
-    // Trigger custom event for other scripts
-    document.dispatchEvent(new CustomEvent('page:loaded', {
-      detail: { navigation: 'instant' }
-    }));
+    // Small delay to ensure DOM is stable before reinitializing animations
+    setTimeout(() => {
+      // Trigger custom event for other scripts (especially GSAP)
+      document.dispatchEvent(new CustomEvent('page:loaded', {
+        detail: { 
+          navigation: 'instant',
+          timestamp: Date.now(),
+          url: window.location.href
+        }
+      }));
+      
+      // Additional component initialization can go here
+      this.initializeLazyComponents();
+      
+    }, 16); // ~1 frame delay for DOM to settle
+  }
+
+  /**
+   * Initialize components that need to be reloaded after navigation
+   */
+  initializeLazyComponents() {
+    // Re-initialize any components that need refresh after page transitions
+    // Product forms, image galleries, etc.
     
-    // Reinitialize any specific components if needed
-    // This is where you'd reinit things like product forms, sliders, etc.
+    // Trigger ScrollTrigger refresh after animations are initialized
+    setTimeout(() => {
+      if (window.ScrollTrigger) {
+        window.ScrollTrigger.refresh();
+      }
+    }, 100);
   }
 
   /**
