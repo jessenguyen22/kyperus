@@ -187,7 +187,12 @@ class GSAPAnimationManager {
         }
       });
 
-      tl.to(wrapper, { opacity: 1, duration: 2, ease: 'power1.inOut' });
+      tl.to(wrapper, { opacity: 1, duration: 2, ease: 'power1.inOut' })
+        .to('.entrance-message', { 
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power1.inOut'
+      },'<');
       
       if (video.duration > 0) {
         tl.to(video, { currentTime: video.duration, duration: 3, ease: 'none' }, '<');
