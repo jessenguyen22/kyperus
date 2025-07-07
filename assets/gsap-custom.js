@@ -25,7 +25,6 @@ class GSAPAnimationManager {
   initializeAnimations() {
     // Thêm tất cả animations vào đây
     this.heroMaskAnimation();
-    this.introRevealAnimation();
     this.videoScrollAnimation();
     this.modernConceptAnimation();
     
@@ -48,6 +47,7 @@ class GSAPAnimationManager {
     });
 
     gsap.set('.mask-logo', { marginTop: '-100vh', opacity: 0 });
+    gsap.set('.entrance-message', { marginTop: '-120vh' });
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -69,46 +69,14 @@ class GSAPAnimationManager {
         onComplete: () => {
           gsap.to('.overlay-logo', { opacity: 0 });
         } 
+      }, '<')
+      .to('.entrance-message', { 
+        duration: 1, 
+        ease: 'power1.inOut', 
+        maskImage: 'radial-gradient(circle at 50% 0vh, black 50%, transparent 100%)' 
       }, '<');
 
     this.animations.push({ name: 'heroMask', timeline: tl });
-  }
-
-  // ===========================================
-  // ANIMATION 1.5: Intro Section Reveal
-  // ===========================================
-  introRevealAnimation() {
-    const introSection = document.querySelector('.entrance-message');
-    if (!introSection) return;
-
-    // Set initial state
-    gsap.set(introSection, { 
-      opacity: 0,
-      maskImage: 'radial-gradient(circle at 50% 100vh, black 0%, transparent 0%)'
-    });
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: introSection,
-        start: 'top top',
-        end: '+=100%',
-        scrub: 1
-      }
-    });
-
-    tl
-      .to(introSection, { 
-        opacity: 1,
-        duration: 0.5,
-        ease: 'power1.inOut'
-      })
-      .to(introSection, { 
-        maskImage: 'radial-gradient(circle at 50% 0vh, black 70%, transparent 100%)',
-        duration: 1, 
-        ease: 'power1.inOut' 
-      }, '<0.2');
-
-    this.animations.push({ name: 'introReveal', timeline: tl });
   }
 
   getMaskSettings() {
@@ -134,9 +102,9 @@ class GSAPAnimationManager {
     
     if (width >= 1920) {
       return {
-        initialMaskPos: "50% 22%",
+        initialMaskPos: "50% 18%",
         initialMaskSize: "4000% 4000%",
-        maskPos: "50% 22%",
+        maskPos: "50% 18%",
         maskSize: "15% 15%",
       };
     }
@@ -170,7 +138,7 @@ class GSAPAnimationManager {
 
       this.setupVideoProperties(video);
       
-      gsap.set(wrapper, { marginTop: '', opacity: 0 });
+      gsap.set(wrapper, { marginTop: '-120vh', opacity: 0 });
       
       const tl = gsap.timeline({
         scrollTrigger: {
