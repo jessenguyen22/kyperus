@@ -9,7 +9,7 @@
  */
 {
   "current": {
-    "enable_hydrogen_navigation": false,
+    "enable_hydrogen_navigation": true,
     "loading_bar_style": "minimal",
     "logo": "shopify://shop_images/logo_kyperus_w.png",
     "logo_width": 90,
