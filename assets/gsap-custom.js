@@ -84,7 +84,8 @@ class GSAPAnimationManager {
     // Set initial state
     gsap.set(introSection, { 
       opacity: 0,
-      maskImage: 'radial-gradient(circle at 50% 100vh, black 0%, transparent 0%)'
+      maskImage: 'radial-gradient(circle at 50% 100vh, black 0%, transparent 0%)',
+      marginTop: '-100vh'
     });
 
     const tl = gsap.timeline({
