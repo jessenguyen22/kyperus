@@ -18,10 +18,16 @@
       "type": "xb-1da259eb",
       "name": "[XB]KPR-Video Section",
       "settings": {}
+    },
+    "xb_1da27fc1_AAkXWF": {
+      "type": "xb-1da27fc1",
+      "name": "[XB]Kpr-Modern",
+      "settings": {}
     }
   },
   "order": [
     "xb_1da2512d_VJDzqQ",
-    "xb_1da259eb_N3NCMK"
+    "xb_1da259eb_N3NCMK",
+    "xb_1da27fc1_AAkXWF"
   ]
 }
