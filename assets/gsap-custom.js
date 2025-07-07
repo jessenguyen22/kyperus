@@ -15,7 +15,7 @@ class KPRVideoScroll {
       selectors: {
         wrapper: '.kpr-video-wrapper',
         video: '.kpr-video-ani .xb-html-video__item',
-        heroSection: '.hero-section, .image-banner, .slideshow'
+        heroSection: '.hero-section'
       },
       animation: {
         initialOffset: '-50vh',
