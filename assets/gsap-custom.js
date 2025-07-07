@@ -83,7 +83,7 @@ class GSAPAnimationManager {
       scrollTrigger: {
         trigger: '.hero-section',
         start: 'top top',
-        end: '+=200%',
+        end: '+=170%',
         scrub: 2.5,
         pin: true,
       }
@@ -122,7 +122,7 @@ class GSAPAnimationManager {
       scrollTrigger: {
         trigger: introSection,
         start: 'top top',
-        end: '+=200%', // Đồng bộ với hero section
+        end: '+=100%', // Đồng bộ với hero section
         scrub: 2.5,   // Đồng bộ với hero section
         pin: true,
       }
