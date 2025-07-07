@@ -111,3 +111,140 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
   
   setTimeout(() => clearInterval(checkGSAP), 10000);
 }
+
+
+
+
+// Hero Banner
+class HeroMaskScroll {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    if (this.shouldEnable()) {
+      this.setupMaskAnimation();
+    }
+  }
+
+  shouldEnable() {
+    return !window.Shopify?.designMode && 
+           typeof gsap !== 'undefined' && 
+           typeof ScrollTrigger !== 'undefined';
+  }
+
+  getMaskSettings() {
+    const width = window.innerWidth;
+    
+    if (width <= 768) {
+      return {
+        initialMaskPos: "50% -1500vh",
+        initialMaskSize: "3100% 3100%",
+        maskPos: "50% 7vh",
+        maskSize: "50% 50%",
+      };
+    }
+    
+    if (width <= 1024) {
+      return {
+        initialMaskPos: "50% -1700vh",
+        initialMaskSize: "3500% 3500%",
+        maskPos: "50% 17vh",
+        maskSize: "30% 30%",
+      };
+    }
+    
+    if (width >= 1920) {
+      return {
+        initialMaskPos: "50% 22%",
+        initialMaskSize: "4000% 4000%",
+        maskPos: "50% 22%",
+        maskSize: "15% 15%",
+      };
+    }
+    
+    if (width >= 1440) {
+      return {
+        initialMaskPos: "50% 25%",
+        initialMaskSize: "4200% 4200%",
+        maskPos: "50% 25%",
+        maskSize: "16% 16%",
+      };
+    }
+    
+    return {
+      initialMaskPos: "50% 24%",
+      initialMaskSize: "4000% 4000%",
+      maskPos: "50% 22.3%",
+      maskSize: "17% 17%",
+    };
+  }
+
+  setupMaskAnimation() {
+    const heroSection = document.querySelector('.hero-section');
+    
+    if (!heroSection) return;
+    
+    const { initialMaskPos, initialMaskSize, maskPos, maskSize } = this.getMaskSettings();
+    
+    gsap.set('.mask-wrapper', {
+      maskPosition: initialMaskPos,
+      maskSize: initialMaskSize,
+    });
+
+    gsap.set('.mask-logo', { marginTop: '-100vh', opacity: 0 });
+
+    gsap.set('.entrance-message', { marginTop: '0vh' });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.hero-section',
+        start: 'top top',
+        end: '+=200%',
+        scrub: 2.5,
+        pin: true,
+      }
+    });
+
+    tl
+      .to('.fade-out', { opacity: 0, ease: 'power1.inOut' })
+      .to('.scale-out', { scale: 1, ease: 'power1.inOut' })
+      .to('.mask-wrapper', { maskSize, ease: 'power1.inOut' }, '<')
+      .to('.mask-wrapper', { opacity: 0 })
+      .to('.overlay-logo', { 
+        opacity: 1, 
+        onComplete: () => {
+          gsap.to('.overlay-logo', { opacity: 0 });
+        } 
+      }, '<')
+      .to('.entrance-message', { 
+        duration: 1, 
+        ease: 'power1.inOut', 
+        maskImage: 'radial-gradient(circle at 50% 0vh, black 50%, transparent 100%)' 
+      }, '<');
+  }
+}
+
+// Initialize
+function initHeroMaskScroll() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      new HeroMaskScroll();
+    });
+  } else {
+    new HeroMaskScroll();
+  }
+}
+
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+  initHeroMaskScroll();
+} else {
+  const checkGSAP = setInterval(() => {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      clearInterval(checkGSAP);
+      initHeroMaskScroll();
+    }
+  }, 100);
+  
+  setTimeout(() => clearInterval(checkGSAP), 10000);
+}
