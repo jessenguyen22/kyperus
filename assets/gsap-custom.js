@@ -6,6 +6,7 @@ class KPRVideoScroll {
   init() {
     if (this.shouldEnable()) {
       this.setupVideoScrollAnimations();
+      this.setupModernConcept();
     }
   }
 
@@ -73,6 +74,23 @@ class KPRVideoScroll {
         tl.to(video, { currentTime: video.duration, duration: 3, ease: 'none' }, '<');
       }, { once: true });
     }
+  }
+
+  setupModernConcept() {
+    const modernConcept = document.querySelector('.modern-concept');
+    
+    if (!modernConcept) return;
+    
+    gsap.set(modernConcept, { marginTop: '-80vh' });
+    
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: modernConcept,
+        start: 'top 90%',
+        end: '10% center',
+        scrub: 2,
+      }
+    }).to('.kpr-video', { opacity: 0, duration: 1, ease: 'power1.inOut' });
   }
 }
 
