@@ -1,13 +1,19 @@
-class KPRVideoScroll {
+/**
+ * GSAP Animation Manager
+ * Tổ chức tất cả animations trong một system dễ quản lý
+ */
+
+class GSAPAnimationManager {
   constructor() {
+    this.animations = [];
     this.init();
   }
 
   init() {
-    if (this.shouldEnable()) {
-      this.setupVideoScrollAnimations();
-      this.setupModernConcept();
-    }
+    if (!this.shouldEnable()) return;
+    
+    // Khởi tạo tất cả animations
+    this.initializeAnimations();
   }
 
   shouldEnable() {
@@ -16,121 +22,61 @@ class KPRVideoScroll {
            typeof ScrollTrigger !== 'undefined';
   }
 
-  setupVideoScrollAnimations() {
-    const videoWrappers = document.querySelectorAll('.kpr-video-wrapper');
+  initializeAnimations() {
+    // Thêm tất cả animations vào đây
+    this.heroMaskAnimation();
+    this.videoScrollAnimation();
+    this.modernConceptAnimation();
     
-    videoWrappers.forEach((wrapper) => {
-      this.setupSingleVideoAnimation(wrapper);
-    });
+    // Thêm animation mới ở đây:
+    // this.newAnimationName();
   }
 
-  setupSingleVideoAnimation(wrapper) {
-    const video = wrapper.querySelector('.kpr-video-ani .xb-html-video__item');
+  // ===========================================
+  // ANIMATION 1: Hero Mask Effect
+  // ===========================================
+  heroMaskAnimation() {
+    const heroSection = document.querySelector('.hero-section');
+    if (!heroSection) return;
     
-    if (!video) return;
+    const { initialMaskPos, initialMaskSize, maskPos, maskSize } = this.getMaskSettings();
+    
+    gsap.set('.mask-wrapper', {
+      maskPosition: initialMaskPos,
+      maskSize: initialMaskSize,
+    });
 
-    this.setupVideoProperties(video);
-    
-    gsap.set(wrapper, { marginTop: '', opacity: 0 });
-    
+    gsap.set('.mask-logo', { marginTop: '-100vh', opacity: 0 });
+    gsap.set('.entrance-message', { marginTop: '0vh' });
+
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: wrapper,
+        trigger: '.hero-section',
         start: 'top top',
-        end: '+=200% top',
-        scrub: true,
+        end: '+=200%',
+        scrub: 2.5,
         pin: true,
-        onUpdate: () => {
-          if (!video.paused) video.pause();
-        }
       }
     });
 
-    this.buildTimeline(tl, wrapper, video);
-  }
+    tl
+      .to('.fade-out', { opacity: 0, ease: 'power1.inOut' })
+      .to('.scale-out', { scale: 1, ease: 'power1.inOut' })
+      .to('.mask-wrapper', { maskSize, ease: 'power1.inOut' }, '<')
+      .to('.mask-wrapper', { opacity: 0 })
+      .to('.overlay-logo', { 
+        opacity: 1, 
+        onComplete: () => {
+          gsap.to('.overlay-logo', { opacity: 0 });
+        } 
+      }, '<')
+      .to('.entrance-message', { 
+        duration: 1, 
+        ease: 'power1.inOut', 
+        maskImage: 'radial-gradient(circle at 50% 0vh, black 50%, transparent 100%)' 
+      }, '<');
 
-  setupVideoProperties(video) {
-    video.muted = true;
-    video.playsInline = true;
-    video.loop = false;
-    video.autoplay = false;
-    video.pause();
-    video.currentTime = 0;
-  }
-
-  buildTimeline(tl, wrapper, video) {
-    tl.to(wrapper, { opacity: 1, duration: 2, ease: 'power1.inOut' });
-    
-    if (video.duration > 0) {
-      tl.to(video, { currentTime: video.duration, duration: 3, ease: 'none' }, '<');
-    } else {
-      video.addEventListener('loadedmetadata', () => {
-        tl.to(video, { currentTime: video.duration, duration: 3, ease: 'none' }, '<');
-      }, { once: true });
-    }
-  }
-
-  setupModernConcept() {
-    const modernConcept = document.querySelector('.modern-concept');
-    
-    if (!modernConcept) return;
-    
-    gsap.set(modernConcept, { marginTop: '-80vh' });
-    
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: modernConcept,
-        start: 'top 90%',
-        end: '10% center',
-        scrub: 2,
-      }
-    }).to('.kpr-video-wrapper', { opacity: 0, duration: 1, ease: 'power1.inOut' });
-  }
-}
-
-// Initialize
-function initKPRVideoScroll() {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      new KPRVideoScroll();
-    });
-  } else {
-    new KPRVideoScroll();
-  }
-}
-
-if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-  initKPRVideoScroll();
-} else {
-  const checkGSAP = setInterval(() => {
-    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-      clearInterval(checkGSAP);
-      initKPRVideoScroll();
-    }
-  }, 100);
-  
-  setTimeout(() => clearInterval(checkGSAP), 10000);
-}
-
-
-
-
-// Hero Banner
-class HeroMaskScroll {
-  constructor() {
-    this.init();
-  }
-
-  init() {
-    if (this.shouldEnable()) {
-      this.setupMaskAnimation();
-    }
-  }
-
-  shouldEnable() {
-    return !window.Shopify?.designMode && 
-           typeof gsap !== 'undefined' && 
-           typeof ScrollTrigger !== 'undefined';
+    this.animations.push({ name: 'heroMask', timeline: tl });
   }
 
   getMaskSettings() {
@@ -180,71 +126,161 @@ class HeroMaskScroll {
     };
   }
 
-  setupMaskAnimation() {
-    const heroSection = document.querySelector('.hero-section');
+  // ===========================================
+  // ANIMATION 2: Video Scroll Effect
+  // ===========================================
+  videoScrollAnimation() {
+    const videoWrappers = document.querySelectorAll('.kpr-video-wrapper');
     
-    if (!heroSection) return;
-    
-    const { initialMaskPos, initialMaskSize, maskPos, maskSize } = this.getMaskSettings();
-    
-    gsap.set('.mask-wrapper', {
-      maskPosition: initialMaskPos,
-      maskSize: initialMaskSize,
+    videoWrappers.forEach((wrapper, index) => {
+      const video = wrapper.querySelector('.kpr-video-ani .xb-html-video__item');
+      if (!video) return;
+
+      this.setupVideoProperties(video);
+      
+      gsap.set(wrapper, { marginTop: '', opacity: 0 });
+      
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: wrapper,
+          start: 'top top',
+          end: '+=200% top',
+          scrub: true,
+          pin: true,
+          onUpdate: () => {
+            if (!video.paused) video.pause();
+          }
+        }
+      });
+
+      tl.to(wrapper, { opacity: 1, duration: 2, ease: 'power1.inOut' });
+      
+      if (video.duration > 0) {
+        tl.to(video, { currentTime: video.duration, duration: 3, ease: 'none' }, '<');
+      } else {
+        video.addEventListener('loadedmetadata', () => {
+          tl.to(video, { currentTime: video.duration, duration: 3, ease: 'none' }, '<');
+        }, { once: true });
+      }
+
+      this.animations.push({ name: `videoScroll_${index}`, timeline: tl });
     });
+  }
 
-    gsap.set('.mask-logo', { marginTop: '-100vh', opacity: 0 });
+  setupVideoProperties(video) {
+    video.muted = true;
+    video.playsInline = true;
+    video.loop = false;
+    video.autoplay = false;
+    video.pause();
+    video.currentTime = 0;
+  }
 
-    gsap.set('.entrance-message', { marginTop: '0vh' });
-
+  // ===========================================
+  // ANIMATION 3: Modern Concept Effect
+  // ===========================================
+  modernConceptAnimation() {
+    const modernConcept = document.querySelector('.modern-concept');
+    if (!modernConcept) return;
+    
+    gsap.set(modernConcept, { marginTop: '-80vh' });
+    
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: '.hero-section',
-        start: 'top top',
-        end: '+=200%',
-        scrub: 2.5,
-        pin: true,
+        trigger: modernConcept,
+        start: 'top 90%',
+        end: '10% center',
+        scrub: 2,
       }
     });
 
-    tl
-      .to('.fade-out', { opacity: 0, ease: 'power1.inOut' })
-      .to('.scale-out', { scale: 1, ease: 'power1.inOut' })
-      .to('.mask-wrapper', { maskSize, ease: 'power1.inOut' }, '<')
-      .to('.mask-wrapper', { opacity: 0 })
-      .to('.overlay-logo', { 
-        opacity: 1, 
-        onComplete: () => {
-          gsap.to('.overlay-logo', { opacity: 0 });
-        } 
-      }, '<')
-      .to('.entrance-message', { 
-        duration: 1, 
-        ease: 'power1.inOut', 
-        maskImage: 'radial-gradient(circle at 50% 0vh, black 50%, transparent 100%)' 
-      }, '<');
+    tl.to('.kpr-video-wrapper', { opacity: 0, duration: 1, ease: 'power1.inOut' });
+
+    this.animations.push({ name: 'modernConcept', timeline: tl });
+  }
+
+  // ===========================================
+  // TEMPLATE: Thêm animation mới ở đây
+  // ===========================================
+  
+  // newAnimationTemplate() {
+  //   const targetElement = document.querySelector('.your-target');
+  //   if (!targetElement) return;
+  //   
+  //   const tl = gsap.timeline({
+  //     scrollTrigger: {
+  //       trigger: '.your-trigger',
+  //       start: 'top center',
+  //       end: 'bottom center',
+  //       scrub: 1,
+  //     }
+  //   });
+  //
+  //   tl.to('.your-element', { 
+  //     opacity: 1, 
+  //     y: 0, 
+  //     duration: 1, 
+  //     ease: 'power2.out' 
+  //   });
+  //
+  //   this.animations.push({ name: 'newAnimation', timeline: tl });
+  // }
+
+  // ===========================================
+  // UTILITY METHODS
+  // ===========================================
+  refresh() {
+    ScrollTrigger.refresh();
+  }
+
+  destroy() {
+    this.animations.forEach(({ timeline }) => {
+      if (timeline.scrollTrigger) {
+        timeline.scrollTrigger.kill();
+      }
+      timeline.kill();
+    });
+    this.animations = [];
   }
 }
 
-// Initialize
-function initHeroMaskScroll() {
+// ===========================================
+// INITIALIZATION
+// ===========================================
+function initGSAPAnimations() {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      new HeroMaskScroll();
+      window.gsapManager = new GSAPAnimationManager();
     });
   } else {
-    new HeroMaskScroll();
+    window.gsapManager = new GSAPAnimationManager();
   }
 }
 
 if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-  initHeroMaskScroll();
+  initGSAPAnimations();
 } else {
   const checkGSAP = setInterval(() => {
     if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
       clearInterval(checkGSAP);
-      initHeroMaskScroll();
+      initGSAPAnimations();
     }
   }, 100);
   
   setTimeout(() => clearInterval(checkGSAP), 10000);
 }
+
+// ===========================================
+// GLOBAL ACCESS (for debugging)
+// ===========================================
+window.refreshAnimations = () => {
+  if (window.gsapManager) {
+    window.gsapManager.refresh();
+  }
+};
+
+window.destroyAnimations = () => {
+  if (window.gsapManager) {
+    window.gsapManager.destroy();
+  }
+};
