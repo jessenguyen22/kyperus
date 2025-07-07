@@ -138,7 +138,7 @@ class GSAPAnimationManager {
 
       this.setupVideoProperties(video);
       
-      gsap.set(wrapper, { marginTop: '-150vh', opacity: 0 });
+      gsap.set(wrapper, { marginTop: '-120vh', opacity: 0 });
       
       const tl = gsap.timeline({
         scrollTrigger: {
