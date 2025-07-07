@@ -31,7 +31,7 @@ class KPRVideoScroll {
 
     this.setupVideoProperties(video);
     
-    gsap.set(wrapper, { marginTop: '-50vh', opacity: 0 });
+    gsap.set(wrapper, { marginTop: '', opacity: 0 });
     
     const tl = gsap.timeline({
       scrollTrigger: {
