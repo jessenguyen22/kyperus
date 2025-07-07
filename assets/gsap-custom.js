@@ -25,6 +25,7 @@ class GSAPAnimationManager {
   initializeAnimations() {
     // Thêm tất cả animations vào đây
     this.heroMaskAnimation();
+    this.introRevealAnimation();
     this.videoScrollAnimation();
     this.modernConceptAnimation();
     
@@ -47,7 +48,7 @@ class GSAPAnimationManager {
     });
 
     gsap.set('.mask-logo', { marginTop: '-100vh', opacity: 0 });
-    gsap.set('.entrance-message', { marginTop: '-120vh' });
+    gsap.set('.entrance-message', { marginTop: '0vh' });
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -102,9 +103,9 @@ class GSAPAnimationManager {
     
     if (width >= 1920) {
       return {
-        initialMaskPos: "50% 18%",
+        initialMaskPos: "50% 22%",
         initialMaskSize: "4000% 4000%",
-        maskPos: "50% 18%",
+        maskPos: "50% 22%",
         maskSize: "15% 15%",
       };
     }
@@ -138,7 +139,7 @@ class GSAPAnimationManager {
 
       this.setupVideoProperties(video);
       
-      gsap.set(wrapper, { marginTop: '-120vh', opacity: 0 });
+      gsap.set(wrapper, { marginTop: '', opacity: 0 });
       
       const tl = gsap.timeline({
         scrollTrigger: {
