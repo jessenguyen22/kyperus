@@ -11,7 +11,10 @@ main {
   );
 }
 
-
+.mask-wrapper {
+  mask-image: url("https://cdn.shopify.com/s/files/1/0580/6994/2352/files/kpr-text.png?v=1751557221");
+  mask-repeat: no-repeat;
+}
 .entrance-message {
 
   mask-repeat: no-repeat;
