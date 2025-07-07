@@ -16,7 +16,7 @@ main {
   mask-repeat: no-repeat;
 }
 .entrance-message {
-  mask-image: radial-gradient(circle at 50% 100vh, black 0%, transparent 0%);
+
   mask-repeat: no-repeat;
   mask-size: 100% 100%;
 }
