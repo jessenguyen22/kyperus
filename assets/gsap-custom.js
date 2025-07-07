@@ -92,8 +92,7 @@ class GSAPAnimationManager {
         trigger: introSection,
         start: 'top top',
         end: '+=100%',
-        scrub: 1,
-        pin: true,
+        scrub: 1
       }
     });
 
