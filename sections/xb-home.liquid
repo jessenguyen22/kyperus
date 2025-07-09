@@ -136,39 +136,72 @@
 <div
   class="xb-custom-code id_mcvostrq21283"   
 >
-  <div class="traditional-dust">
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
+  <div class="smoke-dust traditional-smoke">
+  <div class="smoke-cloud smoke-1"></div>
+  <div class="smoke-cloud smoke-2"></div>
+  <div class="smoke-cloud smoke-3"></div>
+  <div class="smoke-cloud smoke-4"></div>
+  <div class="smoke-cloud smoke-5"></div>
 </div>
 
 <style>
-.traditional-dust {
+.smoke-dust {
   position: absolute;
-  bottom: 0;
+  bottom: -10px;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: 120px;
   pointer-events: none;
   z-index: 10;
+  overflow: hidden;
 }
 
-.traditional-dust .particle {
+.smoke-cloud {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background: radial-gradient(circle, #8B4513 30%, transparent 70%);
+  bottom: 0;
   border-radius: 50%;
   opacity: 0;
+  filter: blur(8px);
+}
+
+.traditional-smoke .smoke-1 {
+  width: 60px;
+  height: 60px;
+  left: 20%;
+  background: radial-gradient(circle, rgba(139, 69, 19, 0.7) 0%, rgba(160, 82, 45, 0.5) 40%, transparent 70%);
+  box-shadow: 0 0 20px rgba(139, 69, 19, 0.6);
+}
+
+.traditional-smoke .smoke-2 {
+  width: 80px;
+  height: 80px;
+  left: 40%;
+  background: radial-gradient(circle, rgba(160, 82, 45, 0.6) 0%, rgba(210, 105, 30, 0.4) 50%, transparent 80%);
+  box-shadow: 0 0 25px rgba(160, 82, 45, 0.5);
+}
+
+.traditional-smoke .smoke-3 {
+  width: 70px;
+  height: 70px;
+  left: 60%;
+  background: radial-gradient(circle, rgba(101, 67, 33, 0.8) 0%, rgba(139, 69, 19, 0.3) 60%, transparent 80%);
+  box-shadow: 0 0 30px rgba(101, 67, 33, 0.4);
+}
+
+.traditional-smoke .smoke-4 {
+  width: 50px;
+  height: 50px;
+  left: 75%;
+  background: radial-gradient(circle, rgba(139, 69, 19, 0.6) 0%, rgba(160, 82, 45, 0.3) 50%, transparent 70%);
+  box-shadow: 0 0 15px rgba(139, 69, 19, 0.5);
+}
+
+.traditional-smoke .smoke-5 {
+  width: 90px;
+  height: 90px;
+  left: 10%;
+  background: radial-gradient(circle, rgba(160, 82, 45, 0.5) 0%, rgba(210, 105, 30, 0.3) 60%, transparent 90%);
+  box-shadow: 0 0 35px rgba(160, 82, 45, 0.3);
 }
 </style>
 </div>
@@ -430,39 +463,72 @@
 <div
   class="xb-custom-code id_mcvotqf322ucc"   
 >
-  <div class="dust-particles modern-dust">
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
-  <span class="particle"></span>
+  <div class="smoke-dust modern-smoke">
+  <div class="smoke-cloud smoke-1"></div>
+  <div class="smoke-cloud smoke-2"></div>
+  <div class="smoke-cloud smoke-3"></div>
+  <div class="smoke-cloud smoke-4"></div>
+  <div class="smoke-cloud smoke-5"></div>
 </div>
 
 <style>
-.dust-particles {
+.smoke-dust {
   position: absolute;
-  bottom: 0;
+  bottom: -10px;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: 120px;
   pointer-events: none;
   z-index: 10;
+  overflow: hidden;
 }
 
-.particle {
+.smoke-cloud {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background: radial-gradient(circle, #8B4513 30%, #A0522D 60%, transparent 100%);
+  bottom: 0;
   border-radius: 50%;
   opacity: 0;
+  filter: blur(8px);
+}
+
+.modern-smoke .smoke-1 {
+  width: 60px;
+  height: 60px;
+  left: 20%;
+  background: radial-gradient(circle, rgba(105, 105, 105, 0.7) 0%, rgba(128, 128, 128, 0.5) 40%, transparent 70%);
+  box-shadow: 0 0 20px rgba(105, 105, 105, 0.6);
+}
+
+.modern-smoke .smoke-2 {
+  width: 80px;
+  height: 80px;
+  left: 40%;
+  background: radial-gradient(circle, rgba(128, 128, 128, 0.6) 0%, rgba(169, 169, 169, 0.4) 50%, transparent 80%);
+  box-shadow: 0 0 25px rgba(128, 128, 128, 0.5);
+}
+
+.modern-smoke .smoke-3 {
+  width: 70px;
+  height: 70px;
+  left: 60%;
+  background: radial-gradient(circle, rgba(112, 128, 144, 0.8) 0%, rgba(105, 105, 105, 0.3) 60%, transparent 80%);
+  box-shadow: 0 0 30px rgba(112, 128, 144, 0.4);
+}
+
+.modern-smoke .smoke-4 {
+  width: 50px;
+  height: 50px;
+  left: 75%;
+  background: radial-gradient(circle, rgba(105, 105, 105, 0.6) 0%, rgba(128, 128, 128, 0.3) 50%, transparent 70%);
+  box-shadow: 0 0 15px rgba(105, 105, 105, 0.5);
+}
+
+.modern-smoke .smoke-5 {
+  width: 90px;
+  height: 90px;
+  left: 10%;
+  background: radial-gradient(circle, rgba(128, 128, 128, 0.5) 0%, rgba(169, 169, 169, 0.3) 60%, transparent 90%);
+  box-shadow: 0 0 35px rgba(128, 128, 128, 0.3);
 }
 </style>
 </div>
