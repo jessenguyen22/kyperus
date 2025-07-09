@@ -1,0 +1,45 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "xb_1da2512d_VJDzqQ": {
+      "type": "xb-1da2512d",
+      "name": "[XB]Hero Banner",
+      "settings": {}
+    },
+    "xb_1da285fd_G9BrPN": {
+      "type": "xb-1da285fd",
+      "name": "[XB]Hero-Intro",
+      "settings": {}
+    },
+    "xb_1da259eb_N3NCMK": {
+      "type": "xb-1da259eb",
+      "name": "[XB]KPR-Video Section",
+      "settings": {}
+    },
+    "xb_1da27fc1_AAkXWF": {
+      "type": "xb-1da27fc1",
+      "name": "[XB]Kpr-Modern",
+      "settings": {}
+    },
+    "xb_1da289aa_p3tpf4": {
+      "type": "xb-1da289aa",
+      "name": "[XB]KPR-Modern-Clt",
+      "settings": {}
+    }
+  },
+  "order": [
+    "xb_1da2512d_VJDzqQ",
+    "xb_1da285fd_G9BrPN",
+    "xb_1da259eb_N3NCMK",
+    "xb_1da27fc1_AAkXWF",
+    "xb_1da289aa_p3tpf4"
+  ]
+}
