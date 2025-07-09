@@ -134,18 +134,40 @@
   </div>
 </div>
 <div
-  class="xb-custom-code id_mcvostrq21283"   
+  class="xb-custom-code id_mcvqu12c2365x"   
 >
-  <div class="smoke-dust traditional-smoke">
-  <div class="smoke-cloud smoke-1"></div>
-  <div class="smoke-cloud smoke-2"></div>
-  <div class="smoke-cloud smoke-3"></div>
-  <div class="smoke-cloud smoke-4"></div>
-  <div class="smoke-cloud smoke-5"></div>
+  <div class="svg-smoke traditional-svg-smoke">
+  <svg width="100%" height="120" viewBox="0 0 300 120">
+    <defs>
+      <filter id="blur-traditional">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+      </filter>
+    </defs>
+    
+    <!-- Smoke Shape 1 -->
+    <path id="smoke1-traditional" class="smoke-path" 
+          d="M50,100 Q60,80 70,60 Q80,40 90,30 Q100,20 110,25 Q120,30 115,40 Q110,50 105,60 Q100,70 95,80 Q90,90 85,100 Z" 
+          fill="#8B4513" fill-opacity="0.6" filter="url(#blur-traditional)"/>
+    
+    <!-- Smoke Shape 2 -->
+    <path id="smoke2-traditional" class="smoke-path"
+          d="M100,100 Q110,85 120,70 Q130,55 140,45 Q150,35 160,40 Q170,45 165,55 Q160,65 155,75 Q150,85 145,95 Q140,100 135,100 Z"
+          fill="#A0522D" fill-opacity="0.5" filter="url(#blur-traditional)"/>
+    
+    <!-- Smoke Shape 3 -->
+    <path id="smoke3-traditional" class="smoke-path"
+          d="M150,100 Q160,80 170,60 Q180,40 190,35 Q200,30 210,35 Q220,40 215,50 Q210,60 205,70 Q200,80 195,90 Q190,95 185,100 Z"
+          fill="#D2691E" fill-opacity="0.4" filter="url(#blur-traditional)"/>
+    
+    <!-- Smoke Shape 4 -->
+    <path id="smoke4-traditional" class="smoke-path"
+          d="M200,100 Q210,85 220,70 Q230,55 240,50 Q250,45 260,50 Q270,55 265,65 Q260,75 255,85 Q250,90 245,95 Q240,100 235,100 Z"
+          fill="#8B4513" fill-opacity="0.3" filter="url(#blur-traditional)"/>
+  </svg>
 </div>
 
 <style>
-.smoke-dust {
+.svg-smoke {
   position: absolute;
   bottom: -10px;
   left: 0;
@@ -156,52 +178,9 @@
   overflow: hidden;
 }
 
-.smoke-cloud {
-  position: absolute;
-  bottom: 0;
-  border-radius: 50%;
+.smoke-path {
+  transform-origin: center bottom;
   opacity: 0;
-  filter: blur(8px);
-}
-
-.traditional-smoke .smoke-1 {
-  width: 60px;
-  height: 60px;
-  left: 20%;
-  background: radial-gradient(circle, rgba(139, 69, 19, 0.7) 0%, rgba(160, 82, 45, 0.5) 40%, transparent 70%);
-  box-shadow: 0 0 20px rgba(139, 69, 19, 0.6);
-}
-
-.traditional-smoke .smoke-2 {
-  width: 80px;
-  height: 80px;
-  left: 40%;
-  background: radial-gradient(circle, rgba(160, 82, 45, 0.6) 0%, rgba(210, 105, 30, 0.4) 50%, transparent 80%);
-  box-shadow: 0 0 25px rgba(160, 82, 45, 0.5);
-}
-
-.traditional-smoke .smoke-3 {
-  width: 70px;
-  height: 70px;
-  left: 60%;
-  background: radial-gradient(circle, rgba(101, 67, 33, 0.8) 0%, rgba(139, 69, 19, 0.3) 60%, transparent 80%);
-  box-shadow: 0 0 30px rgba(101, 67, 33, 0.4);
-}
-
-.traditional-smoke .smoke-4 {
-  width: 50px;
-  height: 50px;
-  left: 75%;
-  background: radial-gradient(circle, rgba(139, 69, 19, 0.6) 0%, rgba(160, 82, 45, 0.3) 50%, transparent 70%);
-  box-shadow: 0 0 15px rgba(139, 69, 19, 0.5);
-}
-
-.traditional-smoke .smoke-5 {
-  width: 90px;
-  height: 90px;
-  left: 10%;
-  background: radial-gradient(circle, rgba(160, 82, 45, 0.5) 0%, rgba(210, 105, 30, 0.3) 60%, transparent 90%);
-  box-shadow: 0 0 35px rgba(160, 82, 45, 0.3);
 }
 </style>
 </div>
@@ -459,78 +438,6 @@
 </figure>
 </div>
   </div>
-</div>
-<div
-  class="xb-custom-code id_mcvotqf322ucc"   
->
-  <div class="smoke-dust modern-smoke">
-  <div class="smoke-cloud smoke-1"></div>
-  <div class="smoke-cloud smoke-2"></div>
-  <div class="smoke-cloud smoke-3"></div>
-  <div class="smoke-cloud smoke-4"></div>
-  <div class="smoke-cloud smoke-5"></div>
-</div>
-
-<style>
-.smoke-dust {
-  position: absolute;
-  bottom: -10px;
-  left: 0;
-  width: 100%;
-  height: 120px;
-  pointer-events: none;
-  z-index: 10;
-  overflow: hidden;
-}
-
-.smoke-cloud {
-  position: absolute;
-  bottom: 0;
-  border-radius: 50%;
-  opacity: 0;
-  filter: blur(8px);
-}
-
-.modern-smoke .smoke-1 {
-  width: 60px;
-  height: 60px;
-  left: 20%;
-  background: radial-gradient(circle, rgba(105, 105, 105, 0.7) 0%, rgba(128, 128, 128, 0.5) 40%, transparent 70%);
-  box-shadow: 0 0 20px rgba(105, 105, 105, 0.6);
-}
-
-.modern-smoke .smoke-2 {
-  width: 80px;
-  height: 80px;
-  left: 40%;
-  background: radial-gradient(circle, rgba(128, 128, 128, 0.6) 0%, rgba(169, 169, 169, 0.4) 50%, transparent 80%);
-  box-shadow: 0 0 25px rgba(128, 128, 128, 0.5);
-}
-
-.modern-smoke .smoke-3 {
-  width: 70px;
-  height: 70px;
-  left: 60%;
-  background: radial-gradient(circle, rgba(112, 128, 144, 0.8) 0%, rgba(105, 105, 105, 0.3) 60%, transparent 80%);
-  box-shadow: 0 0 30px rgba(112, 128, 144, 0.4);
-}
-
-.modern-smoke .smoke-4 {
-  width: 50px;
-  height: 50px;
-  left: 75%;
-  background: radial-gradient(circle, rgba(105, 105, 105, 0.6) 0%, rgba(128, 128, 128, 0.3) 50%, transparent 70%);
-  box-shadow: 0 0 15px rgba(105, 105, 105, 0.5);
-}
-
-.modern-smoke .smoke-5 {
-  width: 90px;
-  height: 90px;
-  left: 10%;
-  background: radial-gradient(circle, rgba(128, 128, 128, 0.5) 0%, rgba(169, 169, 169, 0.3) 60%, transparent 90%);
-  box-shadow: 0 0 35px rgba(128, 128, 128, 0.3);
-}
-</style>
 </div>
 
   
