@@ -133,41 +133,6 @@
 </div>
   </div>
 </div>
-<div
-  class="xb-custom-code id_mcvr8j3924779"   
->
-  // Function test SVG smoke
-function testSVGSmoke() {
-  const tl = gsap.timeline();
-  
-  // Set initial state
-  gsap.set('.traditional-svg-smoke .smoke-path, .modern-svg-smoke .smoke-path', {
-    scale: 0.3,
-    y: 20,
-    opacity: 0
-  });
-  
-  // Animation
-  tl.to('.traditional-svg-smoke .smoke-path, .modern-svg-smoke .smoke-path', {
-    scale: () => gsap.utils.random(1, 1.5),
-    y: () => gsap.utils.random(-40, -80),
-    opacity: 1,
-    duration: 0.8,
-    ease: 'power2.out',
-    stagger: 0.1
-  })
-  .to('.traditional-svg-smoke .smoke-path, .modern-svg-smoke .smoke-path', {
-    scale: () => gsap.utils.random(1.5, 2.2),
-    y: () => gsap.utils.random(-60, -100),
-    opacity: 0,
-    duration: 1,
-    ease: 'power1.out'
-  }, 0.5);
-}
-
-// Auto test sau 2 giây
-setTimeout(testSVGSmoke, 2000);
-</div>
 
   
   
@@ -432,7 +397,7 @@ setTimeout(testSVGSmoke, 2000);
   
 </div>
 <div
-  class="xb-wrapper hero-intro id_mcvl04e5424i8" style="--xb-wld:row;--xb-wvsd:15px;--xb-whsd:0px;--xb-wvst:15px;--xb-wvsm:15px;--xb-whst:0px;--xb-whsm:0px;--xb-wwd:100%;--xb-wwt:100%;--xb-wwm:100%;--xb-whad:center;--xb-what:center;--xb-wham:center;--xb-wvad:start;--xb-wvat:start;--xb-wvam:start;--xb-wwrd:wrap;--xb-wwrt:wrap;--xb-wwrm:wrap;--xb-wz:1;--xb-wpt:relative;"   
+  class="xb-wrapper xb-wrapper--desktop-top-center xb-wrapper--tablet-top-center xb-wrapper--mobile-top-center hero-intro id_mcvl04e5424i8" style="--xb-wld:row;--xb-wvsd:15px;--xb-whsd:0px;--xb-wvst:15px;--xb-wvsm:15px;--xb-whst:0px;--xb-whsm:0px;--xb-wwd:100%;--xb-wwt:100%;--xb-wwm:100%;--xb-whad:center;--xb-what:center;--xb-wham:center;--xb-wvad:start;--xb-wvat:start;--xb-wvam:start;--xb-wwrd:wrap;--xb-wwrt:wrap;--xb-wwrm:wrap;--xb-wz:1;--xb-wpt:absolute;"   
   
 >
   <div
