@@ -935,6 +935,626 @@
       
       
       
+    </section><section
+      class="xb-section modern-collection id_mcwshxjx85c9" style="--xb-section-z-index:1;--xb-section-width-desktop:100%;--xb-section-width-tablet:100%;--xb-section-width-mobile:100%;--xb-section-blur:0px;--xb-section-position-type:relative;--xb-section-background-gradient-animated-duration:10s;"   
+      data-xb-section-id="id_mcwshxjx85c9"
+      data-xb-scroll-id="id_mcwshxjx85c9"
+      data-xb-section-global="false"
+      xo-preset="1426778086"
+    >
+      
+  <div class="xb-container" >
+    <div
+  class="xb-grid id_mcwshxjx9iai" style="--xb-col-desktop:2;--xb-col-tablet:2;--xb-col-mobile:1;--xb-grid-row-desktop:1;--xb-grid-row-tablet:1;--xb-grid-row-mobile:1;--xb-grid-row-height-desktop:100px;--xb-grid-row-height-tablet:100px;--xb-grid-row-height-mobile:100px;--xb-layout-spacing-grid-horizontal-desktop:0px;--xb-layout-spacing-grid-horizontal-tablet:20px;--xb-layout-spacing-grid-horizontal-mobile:15px;--xb-layout-spacing-grid-vertical-desktop:31px;--xb-layout-spacing-grid-vertical-tablet:20px;--xb-layout-spacing-grid-vertical-mobile:15px;"   
+>
+  
+<div 
+  xo-column 
+  class="xb-column id_mcwshxjy13gye" 
+  style="--xb-span-col-desktop:2;--xb-span-col-tablet:2;--xb-span-col-mobile:1;--xb-span-row-desktop:1;--xb-span-row-tablet:1;--xb-span-row-mobile:1;--xb-column-order-desktop:0;--xb-column-order-tablet:0;--xb-column-order-mobile:0;align-self:auto;" 
+  false
+>{% assign designMode = false %}
+<div
+  class="xb-product-list xb-product-list-grid id_mcwshxjy14il6"   
+>
+  {% liquid 
+    assign product_source = "custom"
+    assign sort_by = "manual"
+    if designMode
+      assign limit = 8
+    else
+      assign limit = 8
+    endif
+    assign available_only = "yes"
+    assign layout = "grid"
+    case product_source
+      when 'all'
+        assign current_collection = collections["all"]
+      when 'custom'
+        assign current_collection = collections["modern-collection"]
+      else
+        if designMode
+          assign current_collection = collections["all"]
+        else
+          assign current_collection = recommendations
+        endif
+    endcase
+    assign current_products = current_collection.products
+    case sort_by
+      when 'a_z'
+        assign current_products = current_collection.products | sort: 'title'
+      when 'z_a'
+        assign current_products = current_collection.products | sort: 'title' | reverse
+      when 'low_to_high'
+        assign current_products = current_collection.products | sort: 'price'
+      when 'high_to_low'
+        assign current_products = current_collection.products | sort: 'price' | reverse
+      when 'old_to_new'
+        assign current_products = current_collection.products | sort: 'published_at'
+      when 'new_to_old'
+        assign current_products = current_collection.products | sort: 'published_at' | reverse
+    endcase
+    if available_only == 'yes'
+      assign current_products = current_products | where: 'available'
+    endif
+  %}
+  
+  {% capture ProductListChild %}
+    {% assign designMode = false %}
+{% capture ProductContent %}
+  {% for product in current_products limit: limit %}
+    {% capture ContentChild %}
+      {% assign designMode = false %}
+{% liquid
+  assign link_enabled = "no"
+%}
+
+<div 
+  class="xb-product-list__item id_mcwshxjy16j89" xo-animate="scroll" xo-cascade xo-duration="800" xo-type="fade-up"  
+  {% if link_enabled == 'yes' %}
+    xb-href="{{ product.url }}"
+  {% endif %}
+  
+>
+  {% unless designMode %}
+    <xo-product-data>
+      <script type='application/json'>
+        {{ product | json }}
+      </script>
+    </xo-product-data>
+  {% endunless %}
+  <div
+  class="xb-hover id_mcwshxjy17z6z"   
+>
+  <div
+  class="xb-wrapper id_mcwshxjy18wza" style="--xb-wld:column;--xb-wvsd:0px;--xb-whsd:0px;--xb-wvst:0px;--xb-wvsm:0px;--xb-whst:0px;--xb-whsm:0px;--xb-wwd:100%;--xb-wwt:100%;--xb-wwm:100%;--xb-wvad:none;--xb-wvat:none;--xb-wvam:none;--xb-whad:start;--xb-what:start;--xb-wham:start;--xb-wwrd:undefined;--xb-wwrt:undefined;--xb-wwrm:undefined;--xb-wz:1;--xb-wpt:relative;"   
+  
+>
+  {% assign designMode = false %}
+{% liquid
+  assign show_secondary_image = "yes"
+  assign cond = "empty"
+
+  if cond == 'empty'
+    assign cond = false
+  endif
+  assign product_item = product
+
+  if cond
+    assign product_item = all_products["undefined"]
+  endif
+%}
+
+{% if product_item and product_item != blank %}
+  {% liquid
+    assign featured_media = product_item.featured_image
+    assign secondary_media = product_item.media[1].preview_image
+  %}
+  <a
+    href="{{ product_item.url }}"
+    class="xb-product-image xb-image xb-product-image__static xb-link id_mcwshxjy19okk" style="--xo-animate-infinite-duration: 800ms; --xb-product-media-aspect-ratio-desktop:100 / 135;--xb-product-media-aspect-ratio-tablet:100 / 135;--xb-product-media-aspect-ratio-mobile:100 / 135;--xb-product-media-object-fit:cover;--xb-product-media-width-desktop:100%;--xb-product-media-width-tablet:100%;--xb-product-media-width-mobile:100%;--xb-product-image-mask-svg:url('https://cdn.shopify.com/s/files/1/0677/7900/2622/files/Mask_Abstract_1.svg?v=1712119221');width:100%;" xo-animate="infinite" xo-animate-infinite="none"  
+  >
+    <div
+      class="xb-product-image__first"
+      style="--xo-ratio-percent: {{ featured_media.aspect_ratio }}"
+    >
+      {% if featured_media != blank %}
+        <img
+          is="xo-lazyload"
+          xo-src="{{ featured_media.src | image_url: width: 100 }}"
+          loading="lazy"
+          alt="{{ featured_media.alt | default: "" | replace: '"', '' | escape }}"
+          width="{{ featured_media.width | default: '' }}"
+          height="{{ featured_media.height | default: '200' }}"
+          xo-intrinsic-width="{{ featured_media.width | default: '' }}"
+          xo-intrinsic-height="{{ featured_media.height | default: '200' }}"
+          xo-fallback-width="1000"
+        />
+      {% else %}
+        <img
+          is="xo-lazyload"
+          xo-src="https://cdn.shopify.com/s/files/1/0677/7900/2622/files/Product-placeholder.svg?v=1717753235"
+          loading="lazy"
+          alt="Product image alt {{ forloop.index0 }}"
+          width="300"
+          height="300"
+          xo-intrinsic-width="300"
+          xo-intrinsic-height="300"
+          xo-fallback-width="300"
+        />
+      {% endif %}
+      
+        <div class="xb-image__overlay xo-lazyload-overlay">
+          <div class="xb-image__loading" style="--xb-image-loading-background: rgba(0, 0, 0, 0)">
+            <div
+              class="xo-loader-2"
+              style="--color: rgba(0, 0, 0, 1); --duration: 1300;--stroke-width: 2;--size: 10;"
+            ><div><span></span></div></div>
+          </div>
+        </div>
+        
+    </div>
+    {% if secondary_media != blank and show_secondary_image == 'yes' %}
+      <div
+        class="xb-product-image__secondary"
+        style="--xo-ratio-percent: {{ secondary_media.aspect_ratio }}"
+      >
+        <img
+          is="xo-lazyload"
+          xo-src="{{ secondary_media.src | image_url: width: 100 }}"
+          loading="lazy"
+          alt="{{ secondary_media.alt | default: "" | replace: '"', '' | escape }}"
+          width="{{ secondary_media.width | default: '' }}"
+          height="{{ secondary_media.height | default: '200' }}"
+          xo-intrinsic-width="{{ secondary_media.width | default: '' }}"
+          xo-intrinsic-height="{{ secondary_media.height | default: '200' }}"
+          xo-fallback-width="400"
+        />
+        
+        <div class="xb-image__overlay xo-lazyload-overlay">
+          <div class="xb-image__loading" style="--xb-image-loading-background: rgba(0, 0, 0, 0)">
+            <div
+              class="xo-loader-2"
+              style="--color: rgba(0, 0, 0, 1); --duration: 1300;--stroke-width: 2;--size: 10;"
+            ><div><span></span></div></div>
+          </div>
+        </div>
+        
+      </div>
+    {% endif %}
+  </a>
+{% elsif designMode %}
+  
+{% endif %}
+
+
+  
+  
+</div>
+<div
+  class="xb-grid id_mcwshxjy23cji" style="--xb-col-desktop:5;--xb-col-tablet:3;--xb-col-mobile:1;--xb-grid-row-desktop:1;--xb-grid-row-tablet:1;--xb-grid-row-mobile:1;--xb-grid-row-height-desktop:100px;--xb-grid-row-height-tablet:100px;--xb-grid-row-height-mobile:100px;--xb-layout-spacing-grid-horizontal-desktop:0px;--xb-layout-spacing-grid-horizontal-tablet:0px;--xb-layout-spacing-grid-horizontal-mobile:0px;--xb-layout-spacing-grid-vertical-desktop:5px;--xb-layout-spacing-grid-vertical-tablet:5px;--xb-layout-spacing-grid-vertical-mobile:0px;"   
+>
+  <div 
+  xo-column 
+  class="xb-column id_mcwshxjy244mp" 
+  style="--xb-span-col-desktop:5;--xb-span-col-tablet:3;--xb-span-col-mobile:3;--xb-span-row-desktop:1;--xb-span-row-tablet:1;--xb-span-row-mobile:1;--xb-column-order-desktop:0;--xb-column-order-tablet:0;--xb-column-order-mobile:0;align-self:auto;" 
+  false
+><div
+  class="xb-wrapper id_mcwshxjy25qn5" style="--xb-wld:row;--xb-wvsd:0px;--xb-whsd:0px;--xb-wvst:0px;--xb-wvsm:0px;--xb-whst:0px;--xb-whsm:0px;--xb-wwd:100%;--xb-wwt:100%;--xb-wwm:100%;--xb-whad:space-between;--xb-what:space-between;--xb-wham:space-between;--xb-wmhd:100%;--xb-wmht:100%;--xb-wmhm:100%;--xb-wvad:center;--xb-wvat:center;--xb-wvam:start;--xb-wwrd:wrap;--xb-wwrt:nowrap;--xb-wwrm:nowrap;--xb-wz:1;--xb-wpt:relative;" xo-animate="scroll" xo-cascade xo-duration="800" xo-type="fade-up"  
+  
+>
+  {% assign designMode = false %}
+{% liquid
+  assign cond = "empty"
+  if cond == 'empty'
+    assign cond = false
+  endif
+  assign product_item = product
+
+  if cond
+    assign product_item = all_products["undefined"]
+  endif
+%}
+
+
+
+{% if product_item and product_item != blank %}
+  <h3
+    class="xb-product-title xb-heading xb-h3 id_mcwshxjy26y56"   
+  >
+    <a 
+      class="xb-link"
+      href="{{ product_item.url }}"
+    >
+      {{ product_item.title }}
+    </a>
+  </h3>
+{% elsif designMode %}
+  
+{% endif %}
+{% assign designMode = false %}
+{%- liquid
+  assign cond = "empty"
+  if cond == 'empty'
+    assign cond = false
+  endif
+  assign product_item = product
+  if cond
+    assign product_item = all_products["undefined"]
+  endif
+  assign elementId = "id_mcwshxjy2725h"
+-%}
+
+
+
+<div
+  class="xb-product-price id_mcwshxjy2725h"   
+>
+  {% if product_item and product_item != blank %}
+    <xo-product-will-change xo-unique-id="{{ section.id }}-{{ product_item.id }}-{{ elementId }}-price">
+      {%- liquid
+        assign use_variant = false
+        assign target = product_item.selected_or_first_available_variant
+        assign compare_at_price = target.compare_at_price
+        assign price = target.price | default: 1999
+        assign money_price = price | money
+        if settings?.currency_code_enabled
+          assign money_price = price | money_with_currency
+        endif
+      -%}
+      <div class="xb-product-price__container">
+        {% if compare_at_price > price %}
+          <div class="xb-product-price__sale xb-product-price__sale--row" style="justify-content: flex-start">
+            {% assign designMode = false %}
+<div
+  class="id_mcwshxjy286fr"   
+>
+  {% render 'xb-snippets', 
+    xb_type: 'price', 
+    compare_at_price: compare_at_price, 
+    price: price, 
+    money_price: money_price,
+  %}
+</div>
+
+
+          </div>
+        {% else %}
+          <div class="xb-product-price__regular  xb-product-price__sale--row" style="justify-content: flex-start">
+            {% assign designMode = false %}
+<div
+  class="id_mcwshxjy286fr"   
+>
+  {% render 'xb-snippets', 
+    xb_type: 'price', 
+    compare_at_price: compare_at_price, 
+    price: price, 
+    money_price: money_price,
+  %}
+</div>
+
+
+          </div>
+        {% endif %}
+        {% render 'xb-snippets', 
+          xb_type: 'price_unit',
+          product_item: product_item,
+        %}
+      </div>
+    </xo-product-will-change>
+  {% elsif designMode %}
+    
+  {% endif %}
+</div>
+
+  
+  
+</div>
+</div>
+<div 
+  xo-column 
+  class="xb-column id_mcwshxjy30y51" 
+  style="--xb-span-col-desktop:5;--xb-span-col-tablet:3;--xb-span-col-mobile:1;--xb-span-row-desktop:1;--xb-span-row-tablet:1;--xb-span-row-mobile:1;--xb-column-order-desktop:0;--xb-column-order-tablet:0;--xb-column-order-mobile:0;align-self:auto;" 
+  false
+><div
+  class="xb-wrapper id_mcwshxjy31k81" style="--xb-wld:row;--xb-wvsd:0px;--xb-whsd:18px;--xb-wvst:0px;--xb-wvsm:0px;--xb-whst:18px;--xb-whsm:18px;--xb-wwd:100%;--xb-wwt:100%;--xb-wwm:100%;--xb-whad:space-between;--xb-what:space-between;--xb-wham:space-between;--xb-wmhd:100%;--xb-wmht:100%;--xb-wmhm:100%;--xb-wvad:start;--xb-wvat:start;--xb-wvam:start;--xb-wwrd:nowrap;--xb-wwrt:nowrap;--xb-wwrm:nowrap;--xb-wz:1;--xb-wpt:relative;" xo-animate="scroll" xo-cascade xo-duration="800" xo-type="fade-up"  
+  
+>
+  {% assign designMode = false %}
+{% liquid
+  assign cond = "empty"
+  if cond == 'empty'
+    assign cond = false
+  endif
+  assign product_item = product
+
+  if cond
+    assign product_item = all_products["undefined"]
+  endif
+%}
+
+
+
+{% if product_item and product_item != blank %}
+  {% if product_item.vendor != blank %}
+    <a
+      class="xb-product-vendor xb-link id_mcwshxjy32hat"   
+      href="{{ shop.url }}/collections/vendors?q={{ product_item.vendor | escape }}"
+    >
+      {{ product_item.vendor }}
+    </a>
+  {% endif %}
+{% elsif designMode %}
+  
+{% endif %}
+{% assign designMode = false %}
+{% liquid
+  assign checkoutEnabled = "false"
+  assign addMultipleEnabled = "false"
+  assign textEnabled = "no"
+  if addMultipleEnabled == 'true'
+    assign product_list = ""
+    assign listProduct = product_list | split: ', '
+    assign listId = ''
+    assign listQuantity = ''
+    for handle in listProduct
+      assign currentProduct = all_products[handle]
+      assign listId = listId | append: currentProduct.id
+      assign listQuantity = listQuantity | append: '1'
+      unless forloop.last
+        assign listId = listId | append: ','
+        assign listQuantity = listQuantity | append: ','
+      endunless
+    endfor
+  else
+    assign cond = "empty"
+    if cond == 'empty'
+      assign cond = false
+    endif
+    assign product_item = product
+
+    if cond
+      assign product_item = all_products["undefined"]
+    endif
+  endif
+%}
+
+<style>
+  .xb-add-to-cart-button:has(.id_mcwshxjy337wh) {
+    width: auto;
+  }
+</style>
+
+{% if product_item != blank or addMultipleEnabled == 'true' %}
+  <xo-cart-add
+    class="xb-add-to-cart-button"
+    {% unless designMode %}
+      {% assign checkoutEnabled = checkoutEnabled | replace: ' ', '' %}
+      {% if checkoutEnabled == 'true' %}
+        xo-checkout-redirection
+      {% endif %}
+    {% endunless %}
+    {% unless xb_featured_product == true %}
+      {% if addMultipleEnabled == 'true' %}
+        xo-product-id="[{{ listId }}]"
+        xo-product-quantities="[{{ listQuantity }}]"
+      {% else %}
+        {% if product_item.selected_or_first_available_variant.id != blank %}
+          xo-product-id="{{ product_item.selected_or_first_available_variant.id }}"
+        {% elsif product_item.variants[0].id != blank %}
+          xo-product-id="{{ product_item.variants[0].id }}"
+        {% elsif product_item.id != blank %}
+          xo-product-id="{{ product_item.id }}"
+        {% endif %}
+        {% if product_item.selected_or_first_available_variant.available == false %}
+          xo-disabled
+        {% endif %}
+      {% endif %}
+    {% endunless %}
+    xo-cart-opened="false"
+  >
+    <button 
+      class="xb-add-to-cart-button__button xb-button--fit" style="--xb-button-gap:10px;"   
+      role="button"
+      aria-label="{{ 'xb.products.add_to_cart' | t }}"
+    >
+      <span class="xb-add-to-cart-button__content id_mcwshxjy337wh xb-add-to-cart-button--modifier-01">
+        
+        {% if textEnabled == 'yes' %}
+          <span class="xb-add-to-cart-button__text">
+            {% if product_item.selected_or_first_available_variant.available or addMultipleEnabled == 'true' %}
+              {{ 'xb.products.add_to_cart' | t }}
+            {% else %}
+              {{ 'xb.products.sold_out' | t }}
+            {% endif %}
+          </span>
+        {% endif %}
+        
+        <span class="xb-add-to-cart-button__icon"><div
+  class="xb-icon xb-icon--modifier-01 id_mcwshxjy34daq"   
+>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M160 112v48H288V112c0-35.3-28.7-64-64-64s-64 28.7-64 64zm-48 96H48V416c0 26.5 21.5 48 48 48H352c26.5 0 48-21.5 48-48V208H336v56c0 13.3-10.7 24-24 24s-24-10.7-24-24V208H160v56c0 13.3-10.7 24-24 24s-24-10.7-24-24V208zm0-48V112C112 50.1 162.1 0 224 0s112 50.1 112 112v48h64c26.5 0 48 21.5 48 48V416c0 53-43 96-96 96H96c-53 0-96-43-96-96V208c0-26.5 21.5-48 48-48h64z"/></svg>
+</div>
+</span>
+        <span class="xb-button__loading">
+          <div
+            class="xo-loader-2"
+            style="--size: 16; --color: currentColor; --duration: 1300;--stroke-width: 2;"
+          ><div><span></span></div></div>
+        </span>
+        
+      </span>
+    </button>
+  </xo-cart-add>
+{% elsif designMode %}
+  
+{% endif %}
+
+  
+  
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+    {% endcapture %}
+    {% if layout == 'grid' %}
+      <xo-product xo-product-id="{{ product.id }}" xo-section-id="{{ section.id }}">
+        {{ ContentChild }}
+      </xo-product>
+    {% else %}
+      <xo-carousel-slide>
+        <xo-product xo-product-id="{{ product.id }}" xo-section-id="{{ section.id }}">
+          {{ ContentChild }}
+        </xo-product>
+      </xo-carousel-slide>
+    {% endif %}
+  {% endfor %}
+{% endcapture %}
+
+{% assign productSize = current_collection.products | size %}
+
+{% if layout == 'grid' %}
+  <div 
+    class="xb-grid" 
+    style="
+      --xb-col-desktop: 3;
+      --xb-col-tablet: 4;
+      --xb-col-mobile: 2;
+      --xb-layout-spacing-grid-horizontal-desktop: 40px;
+      --xb-layout-spacing-grid-horizontal-tablet: 40px;
+      --xb-layout-spacing-grid-horizontal-mobile: 40px;
+      --xb-layout-spacing-grid-vertical-desktop: 40px;
+      --xb-layout-spacing-grid-vertical-tablet: 40px;
+      --xb-layout-spacing-grid-vertical-mobile: 40px;
+    "
+  > 
+    {% if current_collection != blank and productSize != 0 %}
+      {{ ProductContent }}
+    {% elsif designMode %}
+      {% render 'xb-snippets', xb_type: 'product_card_placeholder', limit: limit, layout: 'grid' %}
+    {% endif %}
+  </div>
+{% else %}
+  <xo-carousel-inner>
+    <xo-carousel-list>
+      {% if current_collection != blank and productSize != 0 %}
+        {{ ProductContent }}
+      {% elsif designMode %}
+        {% render 'xb-snippets', xb_type: 'product_card_placeholder', limit: limit, layout: 'carousel' %}
+      {% endif %}
+    </xo-carousel-list>
+  </xo-carousel-inner>
+{% endif %}
+<div
+  class="xb-carousel-navigation xb-carousel-navigation--center xb-carousel-navigation--absolute id_mcwshxjy355lt" style="--xb-carousel-direction:row;--xb-carousel-vertical-gap:15px;--xb-carousel-horizontal-gap:15px;--xb-carousel-horizontal-align:space-between;--xb-carousel-vertical-align:start;"   
+  data-carousel-name=""
+>
+  <xo-carousel-prev
+  class="carousel_navigation carousel_navigation--prev carousel_navigation--center"
+  
+>
+  <div
+  class="xb-icon xb-icon--modifier-03 id_mcwshxjy378cm"   
+>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M368 400c-.4-16 7.3-31.2 20.4-40.4C436.1 326.2 464 276.9 464 224c0-91.4-86.9-176-208-176S48 132.6 48 224c0 52.9 27.9 102.2 75.6 135.6c13.1 9.2 20.8 24.4 20.4 40.4l0 0v64h48V440c0-13.3 10.7-24 24-24s24 10.7 24 24v24h32V440c0-13.3 10.7-24 24-24s24 10.7 24 24v24h48V400l0 0zm48-1.1c0 .4 0 .7 0 1.1v64c0 26.5-21.5 48-48 48H144c-26.5 0-48-21.5-48-48V400c0-.4 0-.7 0-1.1C37.5 357.8 0 294.7 0 224C0 100.3 114.6 0 256 0S512 100.3 512 224c0 70.7-37.5 133.8-96 174.9zM112 256a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm232-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
+</div>
+
+</xo-carousel-prev>
+<xo-carousel-next
+  class="carousel_navigation carousel_navigation--next carousel_navigation--center"
+  
+>
+  <div
+  class="xb-icon xb-icon--modifier-03 id_mcwshxjy39g20"   
+>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M368 400c-.4-16 7.3-31.2 20.4-40.4C436.1 326.2 464 276.9 464 224c0-91.4-86.9-176-208-176S48 132.6 48 224c0 52.9 27.9 102.2 75.6 135.6c13.1 9.2 20.8 24.4 20.4 40.4l0 0v64h48V440c0-13.3 10.7-24 24-24s24 10.7 24 24v24h32V440c0-13.3 10.7-24 24-24s24 10.7 24 24v24h48V400l0 0zm48-1.1c0 .4 0 .7 0 1.1v64c0 26.5-21.5 48-48 48H144c-26.5 0-48-21.5-48-48V400c0-.4 0-.7 0-1.1C37.5 357.8 0 294.7 0 224C0 100.3 114.6 0 256 0S512 100.3 512 224c0 70.7-37.5 133.8-96 174.9zM112 256a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm232-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
+</div>
+
+</xo-carousel-next>
+
+</div>
+<xo-carousel-pagination
+  class="xb-carousel-pagination xb-carousel-pagination--center xb-carousel-pagination--static xb-carousel-pagination--modifier-03 id_mcwshxjy40h0k" style="--xb-pagination-gap:5px;--xb-pagination-align:center;"   
+></xo-carousel-pagination>
+
+  {% endcapture %}
+
+  {% capture ContentSlide %}
+    <xo-carousel
+      xo-name="id_mcwshxjy14il6"
+      xo-observed="103408248"
+      xo-per-view='3'
+      xo-overflow='overflow'
+      xo-gap="40"
+      xo-per-move="1"
+      xo-rewind="true"
+      
+      xo-breakpoints='
+        {
+          768: {
+            perView: 2,
+            gap: 40,
+          },
+          992: {
+            perView: 4,
+            gap: 40,
+          },
+        }
+      '
+      xo-render-bullet="<div class='pagination__inner'> <span class='pagination__inner-content'></span> </div>"
+      style="--xo-per-view: 3; --xo-gap: 40px;"
+    >
+      {{ ProductListChild }}
+    </xo-carousel>
+  {% endcapture %}
+
+  {% capture ProductLayout %}
+    {% if layout == 'grid' %}
+      {{ ProductListChild }}
+    {% else %}
+      {{ ContentSlide }}
+    {% endif %}
+  {% endcapture %}
+
+  {% if product_source == 'related' %}
+    {% liquid
+      assign cond = "empty"
+      if cond == 'empty'
+        assign cond = false
+      endif
+      assign product_item = product
+
+      if cond
+        assign product_item = all_products["undefined"]
+      endif
+    %}
+    <xo-product-recommendations
+      xo-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product_item.id }}&limit={{ limit }}&intent=related"
+    >
+      {{ ProductLayout }}
+    </xo-product-recommendations>
+  {% else %}
+    {{ ProductLayout }}
+  {% endif %}
+</div>
+</div>
+
+</div>
+
+  </div>
+
+      
+      
+      
+      
+      
+      
+      
     </section><script src="{{ 'xb-home.min.js' | asset_url }}" defer="defer"></script>
         {% schema %}
         {"name":"[XB]KPR-Homepage","settings":[{"type":"header","content":"Edit this page in [XO Builder](https://admin.shopify.com/store/zqfxsg-vp/apps/xo-builder/app/page-editor/686dd0c1516775dd1da31017) app"}]}
